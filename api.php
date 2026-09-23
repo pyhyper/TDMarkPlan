@@ -77,7 +77,8 @@ $GLOBALS['workspaceResponse'] = static function(array $data) use ($root, $scoped
 switch ($action) {
     case 'create_notebook':
         $id = sanitize_plan_id($jsonBody['p'] ?? '');
-        if (!$id || !Workspace::createNotebook($id, mb_substr((string)($jsonBody['title'] ?? ''), 0, 200), $jsonBody['password'] ?? null)) json_response(['error'=>'Link đã có plan. Chọn một ô plan còn trống.'], 409);
+        $autoDeleteDays = isset($jsonBody['auto_delete_days']) ? (int)$jsonBody['auto_delete_days'] : 90;
+        if (!$id || !Workspace::createNotebook($id, mb_substr((string)($jsonBody['title'] ?? ''), 0, 200), $jsonBody['password'] ?? null, $autoDeleteDays)) json_response(['error'=>'Link đã có plan. Chọn một ô plan còn trống.'], 409);
         json_response(['success'=>true,'plan_id'=>$id,'token'=>PlanStorage::generateAuthToken($id)]);
         break;
     case 'save_notebook':
@@ -180,7 +181,9 @@ switch ($action) {
                 'task_count' => 0,
                 'has_password' => false,
                 'is_empty' => true,
-                'notebook' => ['notes' => []]
+                'notebook' => ['notes' => []],
+                'auto_delete_days' => 90,
+                'auto_delete_at' => date('c', time() + 90 * 86400)
             ];
             json_response([
                 'success' => true,

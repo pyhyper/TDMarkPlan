@@ -160,6 +160,7 @@ if (!$requestedPlan) {
                 <label class="form-label" for="blank-plan-title">Tên sổ ghi chú</label><input id="blank-plan-title" class="form-input" maxlength="200" placeholder="Ý tưởng, nhật ký, ghi chép dự án…">
                 <label class="form-label" for="blank-plan-auto-delete" style="margin-top:0.5rem; display:block;">Thời gian tự động xóa sổ (Auto-delete):</label>
                 <select id="blank-plan-auto-delete" class="form-select" style="margin-bottom:0.75rem;">
+                    <option value="90" selected>Sau 90 ngày (Mặc định)</option>
                     <option value="0">Không bao giờ</option>
                     <option value="1">Sau 24 giờ</option>
                     <option value="7">Sau 7 ngày</option>
@@ -815,11 +816,11 @@ duration_weeks: [number]
             <div style="margin-bottom:1rem;">
                 <label style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:0.25rem; font-family:var(--font-sans);">Thời gian tự động xóa plan (Auto-delete):</label>
                 <select id="modal-auto-delete" class="form-select">
+                    <option value="90" selected>Sau 90 ngày (Mặc định)</option>
                     <option value="0">Không bao giờ (Giữ vĩnh viễn)</option>
                     <option value="1">Sau 24 giờ (1 ngày)</option>
                     <option value="7">Sau 7 ngày</option>
                     <option value="30">Sau 30 ngày</option>
-                    <option value="90">Sau 90 ngày</option>
                 </select>
             </div>
             <div id="modal-password-msg" class="unlock-error-msg" style="display:none;"></div>

@@ -11,11 +11,24 @@ class Workspace {
         }
         return $items;
     }
-    public static function createNotebook(string $id, string $title, ?string $password): bool {
+    public static function createNotebook(string $id, string $title, ?string $password, int $autoDeleteDays = 90): bool {
         $file = PLANS_DIR . '/' . $id . '.json';
         $handle = @fopen($file, 'x');
         if (!$handle) return false;
-        $plan = ['plan_id'=>$id, 'title'=>$title ?: 'Sổ ghi chú', 'domain'=>'notebook', 'start_date'=>date('Y-m-d'), 'duration_weeks'=>1, 'weeks'=>[], 'task_count'=>0, 'notebook'=>['notes'=>[]]];
+        $plan = [
+            'plan_id'=>$id,
+            'title'=>$title ?: 'Sổ ghi chú',
+            'domain'=>'notebook',
+            'start_date'=>date('Y-m-d'),
+            'duration_weeks'=>1,
+            'weeks'=>[],
+            'task_count'=>0,
+            'notebook'=>['notes'=>[]],
+            'auto_delete_days'=>$autoDeleteDays
+        ];
+        if ($autoDeleteDays > 0) {
+            $plan['auto_delete_at'] = date('c', time() + $autoDeleteDays * 86400);
+        }
         if ($password) $plan['password_hash'] = password_hash($password, PASSWORD_DEFAULT);
         fwrite($handle, json_encode($plan, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)); fclose($handle);
         file_put_contents(EXEC_DIR . '/' . $id . '.json', json_encode(['tasks'=>[], 'notebook'=>['notes'=>[]]]));
@@ -24,7 +37,7 @@ class Workspace {
     public static function saveNotebook(string $id, array $notes): bool {
         $plan = PlanStorage::getPlan($id);
         if (!$plan) {
-            self::createNotebook($id, $id, null);
+            self::createNotebook($id, $id, null, 90);
             $plan = PlanStorage::getPlan($id);
         }
         if (!$plan || !PlanValidator::validNoteCards($notes)) return false;

@@ -402,7 +402,7 @@ const App = {
 
         const autoDelSelect = document.getElementById('modal-auto-delete');
         if (autoDelSelect) {
-            autoDelSelect.value = String(this.planData?.auto_delete_days || 0);
+            autoDelSelect.value = String(this.planData?.auto_delete_days !== undefined ? this.planData.auto_delete_days : 90);
         }
 
         modal.style.display = 'flex';
@@ -455,8 +455,9 @@ const App = {
             }
 
             const autoDelSelect = document.getElementById('modal-auto-delete');
-            const autoDelDays = autoDelSelect ? parseInt(autoDelSelect.value, 10) : 0;
-            if (autoDelDays !== (this.planData?.auto_delete_days || 0)) {
+            const autoDelDays = autoDelSelect ? parseInt(autoDelSelect.value, 10) : 90;
+            const currentAutoDel = this.planData?.auto_delete_days !== undefined ? this.planData.auto_delete_days : 90;
+            if (autoDelDays !== currentAutoDel) {
                 await App.apiFetch('api.php?action=set_auto_delete', {
                     method: 'POST',
                     headers: {

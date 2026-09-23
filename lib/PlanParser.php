@@ -62,6 +62,7 @@ class PlanParser {
             'start_date' => $startDate,
             'current_date' => $frontmatter['current_date'] ?? date('Y-m-d'),
             'domain' => $frontmatter['domain'] ?? 'custom',
+            'auto_delete_days' => isset($frontmatter['auto_delete_days']) ? (int)$frontmatter['auto_delete_days'] : null,
             'finance' => isset($frontmatter['finance_data']) && is_string($frontmatter['finance_data']) ? json_decode($frontmatter['finance_data'], true) : null,
             'duration_weeks' => $durationWeeks,
             'schedule' => $schedule,

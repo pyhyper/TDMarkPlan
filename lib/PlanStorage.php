@@ -47,6 +47,20 @@ class PlanStorage {
         if (file_exists($existingFile)) {
             $existing = json_decode(file_get_contents($existingFile), true);
             if (!empty($existing['password_hash'])) $parsed['password_hash'] = $existing['password_hash'];
+            if (!isset($parsed['auto_delete_days']) && isset($existing['auto_delete_days'])) {
+                $parsed['auto_delete_days'] = (int)$existing['auto_delete_days'];
+                if (!empty($existing['auto_delete_at'])) {
+                    $parsed['auto_delete_at'] = $existing['auto_delete_at'];
+                }
+            }
+        }
+        if (!isset($parsed['auto_delete_days'])) {
+            $parsed['auto_delete_days'] = 90;
+            $parsed['auto_delete_at'] = date('c', time() + 90 * 86400);
+        } elseif ($parsed['auto_delete_days'] === 0) {
+            unset($parsed['auto_delete_at']);
+        } elseif (empty($parsed['auto_delete_at'])) {
+            $parsed['auto_delete_at'] = date('c', time() + $parsed['auto_delete_days'] * 86400);
         }
         // Save password hash if provided
         if (!empty($password)) {
@@ -558,7 +572,8 @@ class PlanStorage {
             $data['auto_delete_days'] = $days;
             $data['auto_delete_at'] = date('c', time() + $days * 86400);
         } else {
-            unset($data['auto_delete_days'], $data['auto_delete_at']);
+            $data['auto_delete_days'] = 0;
+            unset($data['auto_delete_at']);
         }
         file_put_contents($jsonFile, json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
         return [

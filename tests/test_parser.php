@@ -26,6 +26,13 @@ function assert_test(string $name, bool $condition, string $detail = '') {
     }
 }
 
+// Clean up any test artifacts from previous runs
+foreach (['test-dynamic-link', 'test-protected-link'] as $testId) {
+    @unlink(PLANS_DIR . '/' . $testId . '.json');
+    @unlink(PLANS_DIR . '/' . $testId . '.md');
+    @unlink(EXEC_DIR . '/' . $testId . '.json');
+}
+
 // 1. Test parsing IELTS 6.5 Example
 $ieltsMd = file_get_contents(EXAMPLES_DIR . '/ielts-6.5.md');
 $parsed = PlanParser::parse($ieltsMd);
@@ -132,6 +139,26 @@ assert_test("Reloaded plan reflects renamed task title", $renamedTask && $rename
 $deleteOk = PlanStorage::deletePlan('test-protected-link');
 assert_test("Plan deletion succeeded", $deleteOk === true);
 assert_test("Deleted plan is no longer found", PlanStorage::getPlan('test-protected-link') === null);
+
+// 13. Test 90-day default auto-delete and "Không bao giờ" (never delete)
+$plan90 = PlanStorage::getPlan('test-dynamic-link');
+assert_test("Plan defaults to 90 days auto-delete", isset($plan90['auto_delete_days']) && $plan90['auto_delete_days'] === 90);
+assert_test("Plan has auto_delete_at set ~90 days ahead", !empty($plan90['auto_delete_at']) && (strtotime($plan90['auto_delete_at']) - time()) > 89 * 86400);
+
+// Setup "Không bao giờ" (0 days)
+$setNever = PlanStorage::setAutoDelete('test-dynamic-link', 0);
+assert_test("Set auto-delete to 0 succeeded", $setNever['success'] === true && $setNever['auto_delete_days'] === 0);
+$planNever = PlanStorage::getPlan('test-dynamic-link');
+assert_test("Plan auto_delete_days is 0", isset($planNever['auto_delete_days']) && $planNever['auto_delete_days'] === 0);
+assert_test("Plan auto_delete_at is unset for 0 days", empty($planNever['auto_delete_at']));
+
+// Re-saving plan preserves "Không bao giờ" (does not revert to 90)
+PlanStorage::savePlan($planNever['raw_markdown'], 'test-dynamic-link');
+$planPreserved = PlanStorage::getPlan('test-dynamic-link');
+assert_test("Re-saved plan preserves 'Không bao giờ' (0 days)", isset($planPreserved['auto_delete_days']) && $planPreserved['auto_delete_days'] === 0 && empty($planPreserved['auto_delete_at']));
+
+// Clean up test artifacts
+PlanStorage::deletePlan('test-dynamic-link');
 
 echo "\n----------------------------------------\n";
 echo " Results: {$passCount} Passed, {$failCount} Failed\n";

@@ -86,12 +86,22 @@ const Workspace = {
         if (App.planData) { App.showToast('Chọn ô plan còn trống để tạo sổ ghi chú.'); return; }
         button.disabled = true;
         try {
-            const autoDel = parseInt(document.getElementById('blank-plan-auto-delete')?.value || '0', 10);
-            const response = await App.apiFetch('api.php?action=create_notebook', {method:'POST', headers:{'Content-Type':'application/json','X-Plan-Token':App.getAuthToken(App.currentPlanId)}, body:JSON.stringify({p:App.currentPlanId, title:document.getElementById('blank-plan-title').value.trim() || 'Sổ ghi chú', password:document.getElementById('wiz-password').value || null})});
+            const autoDelVal = document.getElementById('blank-plan-auto-delete')?.value;
+            const autoDel = autoDelVal !== undefined && autoDelVal !== '' ? parseInt(autoDelVal, 10) : 90;
+            const response = await App.apiFetch('api.php?action=create_notebook', {
+                method:'POST',
+                headers:{'Content-Type':'application/json','X-Plan-Token':App.getAuthToken(App.currentPlanId)},
+                body:JSON.stringify({
+                    p:App.currentPlanId,
+                    title:document.getElementById('blank-plan-title').value.trim() || 'Sổ ghi chú',
+                    password:document.getElementById('wiz-password').value || null,
+                    auto_delete_days: autoDel
+                })
+            });
             const data = await response.json();
             if (!data.success) throw new Error(data.error || 'Không tạo được sổ ghi chú');
             App.setAuthToken(App.currentPlanId,data.token);
-            if (autoDel > 0) {
+            if (autoDel >= 0) {
                 await App.apiFetch('api.php?action=set_auto_delete', {method:'POST', headers:{'Content-Type':'application/json','X-Plan-Token':data.token}, body:JSON.stringify({p:App.currentPlanId, days:autoDel})});
             }
             await App.loadPlan(App.currentPlanId);

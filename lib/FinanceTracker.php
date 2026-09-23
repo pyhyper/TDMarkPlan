@@ -18,7 +18,9 @@ class FinanceTracker {
             'weeks' => [],
             'task_count' => 0,
             'total_minutes' => 0,
-            'raw_markdown' => ''
+            'raw_markdown' => '',
+            'auto_delete_days' => 90,
+            'auto_delete_at' => date('c', time() + 90 * 86400)
         ];
         if ($password !== null && trim($password) !== '') {
             $plan['password_hash'] = password_hash(trim($password), PASSWORD_DEFAULT);
