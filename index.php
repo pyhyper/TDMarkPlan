@@ -797,24 +797,16 @@ duration_weeks: [number]
     <div class="modal-card">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
             <h3 style="font-size:1.15rem; font-weight:700; color:var(--ink-primary); font-family:var(--font-sans);">
-                 Plan Settings & Password Protection
+                Cài đặt Kế hoạch & Bảo mật
             </h3>
             <button class="control-btn" onclick="App.closePasswordModal()">✕</button>
         </div>
-        <p style="font-size:0.85rem; color:var(--ink-secondary); line-height:1.45; margin-bottom:1rem;">
-            Set or change the passcode required to access and edit this dynamic link. Leave the new password empty to remove protection.
-        </p>
         <form id="password-settings-form" onsubmit="App.submitPasswordSettings(event)">
-            <div id="field-current-password" style="margin-bottom:0.75rem; display:none;">
-                <label style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:0.25rem; font-family:var(--font-sans);">Current Password:</label>
-                <input type="password" id="modal-current-password" class="input-passcode" placeholder="Enter current passcode...">
-            </div>
-            <div style="margin-bottom:1rem;">
-                <label style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:0.25rem; font-family:var(--font-sans);">New Password (or leave blank to remove):</label>
-                <input type="password" id="modal-new-password" class="input-passcode" placeholder="Enter new passcode...">
-            </div>
-            <div style="margin-bottom:1rem;">
-                <label style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:0.25rem; font-family:var(--font-sans);">Thời gian tự động xóa plan (Auto-delete):</label>
+            <!-- Phần 1: Thời gian tự động xóa -->
+            <div style="margin-bottom:1.25rem; padding-bottom:1rem; border-bottom:1px solid var(--border-color, #e0e0e0);">
+                <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:0.35rem; font-family:var(--font-sans);">
+                    ⏱ Thời gian tự động xóa plan (Auto-delete):
+                </label>
                 <select id="modal-auto-delete" class="form-select">
                     <option value="90" selected>Sau 90 ngày (Mặc định)</option>
                     <option value="0">Không bao giờ (Giữ vĩnh viễn)</option>
@@ -822,11 +814,42 @@ duration_weeks: [number]
                     <option value="7">Sau 7 ngày</option>
                     <option value="30">Sau 30 ngày</option>
                 </select>
+                <div style="font-size:0.75rem; color:var(--ink-secondary); margin-top:0.25rem;">
+                    Sau khoảng thời gian này, kế hoạch sẽ tự động được dọn dẹp để bảo vệ quyền riêng tư.
+                </div>
             </div>
+
+            <!-- Phần 2: Mật khẩu bảo vệ -->
+            <div style="margin-bottom:1rem;">
+                <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:0.25rem; font-family:var(--font-sans);">
+                    Mật khẩu bảo vệ (Tùy chọn):
+                </label>
+                <div style="font-size:0.75rem; color:var(--ink-secondary); margin-bottom:0.75rem;">
+                    Để trống các ô mật khẩu nếu bạn chỉ muốn thay đổi thời gian tự động xóa hoặc giữ nguyên mật khẩu cũ.
+                </div>
+
+                <div id="field-current-password" style="margin-bottom:0.75rem; display:none;">
+                    <label style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:0.25rem; font-family:var(--font-sans);">Mật khẩu hiện tại:</label>
+                    <input type="password" id="modal-current-password" class="input-passcode" placeholder="Nhập mật khẩu hiện tại...">
+                </div>
+
+                <div id="field-new-password" style="margin-bottom:0.75rem;">
+                    <label id="label-new-password" style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:0.25rem; font-family:var(--font-sans);">Mật khẩu mới:</label>
+                    <input type="password" id="modal-new-password" class="input-passcode" placeholder="Nhập mật khẩu mới (hoặc để trống nếu không đổi)...">
+                </div>
+
+                <div id="field-remove-password" style="margin-bottom:0.5rem; display:none;">
+                    <label style="display:inline-flex; align-items:center; gap:0.4rem; font-size:0.8rem; cursor:pointer; color:var(--ink-secondary);">
+                        <input type="checkbox" id="modal-remove-password" onchange="App.onToggleRemovePassword(this)">
+                        <span>Gỡ bỏ mật khẩu bảo vệ (Không yêu cầu mật khẩu khi truy cập)</span>
+                    </label>
+                </div>
+            </div>
+
             <div id="modal-password-msg" class="unlock-error-msg" style="display:none;"></div>
-            <div style="display:flex; justify-content:flex-end; gap:0.5rem; margin-top:1rem;">
-                <button type="button" class="btn-timer btn-timer-secondary" onclick="App.closePasswordModal()">Cancel</button>
-                <button type="submit" class="btn-primary">Save Changes</button>
+            <div style="display:flex; justify-content:flex-end; gap:0.5rem; margin-top:1.25rem;">
+                <button type="button" class="btn-timer btn-timer-secondary" onclick="App.closePasswordModal()">Hủy</button>
+                <button type="submit" class="btn-primary">Lưu thay đổi</button>
             </div>
         </form>
     </div>

@@ -288,5 +288,57 @@ assert(typeof App.submitRenameTask === 'function', 'submitRenameTask function ex
 assert(typeof App.confirm === 'function', 'confirm function exists on App');
 assert(typeof App.deletePlan === 'function', 'deletePlan function exists on App');
 
-console.log('PASS: Theme, Notebook Highlight, Delete Icon, Auto-Delete, Note Visibility, Plan Modal, Visual Highlight Editor, Confirm Dialog & Task Renaming tests completed successfully.');
+// Test 14: Password Settings Modal - Auto-delete independent of password
+(async () => {
+    App.currentPlanId = 'test-plan-id';
+    App.planData = {
+        plan_id: 'test-plan-id',
+        has_password: true,
+        auto_delete_days: 90
+    };
+
+    App.openPasswordModal();
+    assert.equal(el('field-current-password').style.display, 'block', 'Shows current password field when protected');
+    assert.equal(el('modal-auto-delete').value, '90', 'Preselects 90 days');
+
+    // Simulate changing auto-delete from 90 to 0 (Không bao giờ) without entering passwords
+    el('modal-auto-delete').value = '0';
+    el('modal-current-password').value = '';
+    el('modal-new-password').value = '';
+
+    const apiCalls = [];
+    App.apiFetch = async (url, opts) => {
+        apiCalls.push({ url, body: JSON.parse(opts.body) });
+        if (url.includes('action=set_auto_delete')) {
+            return { json: async () => ({ success: true, auto_delete_days: 0, auto_delete_at: null }) };
+        }
+        if (url.includes('action=set_password')) {
+            return { json: async () => ({ success: true, message: 'Password updated' }) };
+        }
+        return { json: async () => ({ success: true }) };
+    };
+
+    await App.submitPasswordSettings({ preventDefault: () => {} });
+
+    // Assert that set_password was NOT called, but set_auto_delete WAS called!
+    assert.equal(apiCalls.some(c => c.url.includes('action=set_password')), false, 'Does not call set_password when passwords are empty');
+    assert.equal(apiCalls.some(c => c.url.includes('action=set_auto_delete')), true, 'Calls set_auto_delete independently');
+    assert.equal(apiCalls.find(c => c.url.includes('action=set_auto_delete')).body.days, 0, 'Passes days: 0');
+    assert.equal(App.planData.auto_delete_days, 0, 'Updates planData.auto_delete_days to 0');
+    assert.equal(App.planData.has_password, true, 'Keeps password protected status unchanged');
+
+    // Test entering new password without current password displays error
+    el('modal-auto-delete').value = '0';
+    el('modal-current-password').value = '';
+    el('modal-new-password').value = 'brandnewpass';
+    apiCalls.length = 0;
+
+    await App.submitPasswordSettings({ preventDefault: () => {} });
+    assert.equal(el('modal-password-msg').style.display, 'block', 'Shows error message when current password missing');
+    assert(el('modal-password-msg').textContent.includes('Vui lòng nhập mật khẩu hiện tại'), 'Error explains current password needed');
+    assert.equal(apiCalls.length, 0, 'No API calls made when validation fails');
+
+    console.log('PASS: Theme, Notebook Highlight, Delete Icon, Auto-Delete, Note Visibility, Plan Modal, Visual Highlight Editor, Confirm Dialog, Task Renaming & Password/Auto-Delete Modal tests completed successfully.');
+})();
+
 

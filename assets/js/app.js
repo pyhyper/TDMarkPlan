@@ -382,17 +382,28 @@ const App = {
 
     // --- Password Settings Modal ---
     openPasswordModal() {
-        if (this.isLocked || !this.planData) return this.showToast('Mở hoặc tạo dữ liệu trước khi đặt PIN.');
+        if (this.isLocked || !this.planData) return this.showToast('Mở hoặc tạo dữ liệu trước khi cài đặt.');
         const modal = document.getElementById('password-modal');
         const currentField = document.getElementById('field-current-password');
+        const removeField = document.getElementById('field-remove-password');
+        const removeCheckbox = document.getElementById('modal-remove-password');
+        const newPassField = document.getElementById('field-new-password');
+        const labelNewPass = document.getElementById('label-new-password');
         const msgEl = document.getElementById('modal-password-msg');
 
         if (!modal) return;
-        if (msgEl) msgEl.style.display = 'none';
+        if (msgEl) {
+            msgEl.style.display = 'none';
+            msgEl.textContent = '';
+        }
 
-        const hasPass = this.planData && this.planData.has_password;
-        if (currentField) {
-            currentField.style.display = hasPass ? 'block' : 'none';
+        const hasPass = !!(this.planData && this.planData.has_password);
+        if (currentField) currentField.style.display = hasPass ? 'block' : 'none';
+        if (removeField) removeField.style.display = hasPass ? 'block' : 'none';
+        if (removeCheckbox) removeCheckbox.checked = false;
+        if (newPassField) newPassField.style.display = 'block';
+        if (labelNewPass) {
+            labelNewPass.textContent = hasPass ? 'Mật khẩu mới (nếu muốn đổi):' : 'Đặt mật khẩu bảo vệ (tùy chọn):';
         }
 
         const currentPassInput = document.getElementById('modal-current-password');
@@ -408,6 +419,17 @@ const App = {
         modal.style.display = 'flex';
     },
 
+    onToggleRemovePassword(checkbox) {
+        const newPassField = document.getElementById('field-new-password');
+        const newPassInput = document.getElementById('modal-new-password');
+        if (checkbox && checkbox.checked) {
+            if (newPassField) newPassField.style.display = 'none';
+            if (newPassInput) newPassInput.value = '';
+        } else {
+            if (newPassField) newPassField.style.display = 'block';
+        }
+    },
+
     closePasswordModal() {
         const modal = document.getElementById('password-modal');
         if (modal) modal.style.display = 'none';
@@ -419,46 +441,97 @@ const App = {
 
         const currentPassInput = document.getElementById('modal-current-password');
         const newPassInput = document.getElementById('modal-new-password');
+        const removeCheckbox = document.getElementById('modal-remove-password');
         const msgEl = document.getElementById('modal-password-msg');
 
-        const currentPassword = currentPassInput ? currentPassInput.value : '';
-        const newPassword = newPassInput ? newPassInput.value : '';
+        const currentPassword = currentPassInput ? currentPassInput.value.trim() : '';
+        const newPassword = newPassInput ? newPassInput.value.trim() : '';
+        const isRemovingPassword = !!(removeCheckbox && removeCheckbox.checked);
+
+        const hasPass = !!(this.planData && this.planData.has_password);
+        let passwordActionNeeded = false;
+        let passwordActionPayload = null;
+
+        if (hasPass) {
+            if (isRemovingPassword) {
+                if (!currentPassword) {
+                    if (msgEl) {
+                        msgEl.textContent = 'Vui lòng nhập mật khẩu hiện tại để xác nhận gỡ bỏ mật khẩu.';
+                        msgEl.style.display = 'block';
+                    }
+                    return;
+                }
+                passwordActionNeeded = true;
+                passwordActionPayload = {
+                    p: this.currentPlanId,
+                    current_password: currentPassword,
+                    new_password: ''
+                };
+            } else if (newPassword !== '') {
+                if (!currentPassword) {
+                    if (msgEl) {
+                        msgEl.textContent = 'Vui lòng nhập mật khẩu hiện tại để đổi mật khẩu mới.';
+                        msgEl.style.display = 'block';
+                    }
+                    return;
+                }
+                passwordActionNeeded = true;
+                passwordActionPayload = {
+                    p: this.currentPlanId,
+                    current_password: currentPassword,
+                    new_password: newPassword
+                };
+            }
+        } else {
+            if (newPassword !== '') {
+                passwordActionNeeded = true;
+                passwordActionPayload = {
+                    p: this.currentPlanId,
+                    current_password: '',
+                    new_password: newPassword
+                };
+            }
+        }
 
         try {
-            const res = await App.apiFetch('api.php?action=set_password', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    p: this.currentPlanId,
-                    new_password: newPassword,
-                    current_password: currentPassword
-                })
-            });
-            const data = await res.json();
+            let passwordMessage = '';
+            // 1. Update password if user requested
+            if (passwordActionNeeded && passwordActionPayload) {
+                const res = await App.apiFetch('api.php?action=set_password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(passwordActionPayload)
+                });
+                const data = await res.json();
 
-            if (!data.success) {
-                if (msgEl) {
-                    msgEl.textContent = data.error || 'Không thể đổi mật khẩu';
-                    msgEl.style.display = 'block';
+                if (!data.success) {
+                    if (msgEl) {
+                        msgEl.textContent = data.error || 'Không thể đổi mật khẩu';
+                        msgEl.style.display = 'block';
+                    }
+                    return;
                 }
-                return;
+
+                if (data.token) {
+                    this.setAuthToken(this.currentPlanId, data.token);
+                } else if (!data.has_password) {
+                    this.clearAuthToken(this.currentPlanId);
+                }
+
+                if (this.planData) {
+                    this.planData.has_password = data.has_password;
+                }
+                passwordMessage = data.message || '';
             }
 
-            if (data.token) {
-                this.setAuthToken(this.currentPlanId, data.token);
-            } else if (!data.has_password) {
-                this.clearAuthToken(this.currentPlanId);
-            }
-
-            if (this.planData) {
-                this.planData.has_password = data.has_password;
-            }
-
+            // 2. Update auto-delete retention if changed
             const autoDelSelect = document.getElementById('modal-auto-delete');
             const autoDelDays = autoDelSelect ? parseInt(autoDelSelect.value, 10) : 90;
             const currentAutoDel = this.planData?.auto_delete_days !== undefined ? this.planData.auto_delete_days : 90;
+            let autoDelUpdated = false;
+
             if (autoDelDays !== currentAutoDel) {
-                await App.apiFetch('api.php?action=set_auto_delete', {
+                const autoRes = await App.apiFetch('api.php?action=set_auto_delete', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -466,16 +539,38 @@ const App = {
                     },
                     body: JSON.stringify({ p: this.currentPlanId, days: autoDelDays })
                 });
-                if (this.planData) this.planData.auto_delete_days = autoDelDays;
+                const autoData = await autoRes.json();
+                if (autoData.success) {
+                    if (this.planData) {
+                        this.planData.auto_delete_days = autoDelDays;
+                        this.planData.auto_delete_at = autoData.auto_delete_at;
+                    }
+                    autoDelUpdated = true;
+                } else {
+                    if (msgEl) {
+                        msgEl.textContent = autoData.error || 'Không thể lưu thời gian tự động xóa';
+                        msgEl.style.display = 'block';
+                    }
+                    return;
+                }
             }
 
             this.updatePasswordBadge();
             this.closePasswordModal();
-            this.showToast(data.message || 'Đã lưu cài đặt kế hoạch!');
+
+            if (autoDelUpdated && passwordActionNeeded) {
+                this.showToast('Đã lưu cài đặt tự động xóa và mật khẩu!');
+            } else if (autoDelUpdated) {
+                this.showToast(autoDelDays === 0 ? 'Đã tắt tự động xóa (Giữ vĩnh viễn)!' : `Đã đặt tự động xóa sau ${autoDelDays} ngày!`);
+            } else if (passwordActionNeeded) {
+                this.showToast(passwordMessage || 'Đã cập nhật mật khẩu!');
+            } else {
+                this.showToast('Cài đặt không có thay đổi.');
+            }
         } catch (err) {
             console.error(err);
             if (msgEl) {
-                msgEl.textContent = 'Lỗi máy chủ.';
+                msgEl.textContent = 'Lỗi kết nối máy chủ. Vui lòng thử lại.';
                 msgEl.style.display = 'block';
             }
         }
