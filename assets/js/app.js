@@ -240,6 +240,7 @@ const App = {
                     task_count: 0,
                     is_empty: true,
                     has_password: false,
+                    auto_delete_days: 90,
                     notebook: { notes: [] }
                 };
                 this.planData = emptyPlan;
@@ -524,48 +525,39 @@ const App = {
                 passwordMessage = data.message || '';
             }
 
-            // 2. Update auto-delete retention if changed
+            // 2. Always persist auto-delete retention
             const autoDelSelect = document.getElementById('modal-auto-delete');
             const autoDelDays = autoDelSelect ? parseInt(autoDelSelect.value, 10) : 90;
-            const currentAutoDel = this.planData?.auto_delete_days !== undefined ? this.planData.auto_delete_days : 90;
-            let autoDelUpdated = false;
 
-            if (autoDelDays !== currentAutoDel) {
-                const autoRes = await App.apiFetch('api.php?action=set_auto_delete', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Plan-Token': this.getAuthToken(this.currentPlanId)
-                    },
-                    body: JSON.stringify({ p: this.currentPlanId, days: autoDelDays })
-                });
-                const autoData = await autoRes.json();
-                if (autoData.success) {
-                    if (this.planData) {
-                        this.planData.auto_delete_days = autoDelDays;
-                        this.planData.auto_delete_at = autoData.auto_delete_at;
-                    }
-                    autoDelUpdated = true;
-                } else {
-                    if (msgEl) {
-                        msgEl.textContent = autoData.error || 'Không thể lưu thời gian tự động xóa';
-                        msgEl.style.display = 'block';
-                    }
-                    return;
+            const autoRes = await App.apiFetch('api.php?action=set_auto_delete', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Plan-Token': this.getAuthToken(this.currentPlanId)
+                },
+                body: JSON.stringify({ p: this.currentPlanId, days: autoDelDays })
+            });
+            const autoData = await autoRes.json();
+            if (!autoData.success) {
+                if (msgEl) {
+                    msgEl.textContent = autoData.error || 'Không thể lưu thời gian tự động xóa';
+                    msgEl.style.display = 'block';
                 }
+                return;
+            }
+
+            if (this.planData) {
+                this.planData.auto_delete_days = autoData.auto_delete_days !== undefined ? autoData.auto_delete_days : autoDelDays;
+                this.planData.auto_delete_at = autoData.auto_delete_at;
             }
 
             this.updatePasswordBadge();
             this.closePasswordModal();
 
-            if (autoDelUpdated && passwordActionNeeded) {
-                this.showToast('Đã lưu cài đặt tự động xóa và mật khẩu!');
-            } else if (autoDelUpdated) {
-                this.showToast(autoDelDays === 0 ? 'Đã tắt tự động xóa (Giữ vĩnh viễn)!' : `Đã đặt tự động xóa sau ${autoDelDays} ngày!`);
-            } else if (passwordActionNeeded) {
-                this.showToast(passwordMessage || 'Đã cập nhật mật khẩu!');
+            if (passwordActionNeeded) {
+                this.showToast(autoDelDays === 0 ? 'Đã lưu: Giữ vĩnh viễn & Cập nhật bảo mật!' : `Đã lưu: Tự xóa sau ${autoDelDays} ngày & Cập nhật bảo mật!`);
             } else {
-                this.showToast('Cài đặt không có thay đổi.');
+                this.showToast(autoDelDays === 0 ? 'Đã lưu: Giữ vĩnh viễn (Không bao giờ xóa)!' : `Đã lưu: Tự động xóa sau ${autoDelDays} ngày!`);
             }
         } catch (err) {
             console.error(err);

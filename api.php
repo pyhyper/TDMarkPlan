@@ -64,7 +64,18 @@ $GLOBALS['workspaceResponse'] = static function(array $data) use ($root, $scoped
     if ($scoped) {
         if (isset($data['plan_id'])) $data['plan_id'] = $root;
         if (isset($data['token'])) $data['token'] = PlanStorage::generateAuthToken($root);
-        if (isset($data['plan'])) { $data['plan']['plan_id'] = $root; $data['plan']['has_password'] = PlanStorage::hasPassword($root); }
+        if (isset($data['plan'])) {
+            $data['plan']['plan_id'] = $root;
+            $data['plan']['has_password'] = PlanStorage::hasPassword($root);
+            $rootPlanFile = PLANS_DIR . '/' . $root . '.json';
+            if (is_file($rootPlanFile)) {
+                $rootPlanData = json_decode(file_get_contents($rootPlanFile), true);
+                if (isset($rootPlanData['auto_delete_days'])) {
+                    $data['plan']['auto_delete_days'] = (int)$rootPlanData['auto_delete_days'];
+                    $data['plan']['auto_delete_at'] = $rootPlanData['auto_delete_at'] ?? null;
+                }
+            }
+        }
         if (isset($data['markdown'])) $data['markdown'] = preg_replace('/^plan_id:.*$/m', 'plan_id: ' . $root, $data['markdown'], 1);
     }
     if ($action === 'get_plan' && (!empty($data['success']) || $scoped)) {

@@ -7,6 +7,7 @@ require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/PlanParser.php';
 require_once __DIR__ . '/PlanValidator.php';
 require_once __DIR__ . '/FinanceTracker.php';
+require_once __DIR__ . '/Workspace.php';
 
 class PlanStorage {
 
@@ -136,6 +137,13 @@ class PlanStorage {
             @unlink(PLANS_DIR . '/' . $slug . '.md');
             @unlink($execFile);
             return null;
+        }
+
+        if (!isset($plan['auto_delete_days'])) {
+            $plan['auto_delete_days'] = 90;
+            if (empty($plan['auto_delete_at'])) {
+                $plan['auto_delete_at'] = date('c', time() + 90 * 86400);
+            }
         }
 
         $executions = [];
@@ -386,7 +394,8 @@ class PlanStorage {
         if (!$plan) return null;
         $md = $plan['raw_markdown'];
         $today = date('Y-m-d');
-        foreach (['plan_id' => $slug, 'current_date' => $today] as $key => $value) {
+        $autoDelVal = isset($plan['auto_delete_days']) ? (int)$plan['auto_delete_days'] : 90;
+        foreach (['plan_id' => $slug, 'current_date' => $today, 'auto_delete_days' => $autoDelVal] as $key => $value) {
             if (preg_match('/^' . $key . ':.*$/m', $md)) {
                 $md = preg_replace('/^' . $key . ':.*$/m', $key . ': ' . $value, $md, 1);
             } else {
@@ -528,7 +537,10 @@ class PlanStorage {
         $slug = sanitize_plan_id($planId);
         $jsonFile = PLANS_DIR . '/' . $slug . '.json';
         if (!file_exists($jsonFile)) {
-            return ['success' => false, 'error' => 'Plan not found'];
+            Workspace::createNotebook($slug, $slug, null, 90);
+            if (!file_exists($jsonFile)) {
+                return ['success' => false, 'error' => 'Plan not found'];
+            }
         }
 
         $data = json_decode(file_get_contents($jsonFile), true);
@@ -554,7 +566,7 @@ class PlanStorage {
             'success' => true,
             'has_password' => !empty($data['password_hash']),
             'token' => $token,
-            'message' => empty($data['password_hash']) ? 'Password protection removed' : 'Password updated successfully'
+            'message' => empty($data['password_hash']) ? 'Đã gỡ bỏ mật khẩu bảo vệ' : 'Đã cập nhật mật khẩu thành công'
         ];
     }
 
@@ -565,7 +577,10 @@ class PlanStorage {
         $slug = sanitize_plan_id($planId);
         $jsonFile = PLANS_DIR . '/' . $slug . '.json';
         if (!file_exists($jsonFile)) {
-            return ['success' => false, 'error' => 'Plan not found'];
+            Workspace::createNotebook($slug, $slug, null, $days);
+            if (!file_exists($jsonFile)) {
+                return ['success' => false, 'error' => 'Plan not found'];
+            }
         }
         $data = json_decode(file_get_contents($jsonFile), true);
         if ($days > 0) {
@@ -575,12 +590,42 @@ class PlanStorage {
             $data['auto_delete_days'] = 0;
             unset($data['auto_delete_at']);
         }
+
+        // Update raw_markdown if present
+        $mdFile = PLANS_DIR . '/' . $slug . '.md';
+        if (file_exists($mdFile)) {
+            $md = file_get_contents($mdFile);
+            $retentionVal = $days > 0 ? $days : 0;
+            if (preg_match('/^auto_delete_days:.*$/m', $md)) {
+                $md = preg_replace('/^auto_delete_days:.*$/m', 'auto_delete_days: ' . $retentionVal, $md, 1);
+            } else {
+                $md = preg_replace('/^---\n/', "---\nauto_delete_days: " . $retentionVal . "\n", $md, 1);
+            }
+            file_put_contents($mdFile, $md);
+            $data['raw_markdown'] = $md;
+        }
+
         file_put_contents($jsonFile, json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+
+        // Sync to child slot 2 if exists
+        $childId = Workspace::childId($slug);
+        $childFile = PLANS_DIR . '/' . $childId . '.json';
+        if (file_exists($childFile)) {
+            $childData = json_decode(file_get_contents($childFile), true);
+            $childData['auto_delete_days'] = $data['auto_delete_days'];
+            if (isset($data['auto_delete_at'])) {
+                $childData['auto_delete_at'] = $data['auto_delete_at'];
+            } else {
+                unset($childData['auto_delete_at']);
+            }
+            file_put_contents($childFile, json_encode($childData, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+        }
+
         return [
             'success' => true,
             'auto_delete_days' => $days > 0 ? $days : 0,
             'auto_delete_at' => $data['auto_delete_at'] ?? null,
-            'message' => $days > 0 ? "Plan sẽ tự động xóa sau $days ngày" : 'Đã tắt tính năng tự động xóa'
+            'message' => $days > 0 ? "Plan sẽ tự động xóa sau $days ngày" : 'Đã tắt tính năng tự động xóa (Giữ vĩnh viễn)'
         ];
     }
 
