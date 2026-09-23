@@ -230,21 +230,29 @@ const App = {
                 if (data.token) this.setAuthToken(planId, data.token);
                 this.isLocked = false;
                 document.body.classList.remove('is-locked');
-                this.planData = null;
-                document.body.classList.remove('has-plan','finance-mode','notebook-mode');
-                document.getElementById('wizard-config').hidden = false;
-                document.getElementById('existing-plan-message').hidden = true;
-                // If plan doesn't exist yet, open wizard with this ID
-                this.currentPlanId = planId;
-                document.getElementById('plan-title-display').textContent = 'Plan mới';
-                document.querySelector('[data-tab="today"] .nav-label').textContent = 'Hôm nay';
-                document.getElementById('export-label').textContent = 'Xuất PLAN.md + nhật ký';
-                history.replaceState({}, '', this.planUrl(planId));
-                this.selectDomain(this.selectedDomain);
+                const emptyPlan = {
+                    plan_id: planId,
+                    title: planId,
+                    domain: 'notebook',
+                    start_date: this.today(),
+                    duration_weeks: 1,
+                    weeks: [],
+                    task_count: 0,
+                    is_empty: true,
+                    has_password: false,
+                    notebook: { notes: [] }
+                };
+                this.planData = emptyPlan;
+                document.body.classList.add('has-plan');
+                document.getElementById('wizard-config').hidden = true;
+                document.getElementById('existing-plan-message').hidden = false;
                 Workspace.render(data.workspace);
-                document.getElementById('dynamic-link-slug').textContent = `/${planId}`;
-                this.switchTab('wizard');
-                this.showToast('Chưa có kế hoạch cho link này. Hãy tạo mới bên dưới!');
+                this.currentPlanId = planId;
+                const newUrl = this.planUrl(planId);
+                window.history.replaceState({ p: planId }, '', newUrl);
+                this.switchTab('today');
+                this.renderAll();
+                this.showToast(`Không gian kế hoạch: ${planId}`);
                 return;
             }
 

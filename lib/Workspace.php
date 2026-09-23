@@ -23,6 +23,10 @@ class Workspace {
     }
     public static function saveNotebook(string $id, array $notes): bool {
         $plan = PlanStorage::getPlan($id);
+        if (!$plan) {
+            self::createNotebook($id, $id, null);
+            $plan = PlanStorage::getPlan($id);
+        }
         if (!$plan || !PlanValidator::validNoteCards($notes)) return false;
         $path = EXEC_DIR . '/' . $id . '.json';
         $data = file_exists($path) ? (json_decode(file_get_contents($path), true) ?: ['tasks'=>[]]) : ['tasks'=>[]];

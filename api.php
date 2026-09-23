@@ -167,7 +167,27 @@ switch ($action) {
         $slug = sanitize_plan_id($planId);
         $jsonFile = PLANS_DIR . '/' . $slug . '.json';
         if (!file_exists($jsonFile)) {
-            json_response(['error' => 'Plan not found for ID: ' . htmlspecialchars($planId)], 404);
+            if ($scoped) {
+                json_response(['error' => 'Plan not found for ID: ' . htmlspecialchars($planId), 'is_empty' => true], 404);
+            }
+            $emptyPlan = [
+                'plan_id' => $slug,
+                'title' => $slug,
+                'domain' => 'notebook',
+                'start_date' => date('Y-m-d'),
+                'duration_weeks' => 1,
+                'weeks' => [],
+                'task_count' => 0,
+                'has_password' => false,
+                'is_empty' => true,
+                'notebook' => ['notes' => []]
+            ];
+            json_response([
+                'success' => true,
+                'is_empty' => true,
+                'plan' => $emptyPlan,
+                'token' => PlanStorage::generateAuthToken($slug)
+            ]);
         }
 
         $routeMeta = json_decode(file_get_contents($jsonFile), true);
