@@ -24,6 +24,7 @@ class Workspace {
             'weeks'=>[],
             'task_count'=>0,
             'notebook'=>['notes'=>[]],
+            'raw_markdown'=>"# " . ($title ?: 'Sổ ghi chú') . "\n\n",
             'auto_delete_days'=>$autoDeleteDays
         ];
         if ($autoDeleteDays > 0) {

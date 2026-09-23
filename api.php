@@ -177,31 +177,19 @@ switch ($action) {
 
         // Check if plan exists
         $slug = sanitize_plan_id($planId);
+        if (empty($slug)) {
+            json_response(['error' => 'Invalid plan ID parameter'], 400);
+        }
+        if (in_array($slug, ['api', 'index', 'assets', 'data', 'lib', 'tests', 'examples'], true)) {
+            json_response(['error' => 'Tên link dành riêng cho hệ thống.'], 400);
+        }
         $jsonFile = PLANS_DIR . '/' . $slug . '.json';
         if (!file_exists($jsonFile)) {
             if ($scoped) {
                 json_response(['error' => 'Plan not found for ID: ' . htmlspecialchars($planId), 'is_empty' => true], 404);
             }
-            $emptyPlan = [
-                'plan_id' => $slug,
-                'title' => $slug,
-                'domain' => 'notebook',
-                'start_date' => date('Y-m-d'),
-                'duration_weeks' => 1,
-                'weeks' => [],
-                'task_count' => 0,
-                'has_password' => false,
-                'is_empty' => true,
-                'notebook' => ['notes' => []],
-                'auto_delete_days' => 90,
-                'auto_delete_at' => date('c', time() + 90 * 86400)
-            ];
-            json_response([
-                'success' => true,
-                'is_empty' => true,
-                'plan' => $emptyPlan,
-                'token' => PlanStorage::generateAuthToken($slug)
-            ]);
+            // Auto-create plan on disk immediately for any new random/custom URL
+            Workspace::createNotebook($slug, $slug, null, 90);
         }
 
         $routeMeta = json_decode(file_get_contents($jsonFile), true);

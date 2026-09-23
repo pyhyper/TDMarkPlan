@@ -83,7 +83,10 @@ const Workspace = {
         finally { this.busy = false; document.getElementById('plan-surface').inert = false; }
     },
     async createNotebook(button) {
-        if (App.planData) { App.showToast('Chọn ô plan còn trống để tạo sổ ghi chú.'); return; }
+        const hasContent = App.planData && ((App.planData.weeks && App.planData.weeks.length > 0)
+            || (App.planData.notebook?.notes && App.planData.notebook.notes.some(n => n && n.trim().length > 0))
+            || !!App.planData.finance);
+        if (hasContent) { App.showToast('Chọn ô plan còn trống để tạo sổ ghi chú.'); return; }
         button.disabled = true;
         try {
             const autoDelVal = document.getElementById('blank-plan-auto-delete')?.value;

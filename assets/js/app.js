@@ -259,8 +259,14 @@ const App = {
 
             this.planData = data.plan;
             document.body.classList.add('has-plan');
-            document.getElementById('wizard-config').hidden = true;
-            document.getElementById('existing-plan-message').hidden = false;
+            const hasContent = (this.planData.weeks && this.planData.weeks.length > 0)
+                || (this.planData.notebook?.notes && this.planData.notebook.notes.some(n => n && n.trim().length > 0))
+                || !!this.planData.finance;
+            document.getElementById('wizard-config').hidden = hasContent;
+            document.getElementById('existing-plan-message').hidden = !hasContent;
+            const customLinkInput = document.getElementById('custom-plan-link');
+            if (customLinkInput) customLinkInput.value = this.currentPlanId;
+
             this.isLocked = false;
             document.body.classList.remove('is-locked');
             Workspace.render(data.workspace);
@@ -287,7 +293,11 @@ const App = {
             document.getElementById('view-locked').classList.remove('active');
             this.switchTab('today');
             this.renderAll();
-            this.showToast(`Đã mở: ${this.planData.title}`);
+            if (hasContent) {
+                this.showToast(`Đã mở: ${this.planData.title}`);
+            } else {
+                this.showToast(`Đã tạo không gian: /${this.currentPlanId} — Sẵn sàng ghi chú & lập kế hoạch!`);
+            }
         } catch (err) {
             console.error(err);
             this.showToast('Lỗi kết nối khi tải kế hoạch');
@@ -2021,8 +2031,16 @@ LỆNH BẮT BUỘC ĐỐI VỚI AI (ChatGPT / Gemini):
     // --- Tab Switching ---
     switchTab(tabId) {
         if (this.isLocked) return;
-        if (!this.planData && ['today','toc','stats'].includes(tabId)) tabId = 'wizard';
-        if (['finance','notebook'].includes(this.planData?.domain) && ['toc','import','stats','guide'].includes(tabId)) tabId = 'today';
+        if (['finance','notebook'].includes(this.planData?.domain) && ['toc','import','stats','guide'].includes(tabId)) {
+            const hasContent = (this.planData?.weeks && this.planData.weeks.length > 0)
+                || (this.planData?.notebook?.notes && this.planData.notebook.notes.some(n => n && n.trim().length > 0))
+                || !!this.planData?.finance;
+            if (tabId === 'import' && this.planData?.domain === 'notebook' && !hasContent) {
+                // Allow importing markdown into empty notebook
+            } else {
+                tabId = 'today';
+            }
+        }
         this.activeTab = tabId;
 
         document.querySelectorAll('.nav-tab').forEach(tab => {
