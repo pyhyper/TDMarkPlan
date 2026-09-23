@@ -1,0 +1,14 @@
+const assert = require('node:assert/strict');
+const math = require('../assets/js/finance.js');
+const data = {essential:10000000,lifestyle:20000000,reserve:30000000,assets:1000000000,debt:100000000,months:6,rate:4,entries:[{date:'2026-09-01',type:'income',amount:30000000},{date:'2026-09-02',type:'expense',amount:10000000},{date:'2026-08-01',type:'expense',amount:999}]};
+const r=math.calculate(data,'2026-09');
+assert.equal(r.safety,60000000);
+assert.equal(r.independence,3000000000);
+assert.equal(r.freedom,6000000000);
+assert.equal(r.net,900000000);
+assert.equal(r.balance,20000000);
+assert.equal(r.expense,10000000);
+assert.equal(math.calculate({...data,assets:0},'2026-09').net,0);
+assert.equal(math.calculate(data,'2027-01').savingsRate,null);
+assert.equal(math.calculate({...data,rate:3},'2026-09').independence,4000000000);
+console.log('PASS: FIRE formulas, month filtering, debt and zero-income handling');

@@ -1,0 +1,21 @@
+# macOS system files
+.DS_Store
+._*
+**/.DS_Store
+**/._*
+
+# User runtime data (keep directories with .gitkeep)
+data/plans/*
+!data/plans/.gitkeep
+data/executions/*
+!data/executions/.gitkeep
+
+# IDE & Editor configs
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Logs & scratch
+*.log
+scratch/

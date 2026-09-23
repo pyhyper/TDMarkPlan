@@ -1,0 +1,22 @@
+# Apache Configuration for AI Plan Executor (Shared Hosting Friendly)
+
+DirectoryIndex index.php index.html
+
+# Prevent direct browsing of data directory
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^data/ - [F,L]
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^([a-z0-9_-]{1,64})/?$ index.php?p=$1 [QSA,L]
+</IfModule>
+
+# UTF-8 Encoding
+AddDefaultCharset UTF-8
+
+# Cache static assets
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+</IfModule>

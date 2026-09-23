@@ -1,0 +1,2226 @@
+/* ==========================================================================
+   AI Plan Executor — Reading workspace color themes
+   Designed for ultra-high legibility, tactile e-reader aesthetic, and zero dependencies.
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;0,7..72,700;1,7..72,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* --- 1. Root & Theme Variables --- */
+:root {
+    --font-serif: 'Literata', 'Georgia', 'Charter', serif;
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+
+    /* Base Font Size Controller (Adjustable on E-Reader) */
+    --base-font-size: 16px;
+    --line-height: 1.65;
+
+    /* Default theme: Warm Paper */
+    --bg-app: #f5efe6;
+    --bg-page: #fbf8f1;
+    --bg-card: #f7f3ea;
+    --bg-card-hover: #f1ebdE;
+    --border-color: #e3dac9;
+    --border-subtle: #eee6d8;
+    
+    --ink-primary: #23201d;
+    --ink-secondary: #5f5953;
+    --ink-muted: #8d857c;
+    --ink-faint: #b8b0a4;
+
+    --bezel-bg: #ece5d8;
+    --bezel-border: #dbd2c0;
+
+    /* Pastel highlights for task categories */
+    --hl-yellow: #fef08a;
+    --hl-yellow-ink: #713f12;
+    --hl-green: #bbf7d0;
+    --hl-green-ink: #14532d;
+    --hl-blue: #bae6fd;
+    --hl-blue-ink: #0c4a6e;
+    --hl-purple: #e9d5ff;
+    --hl-purple-ink: #581c87;
+    --hl-rose: #fecdd3;
+    --hl-rose-ink: #881337;
+    --hl-orange: #fed7aa;
+    --hl-orange-ink: #7c2d12;
+
+    --accent-btn: #3a3530;
+    --accent-btn-hover: #23201d;
+    --accent-btn-text: #faf7f2;
+
+    --shadow-page: 0 4px 20px rgba(70, 60, 45, 0.08), 0 1px 3px rgba(70, 60, 45, 0.04);
+}
+
+/* Theme: Black */
+body.theme-black {
+    --bg-app: #121212;
+    --bg-page: #1a1a1a;
+    --bg-card: #222222;
+    --bg-card-hover: #2a2a2a;
+    --border-color: #333333;
+    --border-subtle: #292929;
+    --ink-primary: #eae5dc;
+    --ink-secondary: #b5ada2;
+    --ink-muted: #827b72;
+    --ink-faint: #524e49;
+    --bezel-bg: #181818;
+    --bezel-border: #2c2c2c;
+    --accent-btn: #eae5dc;
+    --accent-btn-hover: #ffffff;
+    --accent-btn-text: #1a1a1a;
+
+    --hl-yellow: #4d4414;
+    --hl-yellow-ink: #fef08a;
+    --hl-green: #1a4329;
+    --hl-green-ink: #bbf7d0;
+    --hl-blue: #183e58;
+    --hl-blue-ink: #bae6fd;
+    --hl-purple: #3f225e;
+    --hl-purple-ink: #e9d5ff;
+    --hl-rose: #521d27;
+    --hl-rose-ink: #fecdd3;
+    --hl-orange: #542d13;
+    --hl-orange-ink: #fed7aa;
+
+    --shadow-page: 0 4px 25px rgba(0, 0, 0, 0.5);
+}
+
+/* Theme: Màu đa sắc (Pastel Ink / 6 Authentic Highlighters & Inks) */
+body.theme-kobo {
+    --bg-app: #ebe7df;
+    --bg-page: #faf8f2;
+    --bg-card: #f3eee5;
+    --bg-card-hover: #ebe4d8;
+    --border-color: #ded6c8;
+    --border-subtle: #eae2d4;
+    --ink-primary: #1c1a18;
+    --ink-secondary: #524d46;
+    --ink-muted: #80786f;
+    --ink-faint: #b0a79a;
+    --bezel-bg: #e1dbcf;
+    --bezel-border: #cec5b7;
+    --accent-btn: #302c28;
+    --accent-btn-hover: #1c1a18;
+    --accent-btn-text: #faf8f2;
+
+    /* The 6 Authentic Colors: Yellow, Blue, Pink, Green, Red, Black */
+    --hl-kobo-yellow: #f7e28b;
+    --hl-kobo-yellow-ink: #5f4500;
+
+    --hl-kobo-blue: #9fd3e9;
+    --hl-kobo-blue-ink: #0a4768;
+
+    --hl-kobo-pink: #f4adc3;
+    --hl-kobo-pink-ink: #7f143c;
+
+    --hl-kobo-green: #a7dab9;
+    --hl-kobo-green-ink: #114e27;
+
+    --hl-kobo-red: #ea8a78;
+    --hl-kobo-red-ink: #821c0e;
+
+    --hl-kobo-black: #201d1b;
+    --hl-kobo-black-ink: #201d1b;
+
+    /* Semantic mappings */
+    --hl-yellow: var(--hl-kobo-yellow);
+    --hl-yellow-ink: var(--hl-kobo-yellow-ink);
+    --hl-green: var(--hl-kobo-green);
+    --hl-green-ink: var(--hl-kobo-green-ink);
+    --hl-blue: var(--hl-kobo-blue);
+    --hl-blue-ink: var(--hl-kobo-blue-ink);
+    --hl-purple: var(--hl-kobo-pink);
+    --hl-purple-ink: var(--hl-kobo-pink-ink);
+    --hl-rose: var(--hl-kobo-pink);
+    --hl-rose-ink: var(--hl-kobo-pink-ink);
+    --hl-orange: var(--hl-kobo-red);
+    --hl-orange-ink: var(--hl-kobo-red-ink);
+
+    --shadow-page: 0 4px 22px rgba(65, 55, 42, 0.1), 0 1px 3px rgba(65, 55, 42, 0.05);
+}
+
+/* --- 2. Base Resets & Typography --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: var(--base-font-size);
+}
+
+body {
+    background-color: var(--bg-app);
+    color: var(--ink-primary);
+    font-family: var(--font-serif);
+    line-height: var(--line-height);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    margin: 0;
+    transition: background-color 0.25s ease, color 0.25s ease;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* --- 3. E-Reader Device Frame (Full Width) --- */
+.ereader-container {
+    width: 100%;
+    min-height: 100vh;
+    background: var(--bg-page);
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Kindle Top Bezel / Status Bar */
+.ereader-header {
+    background: var(--bezel-bg);
+    border-bottom: 1px solid var(--bezel-border);
+    padding: 0.65rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--font-sans);
+    font-size: 0.825rem;
+    color: var(--ink-secondary);
+    user-select: none;
+}
+
+.ereader-header .title-badge {
+    font-weight: 600;
+    color: var(--ink-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.ereader-header .dynamic-link-badge {
+    background: var(--bg-page);
+    border: 1px solid var(--border-color);
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--ink-primary);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    transition: all 0.15s ease;
+}
+
+.ereader-header .dynamic-link-badge:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--ink-muted);
+}
+
+.ereader-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.control-btn {
+    background: transparent;
+    border: 1px solid var(--bezel-border);
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    color: var(--ink-secondary);
+    cursor: pointer;
+    font-family: var(--font-sans);
+    transition: all 0.15s ease;
+}
+
+.control-btn:hover {
+    background: var(--bg-page);
+    color: var(--ink-primary);
+}
+
+/* E-Reader Navigation Menu (Tabs) */
+.ereader-nav {
+    display: flex;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--bg-card);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    overflow-x: auto;
+}
+
+.nav-tab {
+    flex: 1;
+    text-align: center;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    color: var(--ink-muted);
+    font-weight: 500;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+}
+
+.nav-tab:hover {
+    color: var(--ink-primary);
+    background: var(--bg-card-hover);
+}
+
+.nav-tab.active {
+    color: var(--ink-primary);
+    font-weight: 600;
+    border-bottom-color: var(--ink-primary);
+    background: var(--bg-page);
+}
+
+/* Palette Swatch Bar in Header (6 Màu Cơ Bản) */
+.palette-swatch-bar {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--bg-page);
+    border: 1px solid var(--border-color);
+    padding: 3px 6px;
+    border-radius: 14px;
+    height: 30px;
+    box-sizing: border-box;
+}
+
+.palette-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    transition: transform 0.15s ease;
+    cursor: default;
+}
+
+.palette-dot:hover {
+    transform: scale(1.35);
+}
+
+.dot-yellow { background: #f7e28b; }
+.dot-blue   { background: #9fd3e9; }
+.dot-pink   { background: #f4adc3; }
+.dot-green  { background: #a7dab9; }
+.dot-red    { background: #ea8a78; }
+.dot-black  { background: #201d1b; }
+
+body.theme-paper .palette-swatch-bar,
+body.theme-black .palette-swatch-bar {
+    display: none;
+}
+
+/* 6 Navigation Tabs styled with the 6 Basic Colors in Theme Màu Đa Sắc */
+body.theme-kobo .nav-tab {
+    position: relative;
+    border-top: 3px solid transparent;
+}
+
+body.theme-kobo .nav-tab[data-tab="today"] {
+    border-top-color: #f7e28b;
+}
+body.theme-kobo .nav-tab[data-tab="today"].active {
+    background: #faf6ea;
+    border-bottom: 2px solid #f7e28b;
+    color: #4a3700;
+}
+
+body.theme-kobo .nav-tab[data-tab="wizard"] {
+    border-top-color: #9fd3e9;
+}
+body.theme-kobo .nav-tab[data-tab="wizard"].active {
+    background: #edf5fa;
+    border-bottom: 2px solid #9fd3e9;
+    color: #073d5a;
+}
+
+body.theme-kobo .nav-tab[data-tab="toc"] {
+    border-top-color: #f4adc3;
+}
+body.theme-kobo .nav-tab[data-tab="toc"].active {
+    background: #fcf1f5;
+    border-bottom: 2px solid #f4adc3;
+    color: #6b0f32;
+}
+
+body.theme-kobo .nav-tab[data-tab="import"] {
+    border-top-color: #a7dab9;
+}
+body.theme-kobo .nav-tab[data-tab="import"].active {
+    background: #eff7f2;
+    border-bottom: 2px solid #a7dab9;
+    color: #0d4221;
+}
+
+body.theme-kobo .nav-tab[data-tab="stats"] {
+    border-top-color: #ea8a78;
+}
+body.theme-kobo .nav-tab[data-tab="stats"].active {
+    background: #fdf3f0;
+    border-bottom: 2px solid #ea8a78;
+    color: #6f170b;
+}
+
+body.theme-kobo .nav-tab[data-tab="guide"] {
+    border-top-color: #201d1b;
+}
+body.theme-kobo .nav-tab[data-tab="guide"].active {
+    background: #f2ede5;
+    border-bottom: 2px solid #201d1b;
+    color: #201d1b;
+}
+
+/* Subtle dot indicators for tabs in Màu Đa Sắc */
+body.theme-kobo .nav-tab::after {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    margin-left: 3px;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+body.theme-kobo .nav-tab[data-tab="today"]::after  { background: #f7e28b; }
+body.theme-kobo .nav-tab[data-tab="wizard"]::after { background: #9fd3e9; }
+body.theme-kobo .nav-tab[data-tab="toc"]::after    { background: #f4adc3; }
+body.theme-kobo .nav-tab[data-tab="import"]::after { background: #a7dab9; }
+body.theme-kobo .nav-tab[data-tab="stats"]::after  { background: #ea8a78; }
+body.theme-kobo .nav-tab[data-tab="guide"]::after  { background: #201d1b; }
+
+/* Main Content Area (Book Pages) */
+.ereader-body {
+    padding: 2rem 3rem;
+    min-height: 540px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+@media (max-width: 640px) {
+    body { padding: 0; }
+    .ereader-body { padding: 1.25rem 1rem; }
+    .ereader-header { padding: 0.5rem 0.75rem; flex-wrap: wrap; gap: 0.5rem; }
+}
+
+/* View Sections */
+.view-panel {
+    display: none;
+}
+.view-panel.active {
+    display: block;
+    animation: fadeIn 0.2s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- 4. Chapter / Date Header --- */
+.chapter-header {
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.chapter-sub {
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--ink-muted);
+    margin-bottom: 0.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chapter-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--ink-primary);
+    margin-bottom: 0.5rem;
+}
+
+.chapter-date-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    font-family: var(--font-sans);
+}
+
+.nav-arrow-btn {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    color: var(--ink-primary);
+    transition: all 0.15s ease;
+}
+
+.nav-arrow-btn:hover {
+    background: var(--bg-card-hover);
+}
+
+.current-date-badge {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--ink-primary);
+    padding: 0.25rem 0.5rem;
+}
+
+/* --- 5. Focus Timer Widget (Reading Clock) --- */
+.focus-timer-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--font-sans);
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.timer-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.timer-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--ink-muted);
+}
+
+.timer-task-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--ink-primary);
+    max-width: 320px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.timer-display {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.timer-digits {
+    font-family: var(--font-mono);
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--ink-primary);
+    letter-spacing: 1px;
+}
+
+.timer-actions {
+    display: flex;
+    gap: 0.4rem;
+}
+
+.btn-timer {
+    background: var(--accent-btn);
+    color: var(--accent-btn-text);
+    border: none;
+    padding: 0.4rem 0.85rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+}
+
+.btn-timer:hover {
+    opacity: 0.9;
+}
+
+.btn-timer-secondary {
+    background: var(--bg-page);
+    color: var(--ink-primary);
+    border: 1px solid var(--border-color);
+}
+
+/* --- 6. Task List Passage Layout --- */
+.tasks-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.task-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem 1.15rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+    position: relative;
+}
+
+.task-item:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--ink-muted);
+}
+
+.task-item.completed {
+    background: var(--bg-page);
+    opacity: 0.85;
+}
+
+.task-item.completed .task-title {
+    text-decoration: line-through;
+    color: var(--ink-muted);
+}
+
+/* E-Ink Checkbox */
+.task-checkbox-btn {
+    width: 26px;
+    height: 26px;
+    border: 2px solid var(--ink-primary);
+    background: transparent;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: var(--ink-primary);
+    font-size: 1rem;
+    font-weight: bold;
+    transition: all 0.15s ease;
+}
+
+.task-item.completed .task-checkbox-btn {
+    background: var(--ink-primary);
+    color: var(--bg-page);
+}
+
+.task-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.task-meta-top {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.35rem;
+    flex-wrap: wrap;
+}
+
+.task-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--ink-primary);
+    margin-bottom: 0.25rem;
+    line-height: 1.35;
+}
+
+/* Pastel Highlighters for Task Tags & Badges */
+.highlighter-pill {
+    font-family: var(--font-sans);
+    font-size: 0.725rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.hl-grammar    { background: var(--hl-yellow); color: var(--hl-yellow-ink); }
+.hl-vocabulary { background: var(--hl-green);  color: var(--hl-green-ink); }
+.hl-speaking   { background: var(--hl-purple); color: var(--hl-purple-ink); }
+.hl-listening  { background: var(--hl-blue);   color: var(--hl-blue-ink); }
+.hl-reading    { background: var(--hl-orange); color: var(--hl-orange-ink); }
+.hl-writing    { background: var(--hl-rose);   color: var(--hl-rose-ink); }
+.hl-coding     { background: var(--hl-blue);   color: var(--hl-blue-ink); }
+.hl-exercise   { background: var(--hl-green);  color: var(--hl-green-ink); }
+.hl-review     { background: var(--hl-yellow); color: var(--hl-yellow-ink); }
+.hl-custom     { background: var(--bezel-bg);  color: var(--ink-secondary); }
+
+.priority-badge {
+    font-family: var(--font-sans);
+    font-size: 0.725rem;
+    color: var(--ink-muted);
+}
+.priority-high {
+    color: var(--hl-rose-ink);
+    font-weight: 600;
+}
+
+.task-duration-badge {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--ink-secondary);
+}
+
+.task-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-shrink: 0;
+}
+
+.status-select {
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    background: var(--bg-page);
+    border: 1px solid var(--border-color);
+    color: var(--ink-primary);
+    padding: 0.25rem 0.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-start-task {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--ink-primary);
+    padding: 0.25rem 0.5rem;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    font-family: var(--font-sans);
+    cursor: pointer;
+}
+.btn-start-task:hover {
+    background: var(--bezel-bg);
+}
+
+/* Empty day placeholder */
+.empty-day-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--ink-muted);
+    font-style: italic;
+}
+
+/* --- 7. Table of Contents (Full Roadmap) --- */
+.toc-week-block {
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.toc-week-header {
+    background: var(--bg-card);
+    padding: 0.85rem 1.25rem;
+    font-weight: 700;
+    font-size: 1.1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    user-select: none;
+}
+
+.toc-week-header:hover {
+    background: var(--bg-card-hover);
+}
+
+.toc-week-body {
+    padding: 1rem 1.25rem;
+    background: var(--bg-page);
+}
+
+.toc-day-row {
+    margin-bottom: 1rem;
+    border-bottom: 1px dashed var(--border-subtle);
+    padding-bottom: 0.75rem;
+}
+.toc-day-row:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.toc-day-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    font-family: var(--font-sans);
+    color: var(--ink-secondary);
+    margin-bottom: 0.4rem;
+}
+
+/* --- 8. Import / Paste Form --- */
+.import-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.dropzone {
+    border: 2px dashed var(--border-color);
+    border-radius: 8px;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    background: var(--bg-page);
+    cursor: pointer;
+    margin-bottom: 1.25rem;
+    transition: border-color 0.15s ease;
+}
+
+.dropzone:hover, .dropzone.dragover {
+    border-color: var(--ink-primary);
+}
+
+.textarea-md {
+    width: 100%;
+    min-height: 240px;
+    background: var(--bg-page);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.85rem;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--ink-primary);
+    line-height: 1.5;
+    resize: vertical;
+    margin-bottom: 1rem;
+}
+
+.textarea-md:focus {
+    outline: 2px solid var(--ink-primary);
+}
+
+.import-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.btn-primary {
+    background: var(--accent-btn);
+    color: var(--accent-btn-text);
+    border: none;
+    padding: 0.65rem 1.35rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    transition: opacity 0.15s ease;
+}
+
+.btn-primary:hover {
+    opacity: 0.9;
+}
+
+.sample-buttons {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    color: var(--ink-secondary);
+}
+
+.btn-sample {
+    background: var(--bg-page);
+    border: 1px solid var(--border-color);
+    padding: 0.35rem 0.65rem;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    color: var(--ink-primary);
+    transition: background 0.15s ease;
+}
+.btn-sample:hover {
+    background: var(--bg-card-hover);
+}
+
+/* --- 9. Review & AI Adaptation --- */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+}
+
+.stat-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    font-family: var(--font-sans);
+}
+
+.stat-box-title {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--ink-muted);
+    margin-bottom: 0.25rem;
+}
+
+.stat-box-val {
+    font-size: 1.85rem;
+    font-weight: 700;
+    color: var(--ink-primary);
+    font-family: var(--font-mono);
+}
+
+.stat-box-sub {
+    font-size: 0.8rem;
+    color: var(--ink-secondary);
+    margin-top: 0.2rem;
+}
+
+.prompt-copy-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.prompt-textarea {
+    width: 100%;
+    min-height: 200px;
+    background: var(--bg-page);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.85rem;
+    font-family: var(--font-mono);
+    font-size: 0.825rem;
+    color: var(--ink-primary);
+    line-height: 1.45;
+    margin: 1rem 0;
+}
+
+/* --- 10. Kindle Footer (Reading Loc & Progress) --- */
+.ereader-footer {
+    background: var(--bezel-bg);
+    border-top: 1px solid var(--bezel-border);
+    padding: 0.65rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    color: var(--ink-secondary);
+    user-select: none;
+}
+
+.reading-progress-track {
+    flex: 1;
+    max-width: 240px;
+    height: 6px;
+    background: var(--border-color);
+    border-radius: 3px;
+    overflow: hidden;
+    margin: 0 1rem;
+}
+
+.reading-progress-bar {
+    height: 100%;
+    background: var(--ink-primary);
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+/* Toast Message Notification */
+.toast-msg {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(50px);
+    background: var(--ink-primary);
+    color: var(--bg-page);
+    padding: 0.65rem 1.25rem;
+    border-radius: 30px;
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 9999;
+}
+.toast-msg.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* --- 11. Lock Screen & Password Modal --- */
+.lock-screen-card {
+    max-width: 440px;
+    margin: 3rem auto;
+    padding: 2.5rem 2rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+}
+
+.lock-screen-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.lock-screen-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--ink-primary);
+    margin-bottom: 0.5rem;
+    font-family: var(--font-serif);
+}
+
+.lock-screen-desc {
+    font-size: 0.875rem;
+    color: var(--ink-secondary);
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+    font-family: var(--font-sans);
+}
+
+.input-passcode {
+    width: 100%;
+    padding: 0.65rem 0.85rem;
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    background: var(--bg-page);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--ink-primary);
+    box-sizing: border-box;
+    transition: border-color 0.15s ease;
+}
+
+.input-passcode:focus {
+    outline: none;
+    border-color: var(--ink-primary);
+}
+
+.unlock-error-msg {
+    margin-top: 0.5rem;
+    padding: 0.4rem 0.6rem;
+    background: var(--hl-rose);
+    color: var(--hl-rose-ink);
+    border-radius: 5px;
+    font-size: 0.8rem;
+    font-family: var(--font-sans);
+}
+
+/* Modal Backdrop */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 1rem;
+    backdrop-filter: blur(2px);
+}
+
+.modal-card {
+    background: var(--bg-page);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 1.75rem;
+    width: 100%;
+    max-width: 460px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    animation: fadeIn 0.2s ease-out;
+}
+
+/* --- 12. Domain Cards & AI Wizard --- */
+.domain-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.85rem;
+    margin-bottom: 1.5rem;
+}
+
+.domain-card {
+    background: var(--bg-card);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.15rem 1rem;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s ease;
+    user-select: none;
+    font-family: var(--font-sans);
+}
+
+.domain-card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--ink-secondary);
+    transform: translateY(-2px);
+}
+
+.domain-card.active {
+    background: var(--bg-page);
+    border-color: var(--ink-primary);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.domain-icon {
+    font-size: 2rem;
+    margin-bottom: 0.35rem;
+}
+
+.domain-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--ink-primary);
+    margin-bottom: 0.25rem;
+}
+
+.domain-desc {
+    font-size: 0.75rem;
+    color: var(--ink-muted);
+    line-height: 1.35;
+}
+
+/* Wizard Form Elements */
+.wizard-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+    font-family: var(--font-sans);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.form-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--ink-primary);
+}
+
+.form-input, .form-select {
+    padding: 0.55rem 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--bg-page);
+    color: var(--ink-primary);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    transition: border-color 0.15s ease;
+}
+
+.form-input:focus, .form-select:focus {
+    outline: none;
+    border-color: var(--ink-primary);
+}
+
+/* Quick AI Portal Links */
+.ai-portal-buttons {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.btn-ai-portal {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    padding: 0.45rem 0.85rem;
+    border-radius: 6px;
+    font-size: 0.825rem;
+    font-weight: 600;
+    color: var(--ink-primary);
+    text-decoration: none;
+    transition: all 0.15s ease;
+    font-family: var(--font-sans);
+}
+
+.btn-ai-portal:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--ink-primary);
+}
+
+/* --- 13. Task Note Drawer & Highlight System --- */
+mark, .note-mark {
+    padding: 0.12em 0.35em;
+    border-radius: 3px;
+    font-weight: 500;
+    line-height: inherit;
+    display: inline;
+}
+
+/* 1. Theme: Warm Paper (Màu giấy) - Monochrome E-Ink Highlight: Nền đen chữ trắng */
+body.theme-paper mark,
+body.theme-paper .note-mark,
+body.theme-paper mark.hl-mono,
+body.theme-paper mark.hl-yellow,
+body.theme-paper mark.hl-blue,
+body.theme-paper mark.hl-pink,
+body.theme-paper mark.hl-green,
+body.theme-paper mark.hl-red,
+body.theme-paper mark.hl-black {
+    background: #23201d !important;
+    color: #fbf8f1 !important;
+}
+
+/* 2. Theme: Black (Màu đen) - Inverted Monochrome Highlight: Nền trắng chữ đen */
+body.theme-black mark,
+body.theme-black .note-mark,
+body.theme-black mark.hl-mono,
+body.theme-black mark.hl-yellow,
+body.theme-black mark.hl-blue,
+body.theme-black mark.hl-pink,
+body.theme-black mark.hl-green,
+body.theme-black mark.hl-red,
+body.theme-black mark.hl-black {
+    background: #eae5dc !important;
+    color: #161616 !important;
+}
+
+/* 3. Theme: Màu đa sắc (Pastel Ink) - The 6 Authentic Colors */
+body.theme-kobo mark.hl-yellow,
+body.theme-kobo .note-mark.hl-yellow {
+    background: var(--hl-kobo-yellow);
+    color: var(--hl-kobo-yellow-ink);
+    box-shadow: 0 1px 2px rgba(95, 69, 0, 0.08);
+}
+
+body.theme-kobo mark.hl-blue,
+body.theme-kobo .note-mark.hl-blue {
+    background: var(--hl-kobo-blue);
+    color: var(--hl-kobo-blue-ink);
+    box-shadow: 0 1px 2px rgba(10, 71, 104, 0.08);
+}
+
+body.theme-kobo mark.hl-pink,
+body.theme-kobo .note-mark.hl-pink {
+    background: var(--hl-kobo-pink);
+    color: var(--hl-kobo-pink-ink);
+    box-shadow: 0 1px 2px rgba(127, 20, 60, 0.08);
+}
+
+body.theme-kobo mark.hl-green,
+body.theme-kobo .note-mark.hl-green {
+    background: var(--hl-kobo-green);
+    color: var(--hl-kobo-green-ink);
+    box-shadow: 0 1px 2px rgba(17, 78, 39, 0.08);
+}
+
+body.theme-kobo mark.hl-red,
+body.theme-kobo .note-mark.hl-red {
+    background: var(--hl-kobo-red);
+    color: var(--hl-kobo-red-ink);
+    box-shadow: 0 1px 2px rgba(130, 28, 14, 0.08);
+}
+
+body.theme-kobo mark.hl-black,
+body.theme-kobo .note-mark.hl-black {
+    background: transparent;
+    border: 1.5px solid var(--hl-kobo-black);
+    color: var(--hl-kobo-black);
+    font-weight: 600;
+}
+
+body.theme-kobo mark:not([class*="hl-"]),
+body.theme-kobo .note-mark:not([class*="hl-"]) {
+    background: var(--hl-kobo-yellow);
+    color: var(--hl-kobo-yellow-ink);
+}
+
+/* Note Highlight Toolbar & Actions */
+.note-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.4rem;
+    margin-bottom: 0.4rem;
+    flex-wrap: wrap;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    padding: 0.3rem 0.5rem;
+    border-radius: 6px;
+    font-family: var(--font-sans);
+}
+
+.note-swatches {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    flex-wrap: wrap;
+}
+
+.btn-swatch {
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.18rem 0.42rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    background: var(--bg-page);
+    color: var(--ink-primary);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    transition: all 0.15s ease;
+    user-select: none;
+    line-height: 1.2;
+}
+
+.btn-swatch:hover {
+    filter: brightness(0.95);
+    border-color: var(--ink-secondary);
+}
+
+.btn-swatch-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+.btn-note-toggle {
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.18rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    background: var(--bg-page);
+    color: var(--ink-primary);
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.btn-note-toggle:hover {
+    border-color: var(--ink-secondary);
+}
+
+/* Note Reading Preview */
+.note-preview {
+    min-height: 55px;
+    padding: 0.65rem 0.8rem;
+    font-family: var(--font-serif);
+    font-size: 0.925rem;
+    line-height: 1.65;
+    background: var(--bg-page);
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    color: var(--ink-primary);
+    white-space: pre-wrap;
+    word-break: break-word;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.note-preview:hover {
+    border-color: var(--ink-muted);
+}
+
+.note-preview-empty {
+    font-style: italic;
+    color: var(--ink-muted);
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+}
+
+.task-note-drawer {
+    margin-top: 0.65rem;
+    padding-top: 0.65rem;
+    border-top: 1px dashed var(--border-color);
+    width: 100%;
+}
+
+.task-note-textarea, .task-note-editable {
+    width: 100%;
+    min-height: 60px;
+    padding: 0.5rem 0.65rem;
+    font-family: var(--font-sans);
+    font-size: 0.825rem;
+    line-height: 1.45;
+    background: var(--bg-page);
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    color: var(--ink-primary);
+    box-sizing: border-box;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-y: auto;
+}
+
+.task-note-textarea {
+    resize: vertical;
+}
+
+.task-note-editable {
+    cursor: text;
+    user-select: text;
+}
+
+.task-note-editable:empty:before {
+    content: attr(data-placeholder);
+    color: var(--ink-muted);
+    pointer-events: none;
+}
+
+.task-note-textarea:focus, .task-note-editable:focus {
+    outline: none;
+    border-color: var(--ink-primary);
+    box-shadow: 0 0 0 1px var(--ink-primary);
+}
+
+.task-note-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.35rem;
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    color: var(--ink-muted);
+}
+
+.task-has-note-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.725rem;
+    font-family: var(--font-sans);
+    color: var(--ink-secondary);
+    background: var(--bezel-bg);
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    margin-top: 0.25rem;
+    cursor: pointer;
+}
+
+/* Task breakdown and IELTS setup */
+.subtask-section { width: 100%; border-top: 1px solid var(--border-color); padding-top: 1rem; }
+.subtask-section h4 { margin: 0 0 .75rem; }
+.subtask-row { padding: .75rem; margin-bottom: .6rem; border: 1px solid var(--border-color); border-radius: 8px; }
+.subtask-row label { display: flex; align-items: baseline; gap: .5rem; font-weight: 600; overflow-wrap: anywhere; }
+.subtask-row textarea { display: block; margin: .65rem 0; min-height: 65px; }
+.subtask-save-status { margin-left: .6rem; font-size: .8rem; color: var(--ink-secondary); }
+.subtask-add { display: flex; gap: .5rem; flex-wrap: wrap; }
+.subtask-add input { flex: 1; min-width: 180px; }
+.ielts-dialog { width: min(560px, calc(100% - 2rem)); max-height: 85vh; overflow-y: auto; box-sizing: border-box; padding: 1.5rem; color: var(--ink-primary); background: var(--bg-page); border: 1px solid var(--border-color); border-radius: 12px; }
+.ielts-dialog::backdrop { background: rgba(0,0,0,.45); }
+.ielts-modal-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.ielts-modal-heading h2 { margin: 0; font-size: 1.4rem; }
+.ielts-dialog .form-label { display: block; margin: 1rem 0 .4rem; }
+.ielts-weak-options { display: flex; flex-wrap: wrap; gap: .8rem; margin: 1rem 0; padding: 1rem; border: 1px solid var(--border-color); }
+#btn-ielts-level { margin-bottom: .5rem; }
+
+/* Center native dialogs independently of the page scroll position. */
+.ielts-dialog { position: fixed; inset: 0; margin: auto; max-height: min(85dvh, 850px); }
+.ielts-dialog .form-input { width: 100%; box-sizing: border-box; }
+.ielts-dialog form > .btn-primary { margin-top: 1rem; }
+#btn-fitness-setup, #btn-code-setup { margin-bottom: .5rem; }
+[hidden] { display: none !important; }
+
+.fire-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1rem; margin:1.5rem 0; }
+.fire-card { padding:1rem; background:var(--bg-card); border:1px solid var(--border-color); border-radius:10px; }
+.fire-card progress { display:block; width:100%; height:1.25rem; margin-top:1rem; accent-color:#65886e; }
+.fire-card p, #fire-assumptions { font-size:.85rem; line-height:1.6; }
+.journal-text { white-space:pre-wrap; overflow-wrap:anywhere; }
+#money-entries li { margin:.75rem 0; }
+#finance-dashboard { border-bottom:1px solid var(--border-color); padding-bottom:2rem; margin-bottom:2rem; }
+#btn-start-finance { margin:1rem 0; }
+
+/* A single restrained line-icon language. */
+.ui-icon { width:18px; height:18px; display:inline-block; vertical-align:middle; flex-shrink:0; }
+[data-icon] { display:inline-flex; align-items:center; justify-content:center; }
+.domain-icon .ui-icon { width:28px; height:28px; }
+.lock-screen-icon .ui-icon { width:42px; height:42px; }
+.domain-icon { color:var(--ink-secondary); }
+.nav-tab, .control-btn, #dynamic-link-pill, .ereader-footer a { gap:.5rem; align-items:center; }
+.ereader-footer a { display:inline-flex; }
+.is-locked .ereader-nav, .is-locked .ereader-footer, .is-locked #btn-lock-settings { display:none; }
+.finance-setup .plan-wizard-only { display:none !important; }
+.finance-mode #task-dashboard, .finance-mode [data-tab="toc"], .finance-mode [data-tab="import"],
+.finance-mode [data-tab="stats"], .finance-mode [data-tab="guide"], .finance-mode #footer-loc,
+.finance-mode #footer-pct, .finance-mode .reading-progress-track { display:none; }
+.finance-mode .ereader-footer { justify-content:flex-end; }
+#finance-onboarding { margin:1rem 0; }
+#finance-onboarding label { display:block; margin-top:1rem; }
+.finance-questionnaire { border:1px solid var(--border-color); padding:1rem; margin:1rem 0; border-radius:8px; }
+.finance-review { border:1px solid var(--border-color); padding:1rem; margin:1.5rem 0; border-radius:8px; }
+.finance-review summary { cursor:pointer; font-weight:600; }
+.finance-review label { display:block; margin:1rem 0 .4rem; }
+.task-journal { width:100%; }
+.task-journal > .btn-sample, .subtask-row > .btn-sample { margin:.5rem .5rem .5rem 0; }
+.note-card, .description-card { border:1px solid var(--border-color); border-radius:8px; margin:.5rem 0; background:var(--bg-page); }
+.note-card summary, .description-card summary { padding:.7rem .85rem; cursor:pointer; font-weight:600; font-size:.85rem; }
+.note-card textarea, .description-card textarea, .note-card .task-note-editable, .description-card .task-note-editable { width:calc(100% - 1.5rem); margin:0 .75rem .75rem; box-sizing:border-box; }
+.description-card > button { margin:0 .75rem .75rem; }
+.journal-status { font-size:.8rem; color:var(--ink-secondary); }
+.btn-sample:disabled { opacity:.55; cursor:default; }
+@media (max-width:600px) {
+  .task-item > div:first-child { flex-wrap:wrap; }
+  .task-actions { flex-wrap:wrap; }
+  .finance-review, .finance-questionnaire { padding:.75rem; }
+}
+/* Two independent plans share a single public link. */
+.workspace-deck { padding: 14px; }
+.workspace-card { border: 1px solid var(--border-color, #d7d1c7); border-radius: 10px; margin-bottom: 12px; overflow: hidden; }
+.workspace-card > summary { display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 18px; background: var(--bg-secondary, #f1ede4); }
+.workspace-card > summary::before { content: '›'; font-size: 24px; }
+.workspace-card[open] > summary::before { transform: rotate(90deg); }
+.workspace-card > summary > span { opacity: .5; font-variant-numeric: tabular-nums; }
+.workspace-card > summary > strong { flex: 1; }
+.workspace-card > summary > small { font-size: 12px; opacity: .65; }
+.is-locked #workspace-deck, .is-locked #btn-new-slot { display: none; }
+.notebook-mode #task-dashboard, .notebook-mode [data-tab="toc"], .notebook-mode [data-tab="import"], .notebook-mode [data-tab="stats"], .notebook-mode [data-tab="guide"], .notebook-mode .footer-left, .notebook-mode .footer-center { display: none; }
+.notebook-mode #footer-loc, .notebook-mode #footer-pct, .notebook-mode .reading-progress-track { display: none; }
+.notebook-mode .ereader-footer { justify-content: flex-end; }
+#notebook-content .note-card { margin: 16px 0; }
+#notebook-content textarea { min-height: 220px; }
+.blank-plan-setup { margin-bottom: 24px; }
+.blank-plan-setup button { margin-top: 12px; }
+.dynamic-link-copy { border: 0; background: none; color: inherit; font: inherit; padding: 0; display: flex; align-items: center; gap: 8px; cursor: pointer; min-width: 0; }
+.link-edit-button { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; border: 0; border-left: 1px solid var(--border-color, #d7d1c7); background: none; color: inherit; cursor: pointer; padding: 5px 0 5px 9px; }
+.link-edit-button:hover { opacity: .65; }
+.link-edit-button:disabled { opacity: .35; cursor: default; }
+.link-edit-button:focus-visible, .dynamic-link-copy:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+.ielts-format-section { border: 1px solid var(--border-color, #d7d1c7); border-radius: 8px; margin: 12px 0; padding: 12px; }
+#ielts-level-modal { width: min(900px, calc(100vw - 32px)); max-width: 900px; }
+.ielts-format-section > summary { cursor: pointer; font-weight: 600; }
+.ielts-format-scroll { overflow-x: auto; margin-top: 12px; }
+.ielts-format-table { border-collapse: collapse; width: 100%; font-size: .86rem; min-width: 520px; }
+.ielts-format-table th, .ielts-format-table td { text-align: left; vertical-align: top; padding: 10px; border-bottom: 1px solid var(--border-color, #d7d1c7); }
+.ielts-format-table th:first-child { width: 28%; }
+.ielts-format-table label { display: flex; align-items: flex-start; gap: 6px; cursor: pointer; }
+.ielts-format-table input { flex-shrink: 0; margin-top: 4px; }
+.ielts-topic-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.ielts-topic-grid label { display: flex; align-items: flex-start; gap: 8px; cursor: pointer; }
+.ielts-topic-grid strong, .ielts-topic-grid small { display: block; }
+.ielts-topic-grid small, .ielts-format-help { font-size: .85rem; opacity: .8; }
+@media (max-width: 600px) {
+    .ielts-topic-grid { grid-template-columns: 1fr; }
+    .ielts-format-table { min-width: 0; }
+    .ielts-format-table thead { display: none; }
+    .ielts-format-table tbody, .ielts-format-table tr, .ielts-format-table td { display: block; width: auto; }
+    .ielts-format-table tr { border-bottom: 1px solid var(--border-color, #d7d1c7); padding: 8px 0; }
+    .ielts-format-table td { border: 0; padding: 6px 0; }
+    .ielts-format-table td:nth-child(2)::before { content: 'Đặc điểm: '; font-weight: 600; }
+    .ielts-format-table td:nth-child(3)::before { content: 'Khung luyện tập: '; font-weight: 600; }
+}
+#btn-new-slot { margin-bottom: 20px; }
+@media (max-width: 600px) { .workspace-deck { padding: 6px; } .workspace-card > summary { padding: 12px; } .workspace-card > summary > small { display: none; } }
+
+/* --- Theme Màu Đa Sắc: Card Coloring with 6 Basic Colors (Borders Preserved) --- */
+
+/* 1. Task Cards (.task-item) */
+body.theme-kobo .task-item {
+    border: 1px solid var(--border-color);
+}
+
+/* Category-specific task card background */
+body.theme-kobo .task-item.task-type-grammar,
+body.theme-kobo .task-item.task-type-review {
+    background: #faf5e1;
+    border-color: #dcd0ab;
+}
+
+body.theme-kobo .task-item.task-type-listening,
+body.theme-kobo .task-item.task-type-coding {
+    background: #ecf4f9;
+    border-color: #b9d5e5;
+}
+
+body.theme-kobo .task-item.task-type-speaking,
+body.theme-kobo .task-item.task-type-writing {
+    background: #fcf0f4;
+    border-color: #e8c4cf;
+}
+
+body.theme-kobo .task-item.task-type-vocabulary,
+body.theme-kobo .task-item.task-type-exercise {
+    background: #eef7f1;
+    border-color: #c1dfcb;
+}
+
+body.theme-kobo .task-item.task-type-reading {
+    background: #fdf2ef;
+    border-color: #e8c5be;
+}
+
+body.theme-kobo .task-item.task-type-custom,
+body.theme-kobo .task-item.task-type-project,
+body.theme-kobo .task-item.task-type-research {
+    background: #f3efe7;
+    border-color: #cfc7b9;
+}
+
+/* Fallback rotation by index for any tasks without predefined type class */
+body.theme-kobo .task-item:nth-child(6n+1):not([class*="task-type-grammar"]):not([class*="task-type-listening"]):not([class*="task-type-speaking"]):not([class*="task-type-vocabulary"]):not([class*="task-type-reading"]):not([class*="task-type-custom"]) {
+    background: #faf5e1;
+    border-color: #dcd0ab;
+}
+body.theme-kobo .task-item:nth-child(6n+2):not([class*="task-type-grammar"]):not([class*="task-type-listening"]):not([class*="task-type-speaking"]):not([class*="task-type-vocabulary"]):not([class*="task-type-reading"]):not([class*="task-type-custom"]) {
+    background: #ecf4f9;
+    border-color: #b9d5e5;
+}
+body.theme-kobo .task-item:nth-child(6n+3):not([class*="task-type-grammar"]):not([class*="task-type-listening"]):not([class*="task-type-speaking"]):not([class*="task-type-vocabulary"]):not([class*="task-type-reading"]):not([class*="task-type-custom"]) {
+    background: #fcf0f4;
+    border-color: #e8c4cf;
+}
+body.theme-kobo .task-item:nth-child(6n+4):not([class*="task-type-grammar"]):not([class*="task-type-listening"]):not([class*="task-type-speaking"]):not([class*="task-type-vocabulary"]):not([class*="task-type-reading"]):not([class*="task-type-custom"]) {
+    background: #eef7f1;
+    border-color: #c1dfcb;
+}
+body.theme-kobo .task-item:nth-child(6n+5):not([class*="task-type-grammar"]):not([class*="task-type-listening"]):not([class*="task-type-speaking"]):not([class*="task-type-vocabulary"]):not([class*="task-type-reading"]):not([class*="task-type-custom"]) {
+    background: #fdf2ef;
+    border-color: #e8c5be;
+}
+body.theme-kobo .task-item:nth-child(6n+6):not([class*="task-type-grammar"]):not([class*="task-type-listening"]):not([class*="task-type-speaking"]):not([class*="task-type-vocabulary"]):not([class*="task-type-reading"]):not([class*="task-type-custom"]) {
+    background: #f3efe7;
+    border-color: #cfc7b9;
+}
+
+/* Completed task state softens tone while preserving borders */
+body.theme-kobo .task-item.completed {
+    opacity: 0.72;
+    filter: grayscale(0.25);
+}
+
+/* 2. Note Cards (.note-card) & Description Card (.description-card) */
+body.theme-kobo .note-card,
+body.theme-kobo .description-card {
+    border: 1px solid var(--border-color);
+}
+
+body.theme-kobo .description-card {
+    background: #ecf4f9;
+    border-color: #b9d5e5;
+}
+body.theme-kobo .description-card > summary {
+    background: #e2f0f8;
+}
+
+body.theme-kobo .note-card:nth-of-type(6n+1) {
+    background: #faf5e1;
+    border-color: #dcd0ab;
+}
+body.theme-kobo .note-card:nth-of-type(6n+1) > summary {
+    background: #f5eed3;
+}
+
+body.theme-kobo .note-card:nth-of-type(6n+2) {
+    background: #fcf0f4;
+    border-color: #e8c4cf;
+}
+body.theme-kobo .note-card:nth-of-type(6n+2) > summary {
+    background: #f8e4ec;
+}
+
+body.theme-kobo .note-card:nth-of-type(6n+3) {
+    background: #eef7f1;
+    border-color: #c1dfcb;
+}
+body.theme-kobo .note-card:nth-of-type(6n+3) > summary {
+    background: #e2f0e6;
+}
+
+body.theme-kobo .note-card:nth-of-type(6n+4) {
+    background: #ecf4f9;
+    border-color: #b9d5e5;
+}
+body.theme-kobo .note-card:nth-of-type(6n+4) > summary {
+    background: #e2f0f8;
+}
+
+body.theme-kobo .note-card:nth-of-type(6n+5) {
+    background: #fdf2ef;
+    border-color: #e8c5be;
+}
+body.theme-kobo .note-card:nth-of-type(6n+5) > summary {
+    background: #f8e5e1;
+}
+
+body.theme-kobo .note-card:nth-of-type(6n+6) {
+    background: #f3efe7;
+    border-color: #cfc7b9;
+}
+body.theme-kobo .note-card:nth-of-type(6n+6) > summary {
+    background: #e9e4d8;
+}
+
+/* 3. Subtask Rows (.subtask-row) */
+body.theme-kobo .subtask-row {
+    border: 1px solid var(--border-color);
+}
+body.theme-kobo .subtask-row:nth-of-type(6n+1) { background: #faf5e1; border-color: #dcd0ab; }
+body.theme-kobo .subtask-row:nth-of-type(6n+2) { background: #ecf4f9; border-color: #b9d5e5; }
+body.theme-kobo .subtask-row:nth-of-type(6n+3) { background: #fcf0f4; border-color: #e8c4cf; }
+body.theme-kobo .subtask-row:nth-of-type(6n+4) { background: #eef7f1; border-color: #c1dfcb; }
+body.theme-kobo .subtask-row:nth-of-type(6n+5) { background: #fdf2ef; border-color: #e8c5be; }
+body.theme-kobo .subtask-row:nth-of-type(6n+6) { background: #f3efe7; border-color: #cfc7b9; }
+
+/* 4. Domain Cards (.domain-card in setup wizard) */
+body.theme-kobo .domain-card {
+    border: 2px solid var(--border-color);
+}
+body.theme-kobo .domain-card[data-domain="ielts"]    { background: #eef7f1; border-color: #c1dfcb; }
+body.theme-kobo .domain-card[data-domain="fitness"]  { background: #fdf2ef; border-color: #e8c5be; }
+body.theme-kobo .domain-card[data-domain="vibecode"] { background: #ecf4f9; border-color: #b9d5e5; }
+body.theme-kobo .domain-card[data-domain="finance"]  { background: #faf5e1; border-color: #dcd0ab; }
+body.theme-kobo .domain-card[data-domain="notebook"],
+body.theme-kobo .domain-card[data-domain="custom"]   { background: #fcf0f4; border-color: #e8c4cf; }
+
+/* 5. Workspace Cards (.workspace-card: Plan 1 & Plan 2) */
+body.theme-kobo #plan-card-1 {
+    background: #faf6ea;
+    border: 1px solid #dcd0ab;
+}
+body.theme-kobo #plan-card-1 > summary {
+    background: #f5edd0;
+}
+
+body.theme-kobo #plan-card-2 {
+    background: #edf5fa;
+    border: 1px solid #b9d5e5;
+}
+body.theme-kobo #plan-card-2 > summary {
+    background: #dff0f9;
+}
+
+/* 6. Wizard Setup Cards & Import Cards (.import-card, .blank-plan-setup, #finance-onboarding) */
+body.theme-kobo .blank-plan-setup {
+    background: #fcf0f4 !important; /* Candy Pink for Notebook */
+    border: 1px solid #e8c4cf !important;
+}
+
+body.theme-kobo #finance-onboarding {
+    background: #faf5e1 !important; /* Butter Yellow for Finance */
+    border: 1px solid #dcd0ab !important;
+}
+
+body.theme-kobo .import-card.plan-wizard-only {
+    background: #ecf4f9 !important; /* Dusk Blue for Time & Goals Setup */
+    border: 1px solid #b9d5e5 !important;
+}
+
+body.theme-kobo .import-card:not(.blank-plan-setup):not(#finance-onboarding):not(.plan-wizard-only) {
+    background: #fdf6ec; /* Soft warm peach/cream */
+    border: 1px solid #e5d4bc;
+}
+
+/* 7. Prompt Result & Copy Cards (.prompt-copy-card) */
+body.theme-kobo .prompt-copy-card {
+    background: #faf5e1; /* Butter Yellow for AI Prompt */
+    border: 1px solid #dcd0ab;
+}
+
+/* 8. Focus Timer Card (.focus-timer-card) */
+body.theme-kobo .focus-timer-card {
+    background: #ecf4f9; /* Dusk Blue for Focus Timer */
+    border: 1px solid #b9d5e5;
+}
+
+/* 9. FIRE & Finance Cards (.fire-card, .finance-questionnaire, .finance-review) */
+body.theme-kobo .fire-card:nth-of-type(6n+1) { background: #faf5e1; border-color: #dcd0ab; }
+body.theme-kobo .fire-card:nth-of-type(6n+2) { background: #ecf4f9; border-color: #b9d5e5; }
+body.theme-kobo .fire-card:nth-of-type(6n+3) { background: #fcf0f4; border-color: #e8c4cf; }
+body.theme-kobo .fire-card:nth-of-type(6n+4) { background: #eef7f1; border-color: #c1dfcb; }
+body.theme-kobo .fire-card:nth-of-type(6n+5) { background: #fdf2ef; border-color: #e8c5be; }
+body.theme-kobo .fire-card:nth-of-type(6n+6) { background: #f3efe7; border-color: #cfc7b9; }
+
+body.theme-kobo .finance-questionnaire {
+    background: #faf5e1;
+    border-color: #dcd0ab;
+}
+
+body.theme-kobo .finance-review {
+    background: #ecf4f9;
+    border-color: #b9d5e5;
+}
+
+/* ==========================================================================
+   10. Note Deletion, Auto-Delete Timer & Visibility Controls
+   ========================================================================== */
+
+/* Note Summary Layout */
+.note-card > summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.6rem 0.85rem;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+    user-select: none;
+}
+.note-summary-left {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    flex: 1;
+}
+.note-summary-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-left: auto;
+}
+
+/* Note Delete Button (Icon Xóa Note) */
+.btn-delete-note {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    font-family: var(--font-sans);
+    color: var(--ink-secondary);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    line-height: 1.2;
+}
+.btn-delete-note:hover {
+    color: #c93b2b;
+    border-color: #c93b2b;
+    background: rgba(201, 59, 43, 0.08);
+}
+.btn-delete-note .ui-icon {
+    width: 13px;
+    height: 13px;
+    stroke: currentColor;
+}
+body.theme-black .btn-delete-note:hover {
+    color: #f87171;
+    border-color: #f87171;
+    background: rgba(248, 113, 113, 0.15);
+}
+
+/* Note Auto-Delete Badge & Controls (Set Auto Delete Time) */
+.note-badge-expiry {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    font-size: 0.72rem;
+    font-weight: 500;
+    font-family: var(--font-sans);
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    background: var(--bg-hover, rgba(0,0,0,0.04));
+    border: 1px dashed var(--border-color);
+    color: var(--ink-secondary);
+}
+.note-badge-expiry.near-expiry {
+    color: #c93b2b;
+    border-color: #c93b2b;
+    background: rgba(201, 59, 43, 0.1);
+}
+body.theme-black .note-badge-expiry.near-expiry {
+    color: #f87171;
+    border-color: #f87171;
+    background: rgba(248, 113, 113, 0.15);
+}
+
+.note-auto-delete-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+}
+.note-auto-delete-select {
+    background: var(--bg-page);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: var(--ink-primary);
+    font-size: 0.75rem;
+    font-family: var(--font-sans);
+    padding: 0.2rem 0.4rem;
+    cursor: pointer;
+}
+.note-auto-delete-select:focus {
+    outline: none;
+    border-color: var(--ink-primary);
+}
+
+/* Note Visibility Toggle (Ẩn / Hiện ghi chú trong task) */
+body.hide-task-notes .task-journal {
+    display: none !important;
+}
+
+/* Notes Modal Dialog */
+#notes-modal, #plan-modal {
+    width: min(720px, calc(100vw - 32px));
+    max-width: 720px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--bg-page);
+    color: var(--ink-primary);
+    padding: 1.25rem;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+#notes-modal::backdrop, #plan-modal::backdrop {
+    background: rgba(0, 0, 0, 0.4);
+}
+body.theme-black #notes-modal::backdrop, body.theme-black #plan-modal::backdrop {
+    background: rgba(0, 0, 0, 0.75);
+}
+.notes-visibility-control {
+    background: var(--bg-hover);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    margin: 1rem 0;
+}
+
+/* Modal Plan Cards & Grid (Chỉ hiển thị 1 plan, chọn trong modal) */
+.modal-plans-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 0.85rem;
+    margin: 1rem 0;
+}
+.modal-plan-card {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    background: var(--bg-page);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    position: relative;
+    user-select: none;
+}
+.modal-plan-card:hover {
+    border-color: var(--ink-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.modal-plan-card:focus-visible {
+    outline: 2px solid var(--ink-primary);
+    outline-offset: 2px;
+}
+.modal-plan-card.is-active {
+    border-color: #2e7d32;
+    background: var(--bg-hover);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    outline: 2px solid rgba(46, 125, 50, 0.35);
+}
+body.theme-black .modal-plan-card.is-active {
+    border-color: #4caf50;
+    outline: 2px solid rgba(76, 175, 80, 0.4);
+}
+body.theme-kobo .modal-plan-card.slot-1 {
+    background: #faf5e1;
+    border-color: #dcd0ab;
+}
+body.theme-kobo .modal-plan-card.slot-2 {
+    background: #ecf4f9;
+    border-color: #b9d5e5;
+}
+body.theme-kobo .modal-plan-card.slot-1.is-active {
+    border: 2px solid #5d7c38;
+}
+body.theme-kobo .modal-plan-card.slot-2.is-active {
+    border: 2px solid #296d98;
+}
+.badge-active-plan {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #114e27;
+    background: #a7dab9;
+    padding: 0.15rem 0.45rem;
+    border-radius: 3px;
+    border: 1px solid #7dc798;
+}
+body.theme-black .badge-active-plan {
+    color: #a7dab9;
+    background: rgba(167, 218, 185, 0.15);
+    border-color: rgba(167, 218, 185, 0.3);
+}
+.btn-sample.is-active-plan-btn {
+    background: rgba(46, 125, 50, 0.12);
+    color: #1b5e20;
+    border-color: rgba(46, 125, 50, 0.3);
+    font-weight: 600;
+}
+body.theme-black .btn-sample.is-active-plan-btn {
+    background: rgba(76, 175, 80, 0.15);
+    color: #81c784;
+    border-color: rgba(76, 175, 80, 0.3);
+}
+
+/* Professional Plan Delete Button in Modal */
+.btn-plan-delete {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.35rem 0.55rem;
+    font-size: 0.78rem;
+    color: var(--ink-secondary);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    gap: 0.35rem;
+}
+.btn-plan-delete:hover {
+    color: #c93b2b;
+    border-color: #c93b2b;
+    background: rgba(201, 59, 43, 0.08);
+}
+body.theme-black .btn-plan-delete:hover {
+    color: #f87171;
+    border-color: #f87171;
+    background: rgba(248, 113, 113, 0.15);
+}
+.btn-plan-delete .ui-icon {
+    width: 14px;
+    height: 14px;
+}
+
+/* Subtask Row & Delete Button */
+.subtask-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    position: relative;
+}
+.subtask-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+.subtask-header-row > label {
+    flex: 1;
+    cursor: pointer;
+}
+.btn-delete-subtask {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    padding: 0.25rem 0.4rem;
+    color: var(--ink-muted);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    opacity: 0.65;
+}
+.btn-delete-subtask:hover {
+    opacity: 1;
+    color: #c93b2b;
+    background: rgba(201, 59, 43, 0.1);
+}
+body.theme-black .btn-delete-subtask:hover {
+    color: #f87171;
+    background: rgba(248, 113, 113, 0.15);
+}
+.btn-delete-subtask .ui-icon {
+    width: 14px;
+    height: 14px;
+}
+
+/* Task Renaming Styles */
+.task-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.2rem;
+}
+.btn-task-rename {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    padding: 0.2rem;
+    color: var(--ink-muted);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    opacity: 0.6;
+}
+.btn-task-rename:hover {
+    opacity: 1;
+    color: var(--ink-primary);
+    background: var(--bg-hover);
+}
+.btn-task-rename .ui-icon {
+    width: 13px;
+    height: 13px;
+}
+.task-rename-form {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    width: 100%;
+    margin: 0.25rem 0;
+}
+.task-rename-input {
+    flex: 1;
+    min-width: 180px;
+    padding: 0.35rem 0.55rem;
+    font-size: 0.925rem;
+    font-weight: 600;
+    font-family: var(--font-sans);
+    color: var(--ink-primary);
+    background: var(--bg-page);
+    border: 1px solid var(--ink-primary);
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+.task-rename-input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0,0,0,0.1);
+}
+.btn-rename-save, .btn-rename-cancel {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.35rem 0.55rem;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    border: 1px solid var(--border-color);
+}
+.btn-rename-save {
+    background: var(--ink-primary);
+    color: var(--bg-page);
+    border-color: var(--ink-primary);
+}
+.btn-rename-cancel {
+    background: var(--bg-hover);
+    color: var(--ink-secondary);
+}
+.btn-rename-save .ui-icon, .btn-rename-cancel .ui-icon {
+    width: 14px;
+    height: 14px;
+}
+
+/* Professional Global Confirmation Dialog */
+.confirm-modal-dialog {
+    max-width: 440px;
+    width: calc(100% - 2rem);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-page);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+}
+.confirm-modal-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.confirm-modal-icon-badge {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(234, 138, 120, 0.2);
+    color: #c93b2b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+body.theme-black .confirm-modal-icon-badge {
+    background: rgba(248, 113, 113, 0.2);
+    color: #f87171;
+}
+.confirm-modal-icon-badge .ui-icon {
+    width: 24px;
+    height: 24px;
+}
+.confirm-modal-title {
+    margin: 0 0 0.35rem;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--ink-primary);
+}
+.confirm-modal-desc {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--ink-secondary);
+}
+.confirm-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 0.5rem;
+}
+.btn-danger-confirm {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1.1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: var(--font-sans);
+    color: #fff;
+    background: #c93b2b;
+    border: 1px solid #b33224;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+.btn-danger-confirm:hover {
+    background: #b33224;
+}
+body.theme-black .btn-danger-confirm {
+    background: #dc2626;
+    border-color: #ef4444;
+}
+
+
