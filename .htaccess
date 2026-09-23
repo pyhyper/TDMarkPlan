@@ -8,7 +8,7 @@ DirectoryIndex index.php index.html
     RewriteRule ^data/ - [F,L]
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^([a-z0-9_-]{1,64})/?$ index.php?p=$1 [QSA,L]
+    RewriteRule ^([a-zA-Z0-9_-]{1,64})/?$ index.php?p=$1 [QSA,NC,L]
 </IfModule>
 
 # UTF-8 Encoding

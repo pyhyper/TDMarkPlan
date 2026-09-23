@@ -178,8 +178,8 @@ const App = {
             'dusk-blue': 'kobo'
         };
         themeName = legacy[themeName] || themeName;
-        const validThemes = ['paper', 'black', 'kobo'];
-        if (!validThemes.includes(themeName)) themeName = 'paper';
+        const validThemes = ['kobo', 'paper', 'black'];
+        if (!validThemes.includes(themeName)) themeName = 'kobo';
 
         const oldThemes = ['paper', 'black', 'kobo', 'candy-pink', 'misty-green', 'cayenne-red', 'butter-yellow', 'dusk-blue', 'dark'];
         document.body.classList.remove(...oldThemes.map(name => 'theme-' + name));

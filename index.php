@@ -23,7 +23,7 @@ if (!$requestedPlan) {
     <link rel="stylesheet" href="assets/css/ereader.css?v=<?php echo filemtime(__DIR__ . '/assets/css/ereader.css'); ?>">
     <link rel="icon" href="assets/favicon.svg">
 </head>
-<body>
+<body class="theme-kobo">
 
 <div class="ereader-container">
 
