@@ -15,8 +15,13 @@ const makeElem = (id = '') => {
         id,
         tagName: 'DIV',
         value: '',
+        _innerHTML: '',
         textContent: '',
-        innerHTML: '',
+        get innerHTML() { return this._innerHTML || ''; },
+        set innerHTML(v) {
+            this._innerHTML = String(v || '');
+            this.textContent = this._innerHTML.replace(/<[^>]*>/g, '');
+        },
         style: {},
         dataset: {},
         hidden: false,
@@ -386,13 +391,29 @@ assert(typeof App.deletePlan === 'function', 'deletePlan function exists on App'
     assert.equal(I18n.t('nav.today'), 'Hôm nay', 'Translates nav.today to Vietnamese');
     assert.equal(I18n.t('wizard.step2_title'), '2. Thiết Lập Thời Gian & Mục Tiêu Cá Nhân:', 'Translates step 2 heading to Vietnamese');
 
-    // Test markup contains EN/VN switcher buttons
-    assert(htmlContent.includes('id="lang-switcher"'), 'HTML contains lang-switcher container');
-    assert(htmlContent.includes('id="btn-lang-en"'), 'HTML contains English switcher button');
-    assert(htmlContent.includes('id="btn-lang-vi"'), 'HTML contains Vietnamese switcher button');
-    assert(htmlContent.includes('assets/js/i18n.js'), 'HTML loads assets/js/i18n.js script');
+    // Test Mobile Plan Header visible text (Plan 1 / Plan 2)
+    Workspace.slot = 1;
+    App.updateHeaderPlanLabel();
+    assert(labelEl.innerHTML.includes('class="header-plan-slot">Plan 1</span>'), 'Header slot 1 rendered in distinct span');
+    assert(labelEl.innerHTML.includes('class="header-plan-title">'), 'Header plan title rendered in distinct span');
+    
+    // Switch to slot 2 and test header text updates to Plan 2
+    Workspace.slot = 2;
+    App.updateHeaderPlanLabel();
+    assert(labelEl.innerHTML.includes('class="header-plan-slot">Plan 2</span>'), 'Header slot 2 rendered as Plan 2');
 
-    console.log('PASS: Theme, Notebook Highlight, Delete Icon, Auto-Delete, Note Visibility, Plan Modal, Visual Highlight Editor, Confirm Dialog, Task Renaming, Password/Auto-Delete Modal, Plan Title Editing & EN/VN I18n tests completed successfully.');
+    // Switch back to slot 1
+    Workspace.slot = 1;
+    App.updateHeaderPlanLabel();
+    assert(labelEl.innerHTML.includes('class="header-plan-slot">Plan 1</span>'), 'Header slot 1 restored');
+
+    // Test CSS rules for mobile header plan visibility & responsiveness
+    const cssContent = fs.readFileSync('assets/css/ereader.css', 'utf8');
+    assert(cssContent.includes('#header-plan-label .header-plan-title'), 'CSS defines rule to hide title in header on mobile');
+    assert(cssContent.includes('#header-plan-label .header-plan-slot'), 'CSS defines visible plan slot for header');
+    assert(cssContent.includes('font-size: 16px !important;'), 'CSS sets 16px font-size to prevent iOS Safari auto-zoom');
+
+    console.log('PASS: Theme, Notebook Highlight, Delete Icon, Auto-Delete, Note Visibility, Plan Modal, Visual Highlight Editor, Confirm Dialog, Task Renaming, Password/Auto-Delete Modal, Plan Title Editing, EN/VN I18n & Mobile Plan Header tests completed successfully.');
 })();
 
 

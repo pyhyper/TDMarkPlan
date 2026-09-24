@@ -721,7 +721,12 @@ const App = {
         const info = (typeof Workspace !== 'undefined' && Workspace.summaries) ? Workspace.summaries.find(p => p.slot === currentSlot) : null;
         let title = this.planData?.title || info?.title || `Plan ${currentSlot}`;
         if (title.length > 20) title = title.substring(0, 18) + '…';
-        label.textContent = `Plan ${currentSlot}: ${title}`;
+        label.innerHTML = `<span class="header-plan-slot">Plan ${currentSlot}</span><span class="header-plan-title">: ${this.escapeHtml(title)}</span>`;
+        const btnHeaderPlan = document.getElementById('btn-header-plan');
+        if (btnHeaderPlan) {
+            btnHeaderPlan.title = `Plan ${currentSlot}: ${title}`;
+            btnHeaderPlan.setAttribute('aria-label', `Plan ${currentSlot}: ${title}`);
+        }
     },
 
     renderModalPlans() {

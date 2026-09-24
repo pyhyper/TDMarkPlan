@@ -78,7 +78,7 @@ if (!$requestedPlan) {
 
             <!-- Plan Selector & Manager (Icon con mắt ở header) -->
             <button class="control-btn" id="btn-header-plan" onclick="App.openPlanModal()" title="Xem & chọn Plan (Chuyển đổi hoặc tạo plan)" aria-label="Xem & chọn Plan">
-                <span id="header-plan-icon" data-icon="eye" aria-hidden="true"></span> <span id="header-plan-label">Plan 1</span>
+                <span id="header-plan-icon" data-icon="eye" aria-hidden="true"></span> <span id="header-plan-label"><span class="header-plan-slot">Plan 1</span><span class="header-plan-title"></span></span>
             </button>
 
             <!-- Password Lock Indicator & Settings -->
