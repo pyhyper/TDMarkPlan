@@ -121,7 +121,12 @@ const context = {
             }
             return [];
         },
-        querySelector: () => null,
+        querySelector: selector => {
+            if (selector && selector.includes('[data-tab="today"]')) {
+                return (elements['nav-today-label'] ||= makeElem('nav-today-label'));
+            }
+            return null;
+        },
         createElement: tag => {
             const elem = makeElem();
             elem.tagName = tag.toUpperCase();
@@ -135,6 +140,7 @@ vm.createContext(context);
 vm.runInContext(fs.readFileSync('assets/js/i18n.js', 'utf8') + '\nthis.I18n = I18n;', context);
 vm.runInContext(fs.readFileSync('assets/js/icons.js', 'utf8') + '\nthis.Icons = Icons;', context);
 vm.runInContext(fs.readFileSync('assets/js/workspace.js', 'utf8') + '\nthis.Workspace = Workspace;', context);
+vm.runInContext(fs.readFileSync('assets/js/finance.js', 'utf8') + '\nthis.Finance = Finance;', context);
 vm.runInContext(fs.readFileSync('assets/js/app.js', 'utf8') + '\nthis.App = App;', context);
 vm.runInContext(fs.readFileSync('assets/js/journal.js', 'utf8') + '\nthis.Journal = Journal;', context);
 
@@ -457,7 +463,40 @@ assert(typeof App.deletePlan === 'function', 'deletePlan function exists on App'
     App.renderSubtasks(testTask, testContainer);
     assert(testContainer.children[0].children[0].textContent.includes('Việc nhỏ · 0/1 hoàn thành'), 'Subtask heading formatted in Vietnamese');
 
-    console.log('PASS: Theme, Notebook Highlight, Delete Icon, Auto-Delete, Note Visibility, Plan Modal, Visual Highlight Editor, Confirm Dialog, Task Renaming, Password/Auto-Delete Modal, Plan Title Editing, EN/VN I18n, Task/Subtask I18n & Slug Preservation tests completed successfully.');
+    // Test: Nav tabs translation in EN and VI
+    I18n.setLanguage('en', false);
+    assert.equal(I18n.t('nav.today'), 'Today', 'Nav today translates to Today');
+    assert.equal(I18n.t('nav.wizard'), 'New Plan', 'Nav wizard translates to New Plan');
+    assert.equal(I18n.t('nav.toc'), 'Overview', 'Nav toc translates to Overview');
+    assert.equal(I18n.t('nav.import'), 'Import PLAN.md', 'Nav import translates to Import PLAN.md');
+    assert.equal(I18n.t('nav.stats'), 'Review & Adaptation', 'Nav stats translates to Review & Adaptation');
+    assert.equal(I18n.t('nav.guide'), 'Format Guide', 'Nav guide translates to Format Guide');
+
+    I18n.setLanguage('vi', false);
+    assert.equal(I18n.t('nav.today'), 'Hôm nay', 'Nav today translates to Hôm nay');
+    assert.equal(I18n.t('nav.wizard'), 'Lập kế hoạch', 'Nav wizard translates to Lập kế hoạch');
+    assert.equal(I18n.t('nav.toc'), 'Mục lục', 'Nav toc translates to Mục lục');
+    assert.equal(I18n.t('nav.import'), 'Nhập PLAN.md', 'Nav import translates to Nhập PLAN.md');
+    assert.equal(I18n.t('nav.stats'), 'Đánh giá & điều chỉnh', 'Nav stats translates to Đánh giá & điều chỉnh');
+    assert.equal(I18n.t('nav.guide'), 'Định dạng', 'Nav guide translates to Định dạng');
+
+    // Test: index.php contains data-i18n="nav.stats" and "nav.guide" on nav tabs
+    const freshHtml = fs.readFileSync('index.php', 'utf8');
+    assert(freshHtml.includes('data-i18n="nav.stats"'), 'Nav tab stats has data-i18n="nav.stats"');
+    assert(freshHtml.includes('data-i18n="nav.guide"'), 'Nav tab guide has data-i18n="nav.guide"');
+    assert(!freshHtml.includes('data-tab="stats">\n            <span data-icon="chart" aria-hidden="true"></span><span class="nav-label" data-i18n="nav.review_title"'), 'Nav tab stats does not use long review_title');
+
+    // Test: App.renderAll sets nav-label using I18n instead of hardcoded Vietnamese
+    I18n.setLanguage('en', false);
+    App.planData = { plan_id: 'ielts-6.5', title: 'IELTS 6.5', domain: 'ielts', weeks: {} };
+    App.renderAll();
+    assert.equal(el('nav-today-label').textContent, 'Today', 'renderAll sets nav-today-label to Today in English mode');
+
+    I18n.setLanguage('vi', false);
+    App.renderAll();
+    assert.equal(el('nav-today-label').textContent, 'Hôm nay', 'renderAll sets nav-today-label to Hôm nay in Vietnamese mode');
+
+    console.log('PASS: Theme, Notebook Highlight, Delete Icon, Auto-Delete, Note Visibility, Plan Modal, Visual Highlight Editor, Confirm Dialog, Task Renaming, Password/Auto-Delete Modal, Plan Title Editing, EN/VN I18n, Nav Tab I18n, Task/Subtask I18n & Slug Preservation tests completed successfully.');
 })();
 
 

@@ -109,10 +109,10 @@ if (!$requestedPlan) {
             <span data-icon="upload" aria-hidden="true"></span><span class="nav-label" data-i18n="nav.import">Nhập PLAN.md</span>
         </a>
         <a href="#stats" class="nav-tab" data-tab="stats">
-            <span data-icon="chart" aria-hidden="true"></span><span class="nav-label" data-i18n="nav.review_title">Đánh giá & điều chỉnh</span>
+            <span data-icon="chart" aria-hidden="true"></span><span class="nav-label" data-i18n="nav.stats">Đánh giá & điều chỉnh</span>
         </a>
         <a href="#guide" class="nav-tab" data-tab="guide">
-            <span data-icon="info" aria-hidden="true"></span><span class="nav-label" data-i18n="nav.guide_title">Định dạng</span>
+            <span data-icon="info" aria-hidden="true"></span><span class="nav-label" data-i18n="nav.guide">Định dạng</span>
         </a>
     </nav>
 
@@ -484,8 +484,8 @@ if (!$requestedPlan) {
         <!-- ================= TAB 4: REVIEW & AI ADAPTATION ================= -->
         <section class="view-panel" id="view-stats">
             <div class="chapter-header">
-                <div class="chapter-sub">Performance Analytics</div>
-                <h1 class="chapter-title">Review & AI Adaptation</h1>
+                <div class="chapter-sub" data-i18n="nav.review_sub">Performance Analytics</div>
+                <h1 class="chapter-title" data-i18n="nav.review_title">Review & AI Adaptation</h1>
             </div>
 
             <div class="stats-grid">
@@ -527,8 +527,8 @@ if (!$requestedPlan) {
         <!-- ================= TAB 5: AI PROMPT GUIDE ================= -->
         <section class="view-panel" id="view-guide">
             <div class="chapter-header">
-                <div class="chapter-sub">Standard Format Specification</div>
-                <h1 class="chapter-title">How to Generate PLAN.md with AI</h1>
+                <div class="chapter-sub" data-i18n="nav.guide_sub">Standard Format Specification</div>
+                <h1 class="chapter-title" data-i18n="nav.guide_title">How to Generate PLAN.md with AI</h1>
             </div>
 
             <div style="font-size:0.95rem; line-height:1.6; color:var(--ink-secondary);">
@@ -602,7 +602,7 @@ duration_weeks: [number]
         <div style="display:flex; align-items:center; gap:1rem;">
             <span id="footer-pct">0% done</span>
             <a href="#" onclick="App.exportMarkdown(); return false;" style="color:var(--ink-primary); text-decoration:underline;" title="Download updated PLAN.md with completed checkboxes">
-                <span data-icon="download" aria-hidden="true"></span><span id="export-label">Xuất PLAN.md + nhật ký</span>
+                <span data-icon="download" aria-hidden="true"></span><span id="export-label" data-i18n="nav.export">Xuất PLAN.md + nhật ký</span>
             </a>
         </div>
     </footer>

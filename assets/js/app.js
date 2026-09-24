@@ -1979,8 +1979,19 @@ LỆNH BẮT BUỘC ĐỐI VỚI AI (ChatGPT / Gemini):
         const notebook = this.planData.domain === 'notebook';
         Workspace.renderNotebook();
         document.body.classList.toggle('finance-mode', finance);
-        document.querySelector('[data-tab="today"] .nav-label').textContent = finance ? 'Thu chi & FIRE' : notebook ? 'Ghi chú' : 'Hôm nay';
-        document.getElementById('export-label').textContent = finance ? 'Xuất dữ liệu tài chính' : notebook ? 'Xuất ghi chú Markdown' : 'Xuất PLAN.md + nhật ký';
+        const todayLabelKey = finance ? 'nav.finance_today' : notebook ? 'nav.notebook_today' : 'nav.today';
+        const todayLabelEl = document.querySelector('[data-tab="today"] .nav-label');
+        if (todayLabelEl) {
+            todayLabelEl.setAttribute('data-i18n', todayLabelKey);
+            todayLabelEl.textContent = (typeof I18n !== 'undefined') ? I18n.t(todayLabelKey) : (finance ? 'Thu chi & FIRE' : notebook ? 'Ghi chú' : 'Hôm nay');
+        }
+
+        const exportLabelKey = finance ? 'nav.export_finance' : notebook ? 'nav.export_notes' : 'nav.export';
+        const exportLabelEl = document.getElementById('export-label');
+        if (exportLabelEl) {
+            exportLabelEl.setAttribute('data-i18n', exportLabelKey);
+            exportLabelEl.textContent = (typeof I18n !== 'undefined') ? I18n.t(exportLabelKey) : (finance ? 'Xuất dữ liệu tài chính' : notebook ? 'Xuất ghi chú Markdown' : 'Xuất PLAN.md + nhật ký');
+        }
         Finance.render();
         if (finance || notebook) return;
         this.renderDailyView();

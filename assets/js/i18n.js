@@ -51,10 +51,13 @@ const I18n = {
             "nav.today": "Hôm nay",
             "nav.finance_today": "Thu chi & FIRE",
             "nav.notebook_today": "Ghi chú",
-            "nav.toc": "Tổng quan",
+            "nav.toc": "Mục lục",
             "nav.tasks": "Nhiệm vụ",
             "nav.journal": "Nhật ký",
-            "nav.wizard": "Tạo Plan",
+            "nav.wizard": "Lập kế hoạch",
+            "nav.import": "Nhập PLAN.md",
+            "nav.stats": "Đánh giá & điều chỉnh",
+            "nav.guide": "Định dạng",
             "nav.export": "Xuất PLAN.md + nhật ký",
             "nav.export_notes": "Xuất ghi chú Markdown",
             "nav.export_finance": "Xuất dữ liệu tài chính",
@@ -349,6 +352,9 @@ const I18n = {
             "nav.tasks": "Tasks",
             "nav.journal": "Journal",
             "nav.wizard": "New Plan",
+            "nav.import": "Import PLAN.md",
+            "nav.stats": "Review & Adaptation",
+            "nav.guide": "Format Guide",
             "nav.export": "Export PLAN.md + Journal",
             "nav.export_notes": "Export Markdown Notes",
             "nav.export_finance": "Export Finance Data",
@@ -734,6 +740,20 @@ const I18n = {
             if (typeof App !== 'undefined') {
                 if (App.updateHeaderPlanLabel) App.updateHeaderPlanLabel();
                 if (App.planData) {
+                    const finance = App.planData.domain === 'finance';
+                    const notebook = App.planData.domain === 'notebook';
+                    const todayLabelKey = finance ? 'nav.finance_today' : notebook ? 'nav.notebook_today' : 'nav.today';
+                    const todayLabelEl = document.querySelector('[data-tab="today"] .nav-label');
+                    if (todayLabelEl) {
+                        todayLabelEl.setAttribute('data-i18n', todayLabelKey);
+                        todayLabelEl.textContent = this.t(todayLabelKey);
+                    }
+                    const exportLabelKey = finance ? 'nav.export_finance' : notebook ? 'nav.export_notes' : 'nav.export';
+                    const exportLabelEl = document.getElementById('export-label');
+                    if (exportLabelEl) {
+                        exportLabelEl.setAttribute('data-i18n', exportLabelKey);
+                        exportLabelEl.textContent = this.t(exportLabelKey);
+                    }
                     if (App.renderDailyView) App.renderDailyView();
                     if (App.renderTocView && App.currentView === 'toc') App.renderTocView();
                 }
