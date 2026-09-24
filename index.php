@@ -259,12 +259,36 @@ if (!$requestedPlan) {
                         </select>
                     </div>
                     <div class="form-group">
-                        <label class="form-label"> Trình độ hiện tại:</label>
-                        <button type="button" id="btn-ielts-level" class="btn-sample" onclick="App.openIeltsModal()">Chọn trình độ & kỹ năng IELTS</button>
-                        <button type="button" id="btn-fitness-setup" class="btn-sample" hidden onclick="document.getElementById('fitness-setup-modal').showModal()">Chọn lịch tập & ăn uống</button>
-                        <button type="button" id="btn-code-setup" class="btn-sample" hidden onclick="document.getElementById('code-setup-modal').showModal()">Chọn nền tảng & dự án Vibe Code</button>
-                        <button type="button" id="btn-finance-setup" class="btn-sample" hidden onclick="Finance.open()">Thiết lập Tài chính & FIRE</button>
-                        <input type="text" id="wiz-current-level" class="form-input" value="Chưa biết trình độ IELTS — cần bài đánh giá đầu vào">
+                        <label class="form-label" for="wiz-current-level"> Trình độ hiện tại & Thiết lập kỹ năng:</label>
+                        <button type="button" id="btn-ielts-level" class="btn-skill-setup skill-btn-ielts" onclick="App.openIeltsModal()">
+                            <span class="skill-btn-lead">
+                                <span data-icon="study" aria-hidden="true"></span>
+                                <span class="skill-btn-title">Chọn trình độ & kỹ năng IELTS</span>
+                            </span>
+                            <span class="skill-btn-badge">Tùy chỉnh ↗</span>
+                        </button>
+                        <button type="button" id="btn-fitness-setup" class="btn-skill-setup skill-btn-fitness" hidden onclick="document.getElementById('fitness-setup-modal').showModal()">
+                            <span class="skill-btn-lead">
+                                <span data-icon="fitness" aria-hidden="true"></span>
+                                <span class="skill-btn-title">Chọn lịch tập & ăn uống</span>
+                            </span>
+                            <span class="skill-btn-badge">Tùy chỉnh ↗</span>
+                        </button>
+                        <button type="button" id="btn-code-setup" class="btn-skill-setup skill-btn-vibecode" hidden onclick="document.getElementById('code-setup-modal').showModal()">
+                            <span class="skill-btn-lead">
+                                <span data-icon="code" aria-hidden="true"></span>
+                                <span class="skill-btn-title">Chọn nền tảng & dự án Vibe Code</span>
+                            </span>
+                            <span class="skill-btn-badge">Tùy chỉnh ↗</span>
+                        </button>
+                        <button type="button" id="btn-finance-setup" class="btn-skill-setup skill-btn-finance" hidden onclick="Finance.open()">
+                            <span class="skill-btn-lead">
+                                <span data-icon="wallet" aria-hidden="true"></span>
+                                <span class="skill-btn-title">Thiết lập Tài chính & FIRE</span>
+                            </span>
+                            <span class="skill-btn-badge">Tùy chỉnh ↗</span>
+                        </button>
+                        <input type="text" id="wiz-current-level" class="form-input" value="Chưa biết trình độ IELTS — cần bài đánh giá đầu vào" placeholder="Nội dung sẽ tự cập nhật khi bấm tùy chỉnh bên trên...">
                     </div>
                     <div class="form-group">
                         <label class="form-label"> Mục tiêu cần đạt:</label>

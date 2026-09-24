@@ -1620,18 +1620,198 @@ body.theme-kobo .note-mark:not([class*="hl-"]) {
     border: 1px solid var(--border-color);
 }
 
+/* ==========================================================================
+   Skill Configuration Buttons ("Trình độ hiện tại: ...") with 6 Basic Colors
+   ========================================================================== */
+.btn-skill-setup {
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.65rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    font-size: 0.88rem;
+    font-weight: 700;
+    border: 2px solid var(--border-color);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    user-select: none;
+    text-align: left;
+}
+
+.btn-skill-setup .skill-btn-lead {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-weight: 700;
+}
+
+.btn-skill-setup .skill-btn-lead .ui-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.btn-skill-setup .skill-btn-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.25rem 0.65rem;
+    border-radius: 20px;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* 1. IELTS Setup Button (Authentic Kobo Green #a7dab9 / #114e27) */
+.btn-skill-setup.skill-btn-ielts,
 #btn-ielts-level {
-    margin-bottom: .5rem;
+    background: #edf7f1;
+    border-color: #2e7d32;
+    color: #1b5e20;
+}
+.btn-skill-setup.skill-btn-ielts .skill-btn-badge,
+#btn-ielts-level .skill-btn-badge {
+    background: #2e7d32;
+    color: #ffffff;
+}
+.btn-skill-setup.skill-btn-ielts:hover,
+#btn-ielts-level:hover {
+    background: #ddf2e4;
+    border-color: #1b5e20;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 16px rgba(46, 125, 50, 0.25);
+}
+
+/* 2. Fitness Setup Button (Authentic Kobo Red #ea8a78 / #821c0e) */
+.btn-skill-setup.skill-btn-fitness,
+#btn-fitness-setup {
+    background: #fdf2ef;
+    border-color: #c62828;
+    color: #b71c1c;
+}
+.btn-skill-setup.skill-btn-fitness .skill-btn-badge,
+#btn-fitness-setup .skill-btn-badge {
+    background: #c62828;
+    color: #ffffff;
+}
+.btn-skill-setup.skill-btn-fitness:hover,
+#btn-fitness-setup:hover {
+    background: #fce4e0;
+    border-color: #b71c1c;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 16px rgba(198, 40, 40, 0.25);
+}
+
+/* 3. Vibe Code Setup Button (Authentic Kobo Blue #9fd3e9 / #0a4768) */
+.btn-skill-setup.skill-btn-vibecode,
+#btn-code-setup {
+    background: #edf5fb;
+    border-color: #1565c0;
+    color: #0d47a1;
+}
+.btn-skill-setup.skill-btn-vibecode .skill-btn-badge,
+#btn-code-setup .skill-btn-badge {
+    background: #1565c0;
+    color: #ffffff;
+}
+.btn-skill-setup.skill-btn-vibecode:hover,
+#btn-code-setup:hover {
+    background: #dbebf7;
+    border-color: #0d47a1;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 16px rgba(21, 101, 192, 0.25);
+}
+
+/* 4. Finance Setup Button (Authentic Kobo Yellow #f7e28b / #5f4500) */
+.btn-skill-setup.skill-btn-finance,
+#btn-finance-setup {
+    background: #faf5e1;
+    border-color: #f57f17;
+    color: #b26a00;
+}
+.btn-skill-setup.skill-btn-finance .skill-btn-badge,
+#btn-finance-setup .skill-btn-badge {
+    background: #f57f17;
+    color: #ffffff;
+}
+.btn-skill-setup.skill-btn-finance:hover,
+#btn-finance-setup:hover {
+    background: #f5ecc7;
+    border-color: #e65100;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 16px rgba(245, 127, 23, 0.25);
+}
+
+/* Theme Black (Dark Mode) Accents */
+body.theme-black .btn-skill-setup.skill-btn-ielts,
+body.theme-black #btn-ielts-level {
+    background: #15291d;
+    border-color: #4ade80;
+    color: #86efac;
+}
+body.theme-black .btn-skill-setup.skill-btn-ielts .skill-btn-badge,
+body.theme-black #btn-ielts-level .skill-btn-badge {
+    background: #4ade80;
+    color: #052e16;
+}
+
+body.theme-black .btn-skill-setup.skill-btn-fitness,
+body.theme-black #btn-fitness-setup {
+    background: #2b1717;
+    border-color: #f87171;
+    color: #fca5a5;
+}
+body.theme-black .btn-skill-setup.skill-btn-fitness .skill-btn-badge,
+body.theme-black #btn-fitness-setup .skill-btn-badge {
+    background: #f87171;
+    color: #450a0a;
+}
+
+body.theme-black .btn-skill-setup.skill-btn-vibecode,
+body.theme-black #btn-code-setup {
+    background: #152433;
+    border-color: #38bdf8;
+    color: #bae6fd;
+}
+body.theme-black .btn-skill-setup.skill-btn-vibecode .skill-btn-badge,
+body.theme-black #btn-code-setup .skill-btn-badge {
+    background: #38bdf8;
+    color: #082f49;
+}
+
+body.theme-black .btn-skill-setup.skill-btn-finance,
+body.theme-black #btn-finance-setup {
+    background: #2b2513;
+    border-color: #facc15;
+    color: #fef08a;
+}
+body.theme-black .btn-skill-setup.skill-btn-finance .skill-btn-badge,
+body.theme-black #btn-finance-setup .skill-btn-badge {
+    background: #facc15;
+    color: #422006;
 }
 
 @keyframes pulseSkillBtn {
-    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(30, 58, 95, 0.4); }
-    50% { transform: scale(1.03); box-shadow: 0 0 0 8px rgba(30, 58, 95, 0.15); }
-    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(30, 58, 95, 0); }
+    0% { transform: scale(1); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05); }
+    40% { transform: scale(1.025); box-shadow: 0 0 0 8px rgba(46, 125, 50, 0.25), 0 6px 20px rgba(0, 0, 0, 0.15); }
+    100% { transform: scale(1); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05); }
 }
 
 .pulse-skill-btn {
-    animation: pulseSkillBtn 0.75s ease-in-out;
+    animation: pulseSkillBtn 0.8s ease-in-out;
+}
+
+#wiz-current-level {
+    background: var(--bg-card);
+    color: var(--ink-secondary);
+    font-size: 0.85rem;
+    border-style: dashed;
 }
 
 /* Center native dialogs independently of the page scroll position. */
@@ -1651,10 +1831,6 @@ body.theme-kobo .note-mark:not([class*="hl-"]) {
     margin-top: 1rem;
 }
 
-#btn-fitness-setup,
-#btn-code-setup {
-    margin-bottom: .5rem;
-}
 
 [hidden] {
     display: none !important;
@@ -3166,13 +3342,15 @@ body.theme-black .btn-danger-confirm {
     #btn-ielts-level,
     #btn-fitness-setup,
     #btn-code-setup,
-    #btn-finance-setup {
+    #btn-finance-setup,
+    .btn-skill-setup {
         width: 100%;
         box-sizing: border-box;
-        padding: 0.7rem 0.85rem;
-        font-size: 0.88rem;
-        text-align: center;
-        justify-content: center;
+        padding: 0.65rem 0.85rem;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
     }
 
     .wizard-action-buttons {
