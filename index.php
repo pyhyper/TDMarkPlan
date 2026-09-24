@@ -31,29 +31,36 @@ if (!$requestedPlan) {
     <header class="ereader-header">
         <div class="title-badge" id="plan-title-badge-wrap">
             <span data-icon="book" aria-hidden="true"></span>
-            <span id="plan-title-display" title="Bấm để đổi tiêu đề kế hoạch" onclick="App.openPlanTitleEditor()">TDMarkPlan</span>
-            <button type="button" class="plan-title-edit-btn" id="btn-edit-plan-title" onclick="App.openPlanTitleEditor()" aria-label="Đổi tiêu đề kế hoạch" title="Đổi tiêu đề kế hoạch">
+            <span id="plan-title-display" title="Bấm để đổi tiêu đề kế hoạch" data-i18n-title="header.edit_title_tooltip" onclick="App.openPlanTitleEditor()">TDMarkPlan</span>
+            <button type="button" class="plan-title-edit-btn" id="btn-edit-plan-title" onclick="App.openPlanTitleEditor()" aria-label="Đổi tiêu đề kế hoạch" title="Đổi tiêu đề kế hoạch" data-i18n-title="header.edit_title_btn" data-i18n-aria="header.edit_title_btn">
                 <span data-icon="edit" aria-hidden="true"></span>
             </button>
         </div>
 
         <!-- Dynamic Link Pill -->
         <div class="dynamic-link-badge" id="dynamic-link-pill">
-            <button type="button" class="dynamic-link-copy" onclick="App.copyDynamicLink()" title="Copy link" aria-label="Copy link hiện tại">
+            <button type="button" class="dynamic-link-copy" onclick="App.copyDynamicLink()" title="Copy link" data-i18n-title="header.copy_link_tooltip" aria-label="Copy link hiện tại" data-i18n-aria="header.copy_link_tooltip">
             <span data-icon="link" aria-hidden="true"></span>
-            <span id="dynamic-link-slug">Đang tạo link…</span>
-            <span style="font-size:0.7rem; color:var(--ink-muted);">[Copy]</span>
+            <span id="dynamic-link-slug" data-i18n="header.generating_link">Đang tạo link…</span>
+            <span style="font-size:0.7rem; color:var(--ink-muted);" data-i18n="header.copy_label">[Copy]</span>
             </button>
-            <button type="button" class="link-edit-button" id="btn-edit-link" onclick="App.openLinkEditor()" aria-label="Sửa link" title="Sửa link"><span data-icon="edit" aria-hidden="true"></span></button>
+            <button type="button" class="link-edit-button" id="btn-edit-link" onclick="App.openLinkEditor()" aria-label="Sửa link" data-i18n-aria="header.edit_link_btn" title="Sửa link" data-i18n-title="header.edit_link_btn"><span data-icon="edit" aria-hidden="true"></span></button>
         </div>
 
         <div class="ereader-controls">
+            <!-- Language Switcher EN / VN -->
+            <div class="lang-switcher" id="lang-switcher" role="group" aria-label="Language / Ngôn ngữ">
+                <button type="button" class="lang-btn" id="btn-lang-en" onclick="I18n.setLanguage('en')" title="English">EN</button>
+                <span class="lang-divider">/</span>
+                <button type="button" class="lang-btn is-active" id="btn-lang-vi" onclick="I18n.setLanguage('vi')" title="Tiếng Việt">VN</button>
+            </div>
+
             <!-- Font Size Adjusters -->
-            <button class="control-btn" id="btn-font-minus" title="Smaller font size">A-</button>
-            <button class="control-btn" id="btn-font-plus" title="Larger font size">A+</button>
+            <button class="control-btn" id="btn-font-minus" title="Smaller font size" data-i18n-title="header.smaller_font">A-</button>
+            <button class="control-btn" id="btn-font-plus" title="Larger font size" data-i18n-title="header.larger_font">A+</button>
 
             <!-- Theme Palette Swatch Indicator (6 Màu Cơ Bản) -->
-            <div class="palette-swatch-bar" id="header-palette-swatches" title="6 màu cơ bản: Vàng, Xanh dương, Hồng, Xanh lá, Đỏ, Đen" aria-label="6 màu cơ bản">
+            <div class="palette-swatch-bar" id="header-palette-swatches" title="6 màu cơ bản: Vàng, Xanh dương, Hồng, Xanh lá, Đỏ, Đen" data-i18n-title="header.six_colors" aria-label="6 màu cơ bản" data-i18n-aria="header.six_colors">
                 <span class="palette-dot dot-yellow" title="Màu vàng (Butter Yellow)"></span>
                 <span class="palette-dot dot-blue" title="Màu xanh dương (Dusk Blue)"></span>
                 <span class="palette-dot dot-pink" title="Màu hồng (Candy Pink)"></span>
@@ -64,9 +71,9 @@ if (!$requestedPlan) {
 
             <!-- Theme Mode Switcher -->
             <select class="control-btn" id="theme-select" title="Màu giao diện" aria-label="Màu giao diện">
-                <option value="kobo" selected>Màu đa sắc (Bút & Màu đánh dấu)</option>
-                <option value="paper">Màu giấy (Warm Paper)</option>
-                <option value="black">Màu đen (Black)</option>
+                <option value="kobo" selected data-i18n="header.theme_kobo">Màu đa sắc (Bút & Màu đánh dấu)</option>
+                <option value="paper" data-i18n="header.theme_paper">Màu giấy (Warm Paper)</option>
+                <option value="black" data-i18n="header.theme_black">Màu đen (Black)</option>
             </select>
 
             <!-- Plan Selector & Manager (Icon con mắt ở header) -->
@@ -82,30 +89,30 @@ if (!$requestedPlan) {
     </header>
 
     <section id="workspace-deck" class="workspace-deck" hidden aria-label="Hai plan của bạn">
-        <details id="plan-card-1" class="workspace-card"><summary id="plan-summary-1"><span>01</span><strong id="plan-title-1">Plan 1</strong><small>Mở / thu gọn</small></summary><div id="plan-holder-1"></div></details>
-        <details id="plan-card-2" class="workspace-card"><summary id="plan-summary-2"><span>02</span><strong id="plan-title-2">Thêm plan thứ hai</strong><small>Mở / thu gọn</small></summary><div id="plan-holder-2"></div></details>
+        <details id="plan-card-1" class="workspace-card"><summary id="plan-summary-1"><span>01</span><strong id="plan-title-1">Plan 1</strong><small data-i18n="common.expand_collapse">Mở / thu gọn</small></summary><div id="plan-holder-1"></div></details>
+        <details id="plan-card-2" class="workspace-card"><summary id="plan-summary-2"><span>02</span><strong id="plan-title-2">Thêm plan thứ hai</strong><small data-i18n="common.expand_collapse">Mở / thu gọn</small></summary><div id="plan-holder-2"></div></details>
     </section>
     <div id="single-plan-host"><div id="plan-surface">
 
     <!-- 2. E-Reader Navigation Menu -->
     <nav class="ereader-nav">
         <a href="#today" class="nav-tab active" data-tab="today">
-            <span data-icon="book" aria-hidden="true"></span><span class="nav-label">Hôm nay</span>
+            <span data-icon="book" aria-hidden="true"></span><span class="nav-label" data-i18n="nav.today">Hôm nay</span>
         </a>
         <a href="#wizard" class="nav-tab" data-tab="wizard">
-            <span data-icon="spark" aria-hidden="true"></span><span class="nav-label">Lập kế hoạch</span>
+            <span data-icon="spark" aria-hidden="true"></span><span class="nav-label" data-i18n="nav.wizard">Lập kế hoạch</span>
         </a>
         <a href="#toc" class="nav-tab" data-tab="toc">
-            <span data-icon="list" aria-hidden="true"></span><span class="nav-label">Mục lục</span>
+            <span data-icon="list" aria-hidden="true"></span><span class="nav-label" data-i18n="nav.toc">Mục lục</span>
         </a>
         <a href="#import" class="nav-tab" data-tab="import">
-            <span data-icon="upload" aria-hidden="true"></span><span class="nav-label">Nhập PLAN.md</span>
+            <span data-icon="upload" aria-hidden="true"></span><span class="nav-label" data-i18n="nav.import">Nhập PLAN.md</span>
         </a>
         <a href="#stats" class="nav-tab" data-tab="stats">
-            <span data-icon="chart" aria-hidden="true"></span><span class="nav-label">Đánh giá & điều chỉnh</span>
+            <span data-icon="chart" aria-hidden="true"></span><span class="nav-label" data-i18n="nav.review_title">Đánh giá & điều chỉnh</span>
         </a>
         <a href="#guide" class="nav-tab" data-tab="guide">
-            <span data-icon="info" aria-hidden="true"></span><span class="nav-label">Định dạng</span>
+            <span data-icon="info" aria-hidden="true"></span><span class="nav-label" data-i18n="nav.guide_title">Định dạng</span>
         </a>
     </nav>
 
@@ -607,17 +614,17 @@ duration_weeks: [number]
 <dialog id="plan-title-modal" class="ielts-dialog" aria-labelledby="plan-title-modal-title">
     <form onsubmit="event.preventDefault(); App.submitRenamePlan(document.getElementById('plan-title-input').value);">
         <div class="ielts-modal-heading">
-            <h2 id="plan-title-modal-title">Đổi tiêu đề kế hoạch</h2>
-            <button type="button" class="control-btn" aria-label="Đóng" onclick="document.getElementById('plan-title-modal').close()">✕</button>
+            <h2 id="plan-title-modal-title" data-i18n="modal.title.heading">Đổi tiêu đề kế hoạch</h2>
+            <button type="button" class="control-btn" aria-label="Đóng" data-i18n-aria="common.close" onclick="document.getElementById('plan-title-modal').close()">✕</button>
         </div>
-        <p style="margin-bottom:0.75rem; color:var(--ink-secondary); font-size:0.85rem;">
+        <p style="margin-bottom:0.75rem; color:var(--ink-secondary); font-size:0.85rem;" data-i18n="modal.title.desc">
             Nhập tiêu đề mới cho kế hoạch của bạn (tối đa 200 ký tự).
         </p>
-        <label class="form-label" for="plan-title-input">Tiêu đề kế hoạch</label>
-        <input id="plan-title-input" class="form-input" required maxlength="200" autocomplete="off" spellcheck="false" placeholder="Ví dụ: Luyện thi IELTS 6.5 Cấp Tốc">
+        <label class="form-label" for="plan-title-input" data-i18n="modal.title.label">Tiêu đề kế hoạch</label>
+        <input id="plan-title-input" class="form-input" required maxlength="200" autocomplete="off" spellcheck="false" placeholder="Ví dụ: Luyện thi IELTS 6.5 Cấp Tốc" data-i18n-placeholder="modal.title.placeholder">
         <div style="display:flex; justify-content:flex-end; gap:0.5rem; margin-top:1rem;">
-            <button type="button" class="control-btn" onclick="document.getElementById('plan-title-modal').close()">Hủy</button>
-            <button type="submit" class="btn-primary" id="btn-save-plan-title">Lưu tiêu đề</button>
+            <button type="button" class="control-btn" onclick="document.getElementById('plan-title-modal').close()" data-i18n="common.cancel">Hủy</button>
+            <button type="submit" class="btn-primary" id="btn-save-plan-title" data-i18n="modal.title.btn_save">Lưu tiêu đề</button>
         </div>
     </form>
 </dialog>
@@ -625,11 +632,11 @@ duration_weeks: [number]
 <!-- 5. Password Management Modal Dialog -->
 <dialog id="link-edit-modal" class="ielts-dialog" aria-labelledby="link-edit-title">
     <form onsubmit="event.preventDefault(); App.applyCustomLink(event.submitter, 'link-edit-value', 'link-edit-feedback')">
-        <div class="ielts-modal-heading"><h2 id="link-edit-title">Sửa link của bạn</h2><button type="button" class="control-btn" aria-label="Đóng" onclick="document.getElementById('link-edit-modal').close()">✕</button></div>
-        <p>Đổi tên link dùng chung cho cả hai plan. Link cũ vẫn dẫn tới link mới.</p>
-        <label class="form-label" for="link-edit-value">Tên link</label><input id="link-edit-value" class="form-input" required maxlength="64" pattern="[a-z0-9][a-z0-9_-]{0,63}" autocomplete="off" spellcheck="false">
-        <p>Dùng chữ thường không dấu, số, dấu gạch ngang hoặc gạch dưới.</p>
-        <p id="link-edit-feedback" role="status"></p><button type="submit" class="btn-primary">Lưu link</button>
+        <div class="ielts-modal-heading"><h2 id="link-edit-title" data-i18n="modal.link.heading">Sửa link của bạn</h2><button type="button" class="control-btn" aria-label="Đóng" data-i18n-aria="common.close" onclick="document.getElementById('link-edit-modal').close()">✕</button></div>
+        <p data-i18n="modal.link.desc">Đổi tên link dùng chung cho cả hai plan. Link cũ vẫn dẫn tới link mới.</p>
+        <label class="form-label" for="link-edit-value" data-i18n="modal.link.label">Tên link</label><input id="link-edit-value" class="form-input" required maxlength="64" pattern="[a-z0-9][a-z0-9_-]{0,63}" autocomplete="off" spellcheck="false">
+        <p data-i18n="modal.link.help">Dùng chữ thường không dấu, số, dấu gạch ngang hoặc gạch dưới.</p>
+        <p id="link-edit-feedback" role="status"></p><button type="submit" class="btn-primary" data-i18n="modal.link.btn_save">Lưu link</button>
     </form>
 </dialog>
 <dialog id="fire-modal" class="ielts-dialog" aria-labelledby="fire-title"><form onsubmit="Finance.apply(event)"><div class="ielts-modal-heading"><h2 id="fire-title">Thiết lập Tài chính & FIRE</h2><button type="button" class="control-btn" aria-label="Đóng" onclick="document.getElementById('fire-modal').close()">✕</button></div><fieldset class="finance-questionnaire"><legend>Hiểu tình hình của bạn</legend>
@@ -901,6 +908,7 @@ duration_weeks: [number]
     </div>
 </div>
 
+<script src="assets/js/i18n.js?v=<?php echo filemtime(__DIR__ . '/assets/js/i18n.js'); ?>"></script>
 <script src="assets/js/workspace.js?v=<?php echo filemtime(__DIR__ . '/assets/js/workspace.js'); ?>"></script>
 <script src="assets/js/ielts.js?v=<?php echo filemtime(__DIR__ . '/assets/js/ielts.js'); ?>"></script>
 <script src="assets/js/icons.js?v=<?php echo filemtime(__DIR__ . '/assets/js/icons.js'); ?>"></script>

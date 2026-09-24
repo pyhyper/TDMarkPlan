@@ -29,7 +29,13 @@ const makeElem = (id = '') => {
         classList: {
             contains: c => localClasses.has(c) || classes.has(c),
             add: (...c) => c.forEach(x => { localClasses.add(x); classes.add(x); }),
-            remove: (...c) => c.forEach(x => { localClasses.delete(x); classes.delete(x); })
+            remove: (...c) => c.forEach(x => { localClasses.delete(x); classes.delete(x); }),
+            toggle: (c, force) => {
+                const has = localClasses.has(c) || classes.has(c);
+                const shouldAdd = force !== undefined ? !!force : !has;
+                if (shouldAdd) { localClasses.add(c); classes.add(c); return true; }
+                localClasses.delete(c); classes.delete(c); return false;
+            }
         },
         addEventListener: (evt, fn) => {
             listeners[evt] ||= [];
@@ -115,11 +121,13 @@ const context = {
 };
 
 vm.createContext(context);
+vm.runInContext(fs.readFileSync('assets/js/i18n.js', 'utf8') + '\nthis.I18n = I18n;', context);
 vm.runInContext(fs.readFileSync('assets/js/icons.js', 'utf8') + '\nthis.Icons = Icons;', context);
 vm.runInContext(fs.readFileSync('assets/js/workspace.js', 'utf8') + '\nthis.Workspace = Workspace;', context);
 vm.runInContext(fs.readFileSync('assets/js/app.js', 'utf8') + '\nthis.App = App;', context);
 vm.runInContext(fs.readFileSync('assets/js/journal.js', 'utf8') + '\nthis.Journal = Journal;', context);
 
+const I18n = context.I18n;
 const Icons = context.Icons;
 const Workspace = context.Workspace;
 const App = context.App;
@@ -359,7 +367,32 @@ assert(typeof App.deletePlan === 'function', 'deletePlan function exists on App'
     assert(htmlContent.includes('id="btn-edit-plan-title"'), 'Header contains edit plan title button');
     assert(htmlContent.includes('id="plan-title-modal"'), 'HTML contains plan-title-modal dialog');
 
-    console.log('PASS: Theme, Notebook Highlight, Delete Icon, Auto-Delete, Note Visibility, Plan Modal, Visual Highlight Editor, Confirm Dialog, Task Renaming, Password/Auto-Delete Modal & Plan Title Editing tests completed successfully.');
+    // Test: I18n Language Switcher & Auto-Detection
+    assert(typeof I18n !== 'undefined', 'I18n module is loaded');
+    assert(typeof I18n.setLanguage === 'function', 'setLanguage method exists');
+    assert(typeof I18n.detectLanguage === 'function', 'detectLanguage method exists');
+
+    // Test switching to English
+    I18n.setLanguage('en', false);
+    assert.equal(I18n.currentLang, 'en', 'Sets current language to English');
+    assert.equal(context.localStorage.getItem('tdp_lang'), 'en', 'Saves English preference to localStorage');
+    assert.equal(I18n.t('nav.today'), 'Today', 'Translates nav.today to English');
+    assert.equal(I18n.t('wizard.step2_title'), '2. Time & Personal Goals Setup:', 'Translates step 2 heading to English');
+
+    // Test switching to Vietnamese
+    I18n.setLanguage('vi', false);
+    assert.equal(I18n.currentLang, 'vi', 'Sets current language to Vietnamese');
+    assert.equal(context.localStorage.getItem('tdp_lang'), 'vi', 'Saves Vietnamese preference to localStorage');
+    assert.equal(I18n.t('nav.today'), 'Hôm nay', 'Translates nav.today to Vietnamese');
+    assert.equal(I18n.t('wizard.step2_title'), '2. Thiết Lập Thời Gian & Mục Tiêu Cá Nhân:', 'Translates step 2 heading to Vietnamese');
+
+    // Test markup contains EN/VN switcher buttons
+    assert(htmlContent.includes('id="lang-switcher"'), 'HTML contains lang-switcher container');
+    assert(htmlContent.includes('id="btn-lang-en"'), 'HTML contains English switcher button');
+    assert(htmlContent.includes('id="btn-lang-vi"'), 'HTML contains Vietnamese switcher button');
+    assert(htmlContent.includes('assets/js/i18n.js'), 'HTML loads assets/js/i18n.js script');
+
+    console.log('PASS: Theme, Notebook Highlight, Delete Icon, Auto-Delete, Note Visibility, Plan Modal, Visual Highlight Editor, Confirm Dialog, Task Renaming, Password/Auto-Delete Modal, Plan Title Editing & EN/VN I18n tests completed successfully.');
 })();
 
 

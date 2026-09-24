@@ -759,13 +759,13 @@ const App = {
             const statusBadge = document.createElement('span');
             if (item.slot === currentSlot) {
                 statusBadge.className = 'badge-active-plan';
-                statusBadge.textContent = '✓ Đang hiển thị';
+                statusBadge.textContent = (typeof I18n !== 'undefined') ? I18n.t('modal.plan.current_badge', '✓ Đang hiển thị') : '✓ Đang hiển thị';
             } else if (item.exists) {
-                statusBadge.textContent = 'Có sẵn';
+                statusBadge.textContent = (typeof I18n !== 'undefined') ? I18n.t('modal.plan.available_badge', 'Có sẵn') : 'Có sẵn';
                 statusBadge.style.fontSize = '0.72rem';
                 statusBadge.style.color = 'var(--ink-secondary)';
             } else {
-                statusBadge.textContent = 'Chưa tạo';
+                statusBadge.textContent = (typeof I18n !== 'undefined') ? I18n.t('modal.plan.not_created_badge', 'Chưa tạo') : 'Chưa tạo';
                 statusBadge.style.fontSize = '0.72rem';
                 statusBadge.style.color = 'var(--ink-muted)';
             }
@@ -776,19 +776,26 @@ const App = {
             titleEl.style.margin = '0.2rem 0';
             titleEl.style.fontSize = '0.95rem';
             titleEl.style.fontWeight = '700';
-            titleEl.textContent = item.exists ? item.title : (item.slot === 2 ? 'Thêm plan thứ hai' : 'Tạo plan đầu tiên');
+            titleEl.textContent = item.exists ? item.title : (item.slot === 2 ? ((typeof I18n !== 'undefined' && I18n.currentLang === 'en') ? 'Add second plan' : 'Thêm plan thứ hai') : ((typeof I18n !== 'undefined' && I18n.currentLang === 'en') ? 'Create first plan' : 'Tạo plan đầu tiên'));
 
             const domainEl = document.createElement('div');
             domainEl.style.fontSize = '0.78rem';
             domainEl.style.color = 'var(--ink-secondary)';
-            const domainLabels = {
+            const isEn = (typeof I18n !== 'undefined' && I18n.currentLang === 'en');
+            const domainLabels = isEn ? {
+                ielts: 'IELTS & Languages',
+                fitness: 'Gym & Fitness',
+                code: 'Vibe Code & AI',
+                finance: 'Personal Finance & FIRE',
+                notebook: 'Freeform Notebook'
+            } : {
                 ielts: 'Học tập & IELTS',
                 fitness: 'Lịch tập & Thể hình',
                 code: 'Vibe Code & AI',
                 finance: 'Tài chính & FIRE',
                 notebook: 'Sổ ghi chú tự do'
             };
-            domainEl.textContent = item.domain ? (domainLabels[item.domain] || item.domain) : (item.exists ? 'Kế hoạch học tập' : 'Ô plan còn trống');
+            domainEl.textContent = item.domain ? (domainLabels[item.domain] || item.domain) : (item.exists ? ((typeof I18n !== 'undefined') ? I18n.t('modal.plan.default_plan', 'Kế hoạch học tập') : 'Kế hoạch học tập') : ((typeof I18n !== 'undefined') ? I18n.t('modal.plan.empty_slot', 'Ô plan còn trống') : 'Ô plan còn trống'));
 
             const actionsRow = document.createElement('div');
             actionsRow.style.display = 'flex';
@@ -801,13 +808,13 @@ const App = {
             actionBtn.style.flex = '1';
             if (item.slot === currentSlot) {
                 actionBtn.className = 'btn-sample is-active-plan-btn';
-                actionBtn.textContent = '✓ Đang hiển thị';
+                actionBtn.textContent = (typeof I18n !== 'undefined') ? I18n.t('modal.plan.current_badge', '✓ Đang hiển thị') : '✓ Đang hiển thị';
             } else if (item.exists) {
                 actionBtn.className = 'btn-sample';
-                actionBtn.textContent = 'Xem kế hoạch này →';
+                actionBtn.textContent = (typeof I18n !== 'undefined') ? I18n.t('modal.plan.view_btn', 'Xem kế hoạch này →') : 'Xem kế hoạch này →';
             } else {
                 actionBtn.className = 'btn-sample';
-                actionBtn.textContent = '+ Thiết lập plan này';
+                actionBtn.textContent = (typeof I18n !== 'undefined') ? I18n.t('modal.plan.setup_btn', '+ Thiết lập plan này') : '+ Thiết lập plan này';
             }
             actionsRow.appendChild(actionBtn);
 
@@ -815,8 +822,8 @@ const App = {
                 const btnRenameSlot = document.createElement('button');
                 btnRenameSlot.type = 'button';
                 btnRenameSlot.className = 'btn-plan-rename-slot';
-                btnRenameSlot.title = `Đổi tiêu đề (Slot ${item.slot})`;
-                btnRenameSlot.setAttribute('aria-label', `Đổi tiêu đề: ${item.title}`);
+                btnRenameSlot.title = (typeof I18n !== 'undefined') ? I18n.t('modal.plan.rename_btn', `Đổi tiêu đề (Slot ${item.slot})`).replace('{slot}', item.slot) : `Đổi tiêu đề (Slot ${item.slot})`;
+                btnRenameSlot.setAttribute('aria-label', `${(typeof I18n !== 'undefined' ? I18n.t('common.edit', 'Đổi tiêu đề') : 'Đổi tiêu đề')}: ${item.title}`);
                 btnRenameSlot.innerHTML = (typeof Icons !== 'undefined' && Icons.svg) ? `${Icons.svg('edit')}` : '✎';
                 btnRenameSlot.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -827,8 +834,8 @@ const App = {
                 const btnDelPlan = document.createElement('button');
                 btnDelPlan.type = 'button';
                 btnDelPlan.className = 'btn-plan-delete';
-                btnDelPlan.title = `Xóa kế hoạch (Slot ${item.slot})`;
-                btnDelPlan.setAttribute('aria-label', `Xóa kế hoạch: ${item.title}`);
+                btnDelPlan.title = (typeof I18n !== 'undefined') ? I18n.t('modal.plan.delete_btn', `Xóa kế hoạch (Slot ${item.slot})`).replace('{slot}', item.slot) : `Xóa kế hoạch (Slot ${item.slot})`;
+                btnDelPlan.setAttribute('aria-label', `${(typeof I18n !== 'undefined' ? I18n.t('common.delete', 'Xóa kế hoạch') : 'Xóa kế hoạch')}: ${item.title}`);
                 btnDelPlan.innerHTML = (typeof Icons !== 'undefined' && Icons.svg) ? `${Icons.svg('trash')}` : '🗑';
                 btnDelPlan.addEventListener('click', async (e) => {
                     e.stopPropagation();
@@ -1980,7 +1987,8 @@ LỆNH BẮT BUỘC ĐỐI VỚI AI (ChatGPT / Gemini):
         const tasksContainer = document.getElementById('daily-tasks-list');
         const dateDisplay = document.getElementById('current-date-display');
 
-        const formattedDate = new Date(this.selectedDate + 'T00:00:00').toLocaleDateString('vi-VN', {
+        const currentLang = (typeof I18n !== 'undefined' ? I18n.currentLang : 'vi');
+        const formattedDate = new Date(this.selectedDate + 'T00:00:00').toLocaleDateString(currentLang === 'vi' ? 'vi-VN' : 'en-US', {
             weekday: 'long',
             year: 'numeric',
             month: 'long',
@@ -1990,24 +1998,37 @@ LỆNH BẮT BUỘC ĐỐI VỚI AI (ChatGPT / Gemini):
         if (dateDisplay) dateDisplay.textContent = formattedDate;
 
         if (!dayInfo) {
-            if (chapterTitle) chapterTitle.textContent = 'Ngày Nghỉ / Không Có Lịch';
-            if (chapterSub) chapterSub.textContent = `Ngày: ${this.selectedDate}`;
+            if (chapterTitle) chapterTitle.textContent = (typeof I18n !== 'undefined') ? I18n.t('view.daily.rest_day_title', 'Ngày Nghỉ / Không Có Lịch') : 'Ngày Nghỉ / Không Có Lịch';
+            if (chapterSub) chapterSub.textContent = `${(typeof I18n !== 'undefined' ? I18n.t('common.days', 'Ngày') : 'Ngày')}: ${this.selectedDate}`;
             if (tasksContainer) {
-                tasksContainer.innerHTML = `<div class="empty-day-state">Không có bài học trong ngày này. Hãy chọn ngày khác hoặc nghỉ ngơi phục hồi năng lượng nhé!</div>`;
+                tasksContainer.innerHTML = `<div class="empty-day-state">${(typeof I18n !== 'undefined') ? I18n.t('view.daily.no_tasks', 'Không có bài học trong ngày này. Hãy chọn ngày khác hoặc nghỉ ngơi phục hồi năng lượng nhé!') : 'Không có bài học trong ngày này.'}</div>`;
             }
             return;
         }
 
         const { weekNum, dayName, day } = dayInfo;
-        if (chapterTitle) chapterTitle.textContent = `${day.day_name || dayName}`;
+        let displayDayName = day.day_name || dayName;
+        if (typeof I18n !== 'undefined' && I18n.dayNames && I18n.dayNames[currentLang]) {
+            const raw = (day.day_name || dayName || '').toLowerCase().trim();
+            for (const [k, v] of Object.entries(I18n.dayNames['en'])) {
+                if (raw === k.toLowerCase() || raw === (I18n.dayNames['vi'][k] || '').toLowerCase()) {
+                    displayDayName = I18n.dayNames[currentLang][k];
+                    break;
+                }
+            }
+        }
+        if (chapterTitle) chapterTitle.textContent = displayDayName;
         if (chapterSub) {
-            chapterSub.innerHTML = `<span>Tuần ${weekNum} / ${this.planData.duration_weeks}</span><span>Kế hoạch: ${day.tasks.reduce((sum, t) => sum + (t.duration || 0), 0)} phút</span>`;
+            const weekWord = (typeof I18n !== 'undefined') ? I18n.t('common.week', 'Tuần') : 'Tuần';
+            const planWord = (typeof I18n !== 'undefined') ? I18n.t('common.plan', 'Kế hoạch') : 'Kế hoạch';
+            const minsWord = (typeof I18n !== 'undefined') ? I18n.t('common.mins', 'phút') : 'phút';
+            chapterSub.innerHTML = `<span>${weekWord} ${weekNum} / ${this.planData.duration_weeks}</span><span>${planWord}: ${day.tasks.reduce((sum, t) => sum + (t.duration || 0), 0)} ${minsWord}</span>`;
         }
 
         if (tasksContainer) {
             tasksContainer.innerHTML = '';
             if (!day.tasks || day.tasks.length === 0) {
-                tasksContainer.innerHTML = `<div class="empty-day-state">Hôm nay không có nhiệm vụ. Tự do học tập!</div>`;
+                tasksContainer.innerHTML = `<div class="empty-day-state">${(typeof I18n !== 'undefined') ? I18n.t('view.daily.no_tasks', 'Hôm nay không có nhiệm vụ. Tự do học tập!') : 'Hôm nay không có nhiệm vụ.'}</div>`;
                 return;
             }
 
@@ -2022,7 +2043,7 @@ LỆNH BẮT BUỘC ĐỐI VỚI AI (ChatGPT / Gemini):
 
                 item.innerHTML = `
                     <div style="display:flex; align-items:flex-start; gap:1rem; width:100%;">
-                        <button class="task-checkbox-btn" title="Đánh dấu hoàn thành" onclick="App.toggleTaskStatus('${task.id}', '${task.status}')">
+                        <button class="task-checkbox-btn" title="${(typeof I18n !== 'undefined') ? I18n.t('view.daily.completed', 'Đánh dấu hoàn thành') : 'Đánh dấu hoàn thành'}" onclick="App.toggleTaskStatus('${task.id}', '${task.status}')">
                             ${task.status === 'completed' ? '✓' : ''}
                         </button>
                         <div class="task-content">
@@ -2034,7 +2055,7 @@ LỆNH BẮT BUỘC ĐỐI VỚI AI (ChatGPT / Gemini):
                             </div>
                             <div class="task-title-wrap" id="task-title-wrap-${task.id}">
                                 <span class="task-title" id="task-title-${task.id}">${this.escapeHtml(task.title)}</span>
-                                <button type="button" class="btn-task-rename" title="Đổi tên nhiệm vụ" aria-label="Đổi tên ${this.escapeHtml(task.title)}" onclick="App.startRenameTask('${task.id}')">
+                                <button type="button" class="btn-task-rename" title="${(typeof I18n !== 'undefined') ? I18n.t('view.daily.rename_task', 'Đổi tên nhiệm vụ') : 'Đổi tên nhiệm vụ'}" aria-label="${(typeof I18n !== 'undefined') ? I18n.t('view.daily.rename_task', 'Đổi tên') : 'Đổi tên'} ${this.escapeHtml(task.title)}" onclick="App.startRenameTask('${task.id}')">
                                     ${(typeof Icons !== 'undefined' && Icons.svg) ? Icons.svg('edit') : '✎'}
                                 </button>
                             </div>
