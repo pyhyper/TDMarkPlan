@@ -1624,6 +1624,16 @@ body.theme-kobo .note-mark:not([class*="hl-"]) {
     margin-bottom: .5rem;
 }
 
+@keyframes pulseSkillBtn {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(30, 58, 95, 0.4); }
+    50% { transform: scale(1.03); box-shadow: 0 0 0 8px rgba(30, 58, 95, 0.15); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(30, 58, 95, 0); }
+}
+
+.pulse-skill-btn {
+    animation: pulseSkillBtn 0.75s ease-in-out;
+}
+
 /* Center native dialogs independently of the page scroll position. */
 .ielts-dialog {
     position: fixed;

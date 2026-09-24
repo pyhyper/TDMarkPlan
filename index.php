@@ -185,23 +185,23 @@ if (!$requestedPlan) {
                 1. Chọn Lĩnh Vực Của Bạn:
             </label>
             <div class="domain-cards-grid">
-                <div class="domain-card active" data-domain="ielts" onclick="App.selectDomain('ielts')">
+                <div class="domain-card active" data-domain="ielts" onclick="App.selectDomain('ielts', true)">
                     <div class="domain-icon" data-icon="study" aria-hidden="true"></div>
                     <div class="domain-title">Học Tập & IELTS</div>
                     <div class="domain-desc">Luyện thi IELTS 6.5, tiếng Anh, học từ vựng, ngữ pháp.</div>
                 </div>
-                <div class="domain-card" data-domain="fitness" onclick="App.selectDomain('fitness')">
+                <div class="domain-card" data-domain="fitness" onclick="App.selectDomain('fitness', true)">
                     <div class="domain-icon" data-icon="fitness" aria-hidden="true"></div>
                     <div class="domain-title">Gym & Thể Hình</div>
                     <div class="domain-desc">Tăng cơ, giảm mỡ, chạy bộ 5K, rèn luyện thể lực hàng ngày.</div>
                 </div>
-                <div class="domain-card" data-domain="vibecode" onclick="App.selectDomain('vibecode')">
+                <div class="domain-card" data-domain="vibecode" onclick="App.selectDomain('vibecode', true)">
                     <div class="domain-icon" data-icon="code" aria-hidden="true"></div>
                     <div class="domain-title">Vibe Coding & Lập Trình</div>
                     <div class="domain-desc">Web app, PHP, shared hosting, Python và ứng dụng AI.</div>
                 </div>
-                <div class="domain-card" data-domain="finance" onclick="App.selectDomain('finance')"><div class="domain-icon" data-icon="wallet" aria-hidden="true"></div><div class="domain-title">Tài Chính & FIRE</div><div class="domain-desc">Thu chi, quỹ dự phòng, độc lập và tự do tài chính.</div></div>
-                <div class="domain-card" data-domain="custom" onclick="App.selectDomain('custom')">
+                <div class="domain-card" data-domain="finance" onclick="App.selectDomain('finance', true)"><div class="domain-icon" data-icon="wallet" aria-hidden="true"></div><div class="domain-title">Tài Chính & FIRE</div><div class="domain-desc">Thu chi, quỹ dự phòng, độc lập và tự do tài chính.</div></div>
+                <div class="domain-card" data-domain="custom" onclick="App.selectDomain('custom', true)">
                     <div class="domain-icon" data-icon="target" aria-hidden="true"></div>
                     <div class="domain-title">Tùy Chọn Khác</div>
                     <div class="domain-desc">Kế hoạch đọc sách, tài chính cá nhân, dự án riêng.</div>
@@ -214,7 +214,7 @@ if (!$requestedPlan) {
                 <p id="custom-link-feedback" role="status">Để trống để dùng link ngẫu nhiên. Tên đã có người dùng sẽ không bị ghi đè.</p>
             </div>
             <!-- 2. Parameter Setup Form -->
-            <div class="import-card plan-wizard-only" style="margin-bottom:1.5rem;">
+            <div id="wizard-step-setup" class="import-card plan-wizard-only" style="margin-bottom:1.5rem;">
                 <label style="display:block; font-size:0.85rem; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:var(--ink-secondary); margin-bottom:0.75rem; font-family:var(--font-sans);">
                     2. Thiết Lập Thời Gian & Mục Tiêu Cá Nhân:
                 </label>

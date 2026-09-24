@@ -1041,7 +1041,7 @@ const App = {
     },
 
     // --- Domain Selection & Wizard Presets ---
-    selectDomain(domainKey) {
+    selectDomain(domainKey, shouldScroll = false) {
         this.selectedDomain = domainKey;
         document.body.classList.toggle('finance-setup', domainKey === 'finance');
         document.getElementById('finance-onboarding').hidden = domainKey !== 'finance';
@@ -1121,6 +1121,24 @@ const App = {
         const pasteCard = document.getElementById('wiz-paste-result-card');
         if (promptCard) promptCard.style.display = 'none';
         if (pasteCard) pasteCard.style.display = 'none';
+
+        if (shouldScroll) {
+            const setupStep = document.getElementById('wizard-step-setup');
+            if (setupStep) {
+                setupStep.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                const targetBtnId = domainKey === 'ielts' ? 'btn-ielts-level' :
+                                    domainKey === 'fitness' ? 'btn-fitness-setup' :
+                                    domainKey === 'vibecode' ? 'btn-code-setup' :
+                                    domainKey === 'finance' ? 'btn-finance-setup' : null;
+                if (targetBtnId) {
+                    const btn = document.getElementById(targetBtnId);
+                    if (btn && !btn.hidden) {
+                        btn.classList.add('pulse-skill-btn');
+                        setTimeout(() => btn.classList.remove('pulse-skill-btn'), 1200);
+                    }
+                }
+            }
+        }
     },
 
     generateAiPromptFromWizard() {
@@ -1239,6 +1257,10 @@ LỆNH BẮT BUỘC ĐỐI VỚI AI (ChatGPT / Gemini):
 
         navigator.clipboard.writeText(box.value).then(() => {
             this.showToast('Đã copy Prompt! Dán vào ChatGPT hoặc Gemini nhé.');
+            const pasteCard = document.getElementById('wiz-paste-result-card');
+            if (pasteCard && pasteCard.style.display !== 'none') {
+                pasteCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
         }).catch(() => {
             prompt('Copy prompt này:', box.value);
         });
