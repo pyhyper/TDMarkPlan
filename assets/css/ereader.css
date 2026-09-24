@@ -1637,12 +1637,17 @@ body.theme-kobo .note-mark:not([class*="hl-"]) {
     font-family: var(--font-sans);
     font-size: 0.88rem;
     font-weight: 700;
-    border: 2px solid var(--border-color);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     user-select: none;
     text-align: left;
+}
+
+.btn-skill-setup:focus-visible {
+    outline: 2px solid var(--ink-primary);
+    outline-offset: 2px;
 }
 
 .btn-skill-setup .skill-btn-lead {
@@ -1665,142 +1670,142 @@ body.theme-kobo .note-mark:not([class*="hl-"]) {
     border-radius: 20px;
     flex-shrink: 0;
     transition: all 0.2s ease;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 
-/* 1. IELTS Setup Button (Authentic Kobo Green #a7dab9 / #114e27) */
+/* 1. IELTS Setup Button (Authentic Kobo Green Tint — No Green Border) */
 .btn-skill-setup.skill-btn-ielts,
 #btn-ielts-level {
-    background: #edf7f1;
-    border-color: #2e7d32;
-    color: #1b5e20;
+    background: #eef7f1;
+    border: 1px solid var(--border-color);
+    color: #114e27;
 }
 .btn-skill-setup.skill-btn-ielts .skill-btn-badge,
 #btn-ielts-level .skill-btn-badge {
-    background: #2e7d32;
-    color: #ffffff;
+    background: #c1dfcb;
+    color: #114e27;
 }
 .btn-skill-setup.skill-btn-ielts:hover,
 #btn-ielts-level:hover {
-    background: #ddf2e4;
-    border-color: #1b5e20;
+    background: #e0f2e5;
+    border-color: var(--ink-secondary);
     transform: translateY(-2px);
-    box-shadow: 0 5px 16px rgba(46, 125, 50, 0.25);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-/* 2. Fitness Setup Button (Authentic Kobo Red #ea8a78 / #821c0e) */
+/* 2. Fitness Setup Button (Authentic Kobo Red Tint — Borders Preserved) */
 .btn-skill-setup.skill-btn-fitness,
 #btn-fitness-setup {
     background: #fdf2ef;
-    border-color: #c62828;
-    color: #b71c1c;
+    border: 1px solid var(--border-color);
+    color: #821c0e;
 }
 .btn-skill-setup.skill-btn-fitness .skill-btn-badge,
 #btn-fitness-setup .skill-btn-badge {
-    background: #c62828;
-    color: #ffffff;
+    background: #e8c5be;
+    color: #821c0e;
 }
 .btn-skill-setup.skill-btn-fitness:hover,
 #btn-fitness-setup:hover {
-    background: #fce4e0;
-    border-color: #b71c1c;
+    background: #fae4df;
+    border-color: var(--ink-secondary);
     transform: translateY(-2px);
-    box-shadow: 0 5px 16px rgba(198, 40, 40, 0.25);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-/* 3. Vibe Code Setup Button (Authentic Kobo Blue #9fd3e9 / #0a4768) */
+/* 3. Vibe Code Setup Button (Authentic Kobo Blue Tint — Borders Preserved) */
 .btn-skill-setup.skill-btn-vibecode,
 #btn-code-setup {
-    background: #edf5fb;
-    border-color: #1565c0;
-    color: #0d47a1;
+    background: #ecf4f9;
+    border: 1px solid var(--border-color);
+    color: #0a4768;
 }
 .btn-skill-setup.skill-btn-vibecode .skill-btn-badge,
 #btn-code-setup .skill-btn-badge {
-    background: #1565c0;
-    color: #ffffff;
+    background: #b9d5e5;
+    color: #0a4768;
 }
 .btn-skill-setup.skill-btn-vibecode:hover,
 #btn-code-setup:hover {
-    background: #dbebf7;
-    border-color: #0d47a1;
+    background: #dbebf6;
+    border-color: var(--ink-secondary);
     transform: translateY(-2px);
-    box-shadow: 0 5px 16px rgba(21, 101, 192, 0.25);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-/* 4. Finance Setup Button (Authentic Kobo Yellow #f7e28b / #5f4500) */
+/* 4. Finance Setup Button (Authentic Kobo Yellow Tint — Borders Preserved) */
 .btn-skill-setup.skill-btn-finance,
 #btn-finance-setup {
     background: #faf5e1;
-    border-color: #f57f17;
-    color: #b26a00;
+    border: 1px solid var(--border-color);
+    color: #5f4500;
 }
 .btn-skill-setup.skill-btn-finance .skill-btn-badge,
 #btn-finance-setup .skill-btn-badge {
-    background: #f57f17;
-    color: #ffffff;
+    background: #dcd0ab;
+    color: #5f4500;
 }
 .btn-skill-setup.skill-btn-finance:hover,
 #btn-finance-setup:hover {
     background: #f5ecc7;
-    border-color: #e65100;
+    border-color: var(--ink-secondary);
     transform: translateY(-2px);
-    box-shadow: 0 5px 16px rgba(245, 127, 23, 0.25);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 /* Theme Black (Dark Mode) Accents */
 body.theme-black .btn-skill-setup.skill-btn-ielts,
 body.theme-black #btn-ielts-level {
     background: #15291d;
-    border-color: #4ade80;
+    border-color: var(--border-color);
     color: #86efac;
 }
 body.theme-black .btn-skill-setup.skill-btn-ielts .skill-btn-badge,
 body.theme-black #btn-ielts-level .skill-btn-badge {
-    background: #4ade80;
-    color: #052e16;
+    background: #23432f;
+    color: #86efac;
 }
 
 body.theme-black .btn-skill-setup.skill-btn-fitness,
 body.theme-black #btn-fitness-setup {
     background: #2b1717;
-    border-color: #f87171;
+    border-color: var(--border-color);
     color: #fca5a5;
 }
 body.theme-black .btn-skill-setup.skill-btn-fitness .skill-btn-badge,
 body.theme-black #btn-fitness-setup .skill-btn-badge {
-    background: #f87171;
-    color: #450a0a;
+    background: #451e1e;
+    color: #fca5a5;
 }
 
 body.theme-black .btn-skill-setup.skill-btn-vibecode,
 body.theme-black #btn-code-setup {
     background: #152433;
-    border-color: #38bdf8;
+    border-color: var(--border-color);
     color: #bae6fd;
 }
 body.theme-black .btn-skill-setup.skill-btn-vibecode .skill-btn-badge,
 body.theme-black #btn-code-setup .skill-btn-badge {
-    background: #38bdf8;
-    color: #082f49;
+    background: #1e3850;
+    color: #bae6fd;
 }
 
 body.theme-black .btn-skill-setup.skill-btn-finance,
 body.theme-black #btn-finance-setup {
     background: #2b2513;
-    border-color: #facc15;
+    border-color: var(--border-color);
     color: #fef08a;
 }
 body.theme-black .btn-skill-setup.skill-btn-finance .skill-btn-badge,
 body.theme-black #btn-finance-setup .skill-btn-badge {
-    background: #facc15;
-    color: #422006;
+    background: #473c17;
+    color: #fef08a;
 }
 
 @keyframes pulseSkillBtn {
-    0% { transform: scale(1); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05); }
-    40% { transform: scale(1.025); box-shadow: 0 0 0 8px rgba(46, 125, 50, 0.25), 0 6px 20px rgba(0, 0, 0, 0.15); }
-    100% { transform: scale(1); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05); }
+    0% { transform: scale(1); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04); }
+    40% { transform: scale(1.02); box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.06), 0 4px 14px rgba(0, 0, 0, 0.1); }
+    100% { transform: scale(1); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04); }
 }
 
 .pulse-skill-btn {
