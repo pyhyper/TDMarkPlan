@@ -277,7 +277,7 @@ if (!$requestedPlan) {
                 </div>
 
                 <!-- Action Buttons: Generate Prompt or Instant Sample -->
-                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem; border-top:1px solid var(--border-color); padding-top:1rem;">
+                <div class="wizard-action-buttons" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem; border-top:1px solid var(--border-color); padding-top:1rem;">
                     <button class="btn-primary" onclick="App.generateAiPromptFromWizard()">
                          Tạo Prompt Cho ChatGPT / Gemini →
                     </button>

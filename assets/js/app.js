@@ -208,6 +208,13 @@ const App = {
             this.showToast('Đang tải kế hoạch...');
             const token = this.getAuthToken(planId);
 
+            if (!new URL(location.href).searchParams.has('slot')) {
+                const savedSlot = localStorage.getItem('tdp_active_slot_' + planId);
+                if (savedSlot === '1' || savedSlot === '2') {
+                    Workspace.slot = parseInt(savedSlot, 10);
+                }
+            }
+
             const res = await App.apiFetch(`api.php?action=get_plan&p=${encodeURIComponent(planId)}`, {
                 headers: { 'X-Plan-Token': token }
             });
@@ -277,7 +284,10 @@ const App = {
             }
 
             const newUrl = this.planUrl(this.currentPlanId);
-            window.history.replaceState({ p: this.currentPlanId }, '', newUrl);
+            window.history.replaceState({ p: this.currentPlanId, slot: Workspace.slot }, '', newUrl);
+            try {
+                localStorage.setItem('tdp_active_slot_' + this.currentPlanId, String(Workspace.slot));
+            } catch(e) {}
 
             this.updatePasswordBadge();
 
@@ -877,6 +887,7 @@ const App = {
             if (remaining) {
                 await Workspace.select(remaining.slot);
             } else {
+                try { localStorage.removeItem('tdp_active_slot_' + this.currentPlanId); } catch(e) {}
                 window.location.reload();
             }
         } catch (e) {

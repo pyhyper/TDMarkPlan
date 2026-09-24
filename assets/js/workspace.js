@@ -4,13 +4,25 @@ const Workspace = {
     busy: false,
     noteDraft: null,
     init() {
-        this.slot = new URL(location.href).searchParams.get('slot') === '2' ? 2 : 1;
+        const urlSlot = new URL(location.href).searchParams.get('slot');
+        const planId = window.PLAN_ROUTE || new URL(location.href).searchParams.get('p') || new URL(location.href).searchParams.get('plan') || '';
+        const savedSlot = planId ? localStorage.getItem('tdp_active_slot_' + planId) : null;
+        if (urlSlot === '1' || urlSlot === '2') {
+            this.slot = parseInt(urlSlot, 10);
+        } else if (savedSlot === '1' || savedSlot === '2') {
+            this.slot = parseInt(savedSlot, 10);
+        } else {
+            this.slot = 1;
+        }
         for (const slot of [1,2]) {
-            document.getElementById(`plan-summary-${slot}`).addEventListener('click', async event => {
-                if (this.slot === slot) return;
-                event.preventDefault();
-                await this.select(slot);
-            });
+            const el = document.getElementById(`plan-summary-${slot}`);
+            if (el) {
+                el.addEventListener('click', async event => {
+                    if (this.slot === slot) return;
+                    event.preventDefault();
+                    await this.select(slot);
+                });
+            }
         }
     },
     render(items) {
@@ -64,6 +76,13 @@ const Workspace = {
             }
             App.resetTimer();
             this.slot = slot;
+            if (App.currentPlanId) {
+                try {
+                    localStorage.setItem('tdp_active_slot_' + App.currentPlanId, String(slot));
+                    const newUrl = App.planUrl(App.currentPlanId);
+                    window.history.replaceState({ p: App.currentPlanId, slot: slot }, '', newUrl);
+                } catch(e) {}
+            }
             App.planData = null;
             App.subtaskDrafts = {}; App.subtaskQueues = {}; Journal.drafts = {}; Journal.queues = {};
             this.noteDraft = null;
