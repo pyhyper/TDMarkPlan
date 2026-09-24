@@ -1501,7 +1501,13 @@ LỆNH BẮT BUỘC ĐỐI VỚI AI (ChatGPT / Gemini):
         section.dataset.subtaskParent = task.id;
         const subtasks = this.subtaskDrafts[task.id] || task.subtasks || [];
         const heading = document.createElement('h4');
-        heading.textContent = `Việc nhỏ · ${subtasks.filter(s => s.completed).length}/${subtasks.length} hoàn thành`;
+        const subWord = (typeof I18n !== 'undefined') ? I18n.t('subtask.heading', 'Việc nhỏ') : 'Việc nhỏ';
+        const doneWord = (typeof I18n !== 'undefined') ? I18n.t('subtask.completed_count', 'hoàn thành') : 'hoàn thành';
+        const updateHeading = () => {
+            const list = this.subtaskDrafts[task.id] || subtasks;
+            heading.textContent = `${subWord} · ${list.filter(s => s.completed).length}/${list.length} ${doneWord}`;
+        };
+        updateHeading();
         section.appendChild(heading);
         const edit = (index, key, value) => {
             if (!this.subtaskDrafts[task.id]) this.subtaskDrafts[task.id] = JSON.parse(JSON.stringify(task.subtasks || []));
@@ -1520,7 +1526,7 @@ LỆNH BẮT BUỘC ĐỐI VỚI AI (ChatGPT / Gemini):
             check.checked = sub.completed;
             check.addEventListener('change', () => {
                 edit(index, 'completed', check.checked);
-                heading.textContent = `Việc nhỏ · ${this.subtaskDrafts[task.id].filter(s => s.completed).length}/${subtasks.length} hoàn thành`;
+                updateHeading();
                 this.saveSubtasks(task.id).catch(e => this.showToast(e.message));
             });
             label.append(check, document.createTextNode(' ' + sub.title));
@@ -1529,15 +1535,15 @@ LỆNH BẮT BUỘC ĐỐI VỚI AI (ChatGPT / Gemini):
             const btnDelSub = document.createElement('button');
             btnDelSub.type = 'button';
             btnDelSub.className = 'btn-delete-subtask';
-            btnDelSub.title = 'Xóa việc nhỏ này';
-            btnDelSub.setAttribute('aria-label', `Xóa việc nhỏ: ${sub.title}`);
+            btnDelSub.title = (typeof I18n !== 'undefined') ? I18n.t('subtask.delete_tooltip', 'Xóa việc nhỏ này') : 'Xóa việc nhỏ này';
+            btnDelSub.setAttribute('aria-label', `${(typeof I18n !== 'undefined') ? I18n.t('subtask.delete_label', 'Xóa việc nhỏ') : 'Xóa việc nhỏ'}: ${sub.title}`);
             btnDelSub.innerHTML = (typeof Icons !== 'undefined' && Icons.svg) ? Icons.svg('trash') : '🗑';
             btnDelSub.addEventListener('click', async (e) => {
                 e.stopPropagation();
                 const ok = await App.confirm({
-                    title: 'Xóa việc nhỏ',
-                    message: `Bạn có chắc chắn muốn xóa việc nhỏ "${sub.title}" không?`,
-                    okText: 'Xóa việc nhỏ',
+                    title: (typeof I18n !== 'undefined') ? I18n.t('subtask.delete_confirm_title', 'Xóa việc nhỏ') : 'Xóa việc nhỏ',
+                    message: ((typeof I18n !== 'undefined') ? I18n.t('subtask.delete_confirm_msg', 'Bạn có chắc chắn muốn xóa việc nhỏ "{title}" không?') : 'Bạn có chắc chắn muốn xóa việc nhỏ "{title}" không?').replace('{title}', sub.title),
+                    okText: (typeof I18n !== 'undefined') ? I18n.t('subtask.delete_btn', 'Xóa việc nhỏ') : 'Xóa việc nhỏ',
                     danger: true
                 });
                 if (!ok) return;
@@ -1546,7 +1552,7 @@ LỆNH BẮT BUỘC ĐỐI VỚI AI (ChatGPT / Gemini):
                 this.subtaskDrafts[task.id] = draft;
                 await this.saveSubtasks(task.id);
                 this.renderDailyView();
-                this.showToast('Đã xóa việc nhỏ');
+                this.showToast((typeof I18n !== 'undefined') ? I18n.t('subtask.deleted_toast', 'Đã xóa việc nhỏ') : 'Đã xóa việc nhỏ');
             });
             headerRow.appendChild(btnDelSub);
 
@@ -1561,19 +1567,19 @@ LỆNH BẮT BUỘC ĐỐI VỚI AI (ChatGPT / Gemini):
         form.className = 'subtask-add';
         const input = document.createElement('input');
         input.className = 'form-input';
-        input.placeholder = 'Ví dụ: Luyện Speaking Part 1 trong 10 phút';
-        input.setAttribute('aria-label', 'Tên việc nhỏ mới');
+        input.placeholder = (typeof I18n !== 'undefined') ? I18n.t('subtask.input_placeholder', 'Ví dụ: Luyện Speaking Part 1 trong 10 phút') : 'Ví dụ: Luyện Speaking Part 1 trong 10 phút';
+        input.setAttribute('aria-label', (typeof I18n !== 'undefined') ? I18n.t('subtask.input_aria', 'Tên việc nhỏ mới') : 'Tên việc nhỏ mới');
         input.required = true;
         input.maxLength = 300;
         const add = document.createElement('button');
         add.className = 'btn-sample';
-        add.textContent = '+ Thêm việc nhỏ';
+        add.textContent = (typeof I18n !== 'undefined') ? I18n.t('subtask.add_btn', '+ Thêm việc nhỏ') : '+ Thêm việc nhỏ';
         form.append(input, add);
         form.addEventListener('submit', async e => {
             e.preventDefault();
             if (!input.value.trim()) return;
             const draft = this.subtaskDrafts[task.id] || JSON.parse(JSON.stringify(task.subtasks || []));
-            if (draft.length >= 100) return this.showToast('Tối đa 100 việc nhỏ cho mỗi task.');
+            if (draft.length >= 100) return this.showToast((typeof I18n !== 'undefined') ? I18n.t('subtask.limit_error', 'Tối đa 100 việc nhỏ cho mỗi task.') : 'Tối đa 100 việc nhỏ cho mỗi task.');
             draft.push({ id: this.generateRandomSlug('sub'), title: input.value.trim(), completed: false, notes: '', note_cards: [] });
             this.subtaskDrafts[task.id] = draft;
             section.remove();
@@ -2045,22 +2051,37 @@ LỆNH BẮT BUỘC ĐỐI VỚI AI (ChatGPT / Gemini):
 
                 const typeClass = `hl-${task.type || 'custom'}`;
                 const priorityClass = task.priority === 'high' ? 'priority-high' : '';
+                const isCompleted = task.status === 'completed';
+                const chkTitle = isCompleted
+                    ? ((typeof I18n !== 'undefined') ? I18n.t('view.daily.mark_uncompleted', 'Đánh dấu chưa hoàn thành') : 'Đánh dấu chưa hoàn thành')
+                    : ((typeof I18n !== 'undefined') ? I18n.t('view.daily.mark_completed', 'Đánh dấu hoàn thành') : 'Đánh dấu hoàn thành');
+                const targetWord = (typeof I18n !== 'undefined') ? I18n.t('view.daily.target', 'Mục tiêu') : 'Mục tiêu';
+                const minsWord = (typeof I18n !== 'undefined') ? I18n.t('common.mins', 'phút') : 'phút';
+                const startTimerTitle = (typeof I18n !== 'undefined') ? I18n.t('view.daily.start_timer', 'Bắt đầu đếm giờ') : 'Bắt đầu đếm giờ';
+                const renameTaskTitle = (typeof I18n !== 'undefined') ? I18n.t('view.daily.rename_task', 'Đổi tên nhiệm vụ') : 'Đổi tên nhiệm vụ';
+                const renameBtnLabel = (typeof I18n !== 'undefined') ? I18n.t('view.daily.rename_btn', 'Đổi tên') : 'Đổi tên';
+
+                const statusPending = (typeof I18n !== 'undefined') ? I18n.t('view.daily.status_pending', 'Chưa làm') : 'Chưa làm';
+                const statusInProgress = (typeof I18n !== 'undefined') ? I18n.t('view.daily.status_in_progress', 'Đang làm') : 'Đang làm';
+                const statusCompleted = (typeof I18n !== 'undefined') ? I18n.t('view.daily.status_completed', 'Hoàn thành') : 'Hoàn thành';
+                const statusSkipped = (typeof I18n !== 'undefined') ? I18n.t('view.daily.status_skipped', 'Bỏ qua') : 'Bỏ qua';
+                const statusFailed = (typeof I18n !== 'undefined') ? I18n.t('view.daily.status_failed', 'Thất bại') : 'Thất bại';
 
                 item.innerHTML = `
                     <div style="display:flex; align-items:flex-start; gap:1rem; width:100%;">
-                        <button class="task-checkbox-btn" title="${(typeof I18n !== 'undefined') ? I18n.t('view.daily.completed', 'Đánh dấu hoàn thành') : 'Đánh dấu hoàn thành'}" onclick="App.toggleTaskStatus('${task.id}', '${task.status}')">
-                            ${task.status === 'completed' ? '✓' : ''}
+                        <button class="task-checkbox-btn" title="${chkTitle}" onclick="App.toggleTaskStatus('${task.id}', '${task.status}')">
+                            ${isCompleted ? '✓' : ''}
                         </button>
                         <div class="task-content">
                             <div class="task-meta-top">
                                 <span class="highlighter-pill ${typeClass}">${task.type}</span>
-                                <span class="task-duration-badge"> ${task.duration} min</span>
+                                <span class="task-duration-badge"> ${task.duration} ${minsWord}</span>
                                 ${task.priority ? `<span class="priority-badge ${priorityClass}">[${task.priority}]</span>` : ''}
-                                ${task.target ? `<span class="task-duration-badge">Target: ${task.target} ${task.unit || ''}</span>` : ''}
+                                ${task.target ? `<span class="task-duration-badge">${targetWord}: ${task.target} ${task.unit || ''}</span>` : ''}
                             </div>
                             <div class="task-title-wrap" id="task-title-wrap-${task.id}">
                                 <span class="task-title" id="task-title-${task.id}">${this.escapeHtml(task.title)}</span>
-                                <button type="button" class="btn-task-rename" title="${(typeof I18n !== 'undefined') ? I18n.t('view.daily.rename_task', 'Đổi tên nhiệm vụ') : 'Đổi tên nhiệm vụ'}" aria-label="${(typeof I18n !== 'undefined') ? I18n.t('view.daily.rename_task', 'Đổi tên') : 'Đổi tên'} ${this.escapeHtml(task.title)}" onclick="App.startRenameTask('${task.id}')">
+                                <button type="button" class="btn-task-rename" title="${renameTaskTitle}" aria-label="${renameBtnLabel} ${this.escapeHtml(task.title)}" onclick="App.startRenameTask('${task.id}')">
                                     ${(typeof Icons !== 'undefined' && Icons.svg) ? Icons.svg('edit') : '✎'}
                                 </button>
                             </div>
@@ -2068,13 +2089,13 @@ LỆNH BẮT BUỘC ĐỐI VỚI AI (ChatGPT / Gemini):
                         </div>
                         <div class="task-actions">
                             <select class="status-select" onchange="App.updateTask('${task.id}', this.value)">
-                                <option value="pending" ${task.status === 'pending' ? 'selected' : ''}>Pending</option>
-                                <option value="in_progress" ${task.status === 'in_progress' ? 'selected' : ''}>In Progress</option>
-                                <option value="completed" ${task.status === 'completed' ? 'selected' : ''}>Completed</option>
-                                <option value="skipped" ${task.status === 'skipped' ? 'selected' : ''}>Skipped</option>
-                                <option value="failed" ${task.status === 'failed' ? 'selected' : ''}>Failed</option>
+                                <option value="pending" ${task.status === 'pending' ? 'selected' : ''}>${statusPending}</option>
+                                <option value="in_progress" ${task.status === 'in_progress' ? 'selected' : ''}>${statusInProgress}</option>
+                                <option value="completed" ${task.status === 'completed' ? 'selected' : ''}>${statusCompleted}</option>
+                                <option value="skipped" ${task.status === 'skipped' ? 'selected' : ''}>${statusSkipped}</option>
+                                <option value="failed" ${task.status === 'failed' ? 'selected' : ''}>${statusFailed}</option>
                             </select>
-                            <button class="btn-start-task" title="Bắt đầu đếm giờ" onclick="App.startTimerForTask('${task.id}', '${this.escapeHtml(task.title)}', ${task.duration})">
+                            <button class="btn-start-task" title="${startTimerTitle}" onclick="App.startTimerForTask('${task.id}', '${this.escapeHtml(task.title)}', ${task.duration})">
                                  Focus
                             </button>
 
@@ -2295,7 +2316,7 @@ LỆNH BẮT BUỘC ĐỐI VỚI AI (ChatGPT / Gemini):
                 if (textarea) textarea.value = data.markdown;
                 this.switchTab('import');
                 this.previewMarkdown(data.markdown);
-                this.showToast('Đã nạp mẫu vào khung soạn thảo. Bấm "Import" để kích hoạt.');
+                this.showToast((typeof I18n !== 'undefined') ? I18n.t('import.sample_loaded', 'Đã nạp mẫu vào khung soạn thảo. Bấm "Nhập Kế Hoạch" để kích hoạt.') : 'Đã nạp mẫu vào khung soạn thảo.');
             }
         } catch (e) {
             console.error(e);
@@ -2304,7 +2325,7 @@ LỆNH BẮT BUỘC ĐỐI VỚI AI (ChatGPT / Gemini):
 
     async savePlanMarkdown(markdown, customId = null, password = null) {
         try {
-            this.showToast('Đang lưu kế hoạch...');
+            this.showToast((typeof I18n !== 'undefined') ? I18n.t('import.saving', 'Đang lưu kế hoạch...') : 'Đang lưu kế hoạch...');
             const res = await App.apiFetch('api.php?action=save_plan', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'X-Plan-Token': this.getAuthToken(customId || this.currentPlanId) },
@@ -2314,7 +2335,8 @@ LỆNH BẮT BUỘC ĐỐI VỚI AI (ChatGPT / Gemini):
 
             if (!data.success) {
                 const errMsgs = (data.errors || []).join('\n');
-                alert('Kiểm tra định dạng PLAN.md không thành công:\n\n' + errMsgs);
+                const failPrefix = (typeof I18n !== 'undefined') ? I18n.t('import.validation_failed', 'Kiểm tra định dạng PLAN.md không thành công:') : 'Kiểm tra định dạng PLAN.md không thành công:';
+                alert(failPrefix + '\n\n' + errMsgs);
                 return;
             }
 
@@ -2322,12 +2344,12 @@ LỆNH BẮT BUỘC ĐỐI VỚI AI (ChatGPT / Gemini):
                 this.setAuthToken(data.plan_id, data.token);
             }
 
-            this.showToast('Kế hoạch đã lưu thành công!');
+            this.showToast((typeof I18n !== 'undefined') ? I18n.t('import.saved_success', 'Kế hoạch đã lưu thành công!') : 'Kế hoạch đã lưu thành công!');
             await this.loadPlan(data.plan_id);
             this.switchTab('today');
         } catch (e) {
             console.error(e);
-            this.showToast('Lỗi lưu kế hoạch');
+            this.showToast((typeof I18n !== 'undefined') ? I18n.t('import.save_error', 'Lỗi lưu kế hoạch') : 'Lỗi lưu kế hoạch');
         }
     },
 
@@ -2432,20 +2454,29 @@ LỆNH BẮT BUỘC ĐỐI VỚI AI (ChatGPT / Gemini):
                 previewBox.style.border = '1px solid var(--hl-green-ink)';
                 previewBox.style.background = 'var(--bg-page)';
                 const p = data.plan_preview;
+                const validTitle = (typeof I18n !== 'undefined') ? I18n.t('import.valid_plan', '✓ File PLAN.md Hợp Lệ') : '✓ File PLAN.md Hợp Lệ';
+                const fTitle = (typeof I18n !== 'undefined') ? I18n.t('import.field_title', 'Tiêu đề:') : 'Tiêu đề:';
+                const fStartDate = (typeof I18n !== 'undefined') ? I18n.t('import.field_start_date', 'Ngày bắt đầu:') : 'Ngày bắt đầu:';
+                const fDuration = (typeof I18n !== 'undefined') ? I18n.t('import.field_duration', 'Thời lượng:') : 'Thời lượng:';
+                const fTasks = (typeof I18n !== 'undefined') ? I18n.t('import.field_tasks', 'Nhiệm vụ:') : 'Nhiệm vụ:';
+                const fWeeks = (typeof I18n !== 'undefined') ? I18n.t('common.weeks', 'tuần') : 'tuần';
+                const fTotalMins = (typeof I18n !== 'undefined') ? I18n.t('import.field_total_mins', 'phút tổng') : 'phút tổng';
+
                 previewBox.innerHTML = `
-                    <div style="font-weight:700; color:var(--hl-green-ink); margin-bottom:0.35rem;">✓ File PLAN.md Hợp Lệ</div>
+                    <div style="font-weight:700; color:var(--hl-green-ink); margin-bottom:0.35rem;">${validTitle}</div>
                     <div style="font-size:0.85rem; line-height:1.5;">
-                        <strong>Tiêu đề:</strong> ${this.escapeHtml(p.title)}<br>
-                        <strong>Ngày bắt đầu:</strong> ${p.start_date} • <strong>Thời lượng:</strong> ${p.duration_weeks} tuần<br>
-                        <strong>Nhiệm vụ:</strong> ${p.task_count} nhiệm vụ (${p.total_minutes} phút tổng)
+                        <strong>${fTitle}</strong> ${this.escapeHtml(p.title)}<br>
+                        <strong>${fStartDate}</strong> ${p.start_date} • <strong>${fDuration}</strong> ${p.duration_weeks} ${fWeeks}<br>
+                        <strong>${fTasks}</strong> ${p.task_count} (${p.total_minutes} ${fTotalMins})
                     </div>
                 `;
             } else {
                 previewBox.style.display = 'block';
                 previewBox.style.border = '1px solid var(--hl-rose-ink)';
                 previewBox.style.background = 'var(--bg-page)';
+                const invalidTitle = (typeof I18n !== 'undefined') ? I18n.t('import.invalid_plan', '⚠️ Lỗi Định Dạng PLAN.md:') : '⚠️ Lỗi Định Dạng PLAN.md:';
                 previewBox.innerHTML = `
-                    <div style="font-weight:700; color:var(--hl-rose-ink); margin-bottom:0.35rem;"> Lỗi Định Dạng PLAN.md:</div>
+                    <div style="font-weight:700; color:var(--hl-rose-ink); margin-bottom:0.35rem;">${invalidTitle}</div>
                     <ul style="font-size:0.85rem; padding-left:1.2rem; color:var(--ink-secondary);">
                         ${(data.errors || []).map(e => `<li>${this.escapeHtml(e)}</li>`).join('')}
                     </ul>

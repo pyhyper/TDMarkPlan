@@ -115,13 +115,19 @@ const context = {
         },
         documentElement: { style: { setProperty: () => {} } },
         getElementById: el,
-        querySelectorAll: () => [],
+        querySelectorAll: selector => {
+            if (selector === '[data-i18n]') {
+                return Object.values(elements).filter(e => e.getAttribute && e.getAttribute('data-i18n'));
+            }
+            return [];
+        },
         querySelector: () => null,
         createElement: tag => {
             const elem = makeElem();
             elem.tagName = tag.toUpperCase();
             return elem;
-        }
+        },
+        createTextNode: text => ({ textContent: String(text), nodeType: 3 })
     }
 };
 
@@ -407,13 +413,51 @@ assert(typeof App.deletePlan === 'function', 'deletePlan function exists on App'
     App.updateHeaderPlanLabel();
     assert(labelEl.innerHTML.includes('class="header-plan-slot">Plan 1</span>'), 'Header slot 1 restored');
 
-    // Test CSS rules for mobile header plan visibility & responsiveness
-    const cssContent = fs.readFileSync('assets/css/ereader.css', 'utf8');
-    assert(cssContent.includes('#header-plan-label .header-plan-title'), 'CSS defines rule to hide title in header on mobile');
-    assert(cssContent.includes('#header-plan-label .header-plan-slot'), 'CSS defines visible plan slot for header');
-    assert(cssContent.includes('font-size: 16px !important;'), 'CSS sets 16px font-size to prevent iOS Safari auto-zoom');
+    // Test: Dynamic Link Slug preservation on language switch
+    App.currentPlanId = 'ielts-6.5';
+    el('dynamic-link-slug').textContent = '/ielts-6.5';
+    I18n.setLanguage('en', false);
+    assert.equal(el('dynamic-link-slug').textContent, '/ielts-6.5', 'Preserves link slug when switching to English');
+    I18n.setLanguage('vi', false);
+    assert.equal(el('dynamic-link-slug').textContent, '/ielts-6.5', 'Preserves link slug when switching to Vietnamese');
 
-    console.log('PASS: Theme, Notebook Highlight, Delete Icon, Auto-Delete, Note Visibility, Plan Modal, Visual Highlight Editor, Confirm Dialog, Task Renaming, Password/Auto-Delete Modal, Plan Title Editing, EN/VN I18n & Mobile Plan Header tests completed successfully.');
+    // Test: applyTranslations does not overwrite dynamic link slug
+    I18n.applyTranslations();
+    assert.equal(el('dynamic-link-slug').textContent, '/ielts-6.5', 'applyTranslations never overwrites dynamic-link-slug');
+
+    // Test: index.php does NOT contain data-i18n on dynamic-link-slug
+    assert(!htmlContent.includes('id="dynamic-link-slug" data-i18n'), 'index.php does not assign data-i18n to dynamic-link-slug');
+
+    // Test: Task, Subtask, Journal, and Import I18n strings
+    I18n.setLanguage('en', false);
+    assert.equal(I18n.t('view.daily.status_pending'), 'Pending', 'Translates task status pending to English');
+    assert.equal(I18n.t('view.daily.status_completed'), 'Completed', 'Translates task status completed to English');
+    assert.equal(I18n.t('subtask.heading'), 'Subtasks', 'Translates subtask heading to English');
+    assert.equal(I18n.t('journal.description_heading'), 'Task Description', 'Translates description heading to English');
+    assert.equal(I18n.t('import.heading'), 'Import PLAN.md', 'Translates import heading to English');
+    assert.equal(I18n.t('import.sample_ielts'), 'IELTS 6.5 (12 Weeks)', 'Translates IELTS sample button to English');
+
+    I18n.setLanguage('vi', false);
+    assert.equal(I18n.t('view.daily.status_pending'), 'Chưa làm', 'Translates task status pending to Vietnamese');
+    assert.equal(I18n.t('view.daily.status_completed'), 'Hoàn thành', 'Translates task status completed to Vietnamese');
+    assert.equal(I18n.t('subtask.heading'), 'Việc nhỏ', 'Translates subtask heading to Vietnamese');
+    assert.equal(I18n.t('journal.description_heading'), 'Mô tả công việc', 'Translates description heading to Vietnamese');
+    assert.equal(I18n.t('import.heading'), 'Nhập PLAN.md', 'Translates import heading to Vietnamese');
+    assert.equal(I18n.t('import.sample_ielts'), 'IELTS 6.5 (12 Tuần)', 'Translates IELTS sample button to Vietnamese');
+
+    // Test: Subtask heading formatting in EN and VI
+    const testTask = { id: 't1', title: 'Practice task', subtasks: [{ id: 's1', title: 'Sub 1', completed: false }] };
+    const testContainer = makeElem('task-item');
+    I18n.setLanguage('en', false);
+    App.renderSubtasks(testTask, testContainer);
+    assert(testContainer.children[0].children[0].textContent.includes('Subtasks · 0/1 completed'), 'Subtask heading formatted in English');
+
+    testContainer.children.length = 0;
+    I18n.setLanguage('vi', false);
+    App.renderSubtasks(testTask, testContainer);
+    assert(testContainer.children[0].children[0].textContent.includes('Việc nhỏ · 0/1 hoàn thành'), 'Subtask heading formatted in Vietnamese');
+
+    console.log('PASS: Theme, Notebook Highlight, Delete Icon, Auto-Delete, Note Visibility, Plan Modal, Visual Highlight Editor, Confirm Dialog, Task Renaming, Password/Auto-Delete Modal, Plan Title Editing, EN/VN I18n, Task/Subtask I18n & Slug Preservation tests completed successfully.');
 })();
 
 

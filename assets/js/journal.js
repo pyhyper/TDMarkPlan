@@ -27,8 +27,9 @@ const Journal = {
 
     formatTimeRemaining(ts) {
         if (!ts) return '';
+        const isEn = typeof I18n !== 'undefined' && I18n.currentLang === 'en';
         const diff = ts - Date.now();
-        if (diff <= 0) return 'Đã hết hạn';
+        if (diff <= 0) return isEn ? 'Expired' : 'Đã hết hạn';
         const mins = Math.floor(diff / (60 * 1000));
         const hours = Math.floor(diff / (3600 * 1000));
         const days = Math.floor(diff / (24 * 3600 * 1000));
@@ -46,7 +47,8 @@ const Journal = {
     formatNotePreview(text, options = {}) {
         const clean = (text || '').replace(/^<!--\s*auto-delete:[^>]+-->\r?\n?/, '');
         if (!clean || !clean.trim()) {
-            return options.forEditor ? '' : '<span class="note-preview-empty">Chưa có nội dung ghi chú. Bấm để viết và đánh dấu highlight…</span>';
+            const isEn = typeof I18n !== 'undefined' && I18n.currentLang === 'en';
+            return options.forEditor ? '' : `<span class="note-preview-empty">${isEn ? 'No notes yet. Click to write and highlight…' : 'Chưa có nội dung ghi chú. Bấm để viết và đánh dấu highlight…'}</span>`;
         }
         let escaped = clean
             .replace(/&/g, '&amp;')
@@ -213,7 +215,7 @@ const Journal = {
                         const rep = cls ? `<mark class="${cls}">${clean}</mark>` : clean;
                         if (input.setRangeText) input.setRangeText(rep, start, end, 'select');
                     } else if (cls) {
-                        const placeholder = 'đoạn đánh dấu';
+                        const placeholder = (typeof I18n !== 'undefined' && I18n.currentLang === 'en') ? 'highlighted text' : 'đoạn đánh dấu';
                         const rep = `<mark class="${cls}">${placeholder}</mark>`;
                         if (input.setRangeText) {
                             input.setRangeText(rep, start, end, 'end');
@@ -227,14 +229,16 @@ const Journal = {
                 if (onUpdate) onUpdate();
             };
 
+            const isEn = typeof I18n !== 'undefined' && I18n.currentLang === 'en';
+
             if (isKobo) {
                 const colors = [
-                    { id: 'hl-yellow', label: 'Vàng', bg: '#f7e28b', title: 'Màu vàng (Butter Yellow)' },
-                    { id: 'hl-blue',   label: 'Xanh lơ', bg: '#9fd3e9', title: 'Màu xanh dương (Dusk Blue)' },
-                    { id: 'hl-pink',   label: 'Hồng', bg: '#f4adc3', title: 'Màu hồng (Candy Pink)' },
-                    { id: 'hl-green',  label: 'Xanh lá', bg: '#a7dab9', title: 'Màu xanh lá (Misty Green)' },
-                    { id: 'hl-red',    label: 'Đỏ', bg: '#ea8a78', title: 'Màu đỏ (Cayenne Red)' },
-                    { id: 'hl-black',  label: 'Bút đen', bg: '#201d1b', title: 'Màu đen (Black Pen)' }
+                    { id: 'hl-yellow', label: isEn ? 'Yellow' : 'Vàng', bg: '#f7e28b', title: (typeof I18n !== 'undefined') ? I18n.t('journal.color_yellow', 'Màu vàng (Butter Yellow)') : 'Màu vàng (Butter Yellow)' },
+                    { id: 'hl-blue',   label: isEn ? 'Blue' : 'Xanh lơ', bg: '#9fd3e9', title: (typeof I18n !== 'undefined') ? I18n.t('journal.color_blue', 'Màu xanh dương (Dusk Blue)') : 'Màu xanh dương (Dusk Blue)' },
+                    { id: 'hl-pink',   label: isEn ? 'Pink' : 'Hồng', bg: '#f4adc3', title: (typeof I18n !== 'undefined') ? I18n.t('journal.color_pink', 'Màu hồng (Candy Pink)') : 'Màu hồng (Candy Pink)' },
+                    { id: 'hl-green',  label: isEn ? 'Green' : 'Xanh lá', bg: '#a7dab9', title: (typeof I18n !== 'undefined') ? I18n.t('journal.color_green', 'Màu xanh lá (Misty Green)') : 'Màu xanh lá (Misty Green)' },
+                    { id: 'hl-red',    label: isEn ? 'Red' : 'Đỏ', bg: '#ea8a78', title: (typeof I18n !== 'undefined') ? I18n.t('journal.color_red', 'Màu đỏ (Cayenne Red)') : 'Màu đỏ (Cayenne Red)' },
+                    { id: 'hl-black',  label: isEn ? 'Black' : 'Bút đen', bg: '#201d1b', title: isEn ? 'Black pen' : 'Màu đen (Black Pen)' }
                 ];
                 colors.forEach(c => {
                     const btn = document.createElement('button');
@@ -251,8 +255,8 @@ const Journal = {
                 const btn = document.createElement('button');
                 btn.type = 'button';
                 btn.className = 'btn-swatch';
-                btn.title = 'Highlight (Nền trắng chữ đen)';
-                btn.innerHTML = `<span class="btn-swatch-dot" style="background:#eae5dc; border:1px solid #333;"></span><span>Đánh dấu</span>`;
+                btn.title = isEn ? 'Highlight (white background, black text)' : 'Highlight (Nền trắng chữ đen)';
+                btn.innerHTML = `<span class="btn-swatch-dot" style="background:#eae5dc; border:1px solid #333;"></span><span>${isEn ? 'Highlight' : 'Đánh dấu'}</span>`;
                 btn.addEventListener('mousedown', e => e.preventDefault());
                 btn.addEventListener('pointerdown', e => e.preventDefault());
                 btn.addEventListener('click', e => { e.preventDefault(); applyMark('hl-mono'); });
@@ -261,8 +265,8 @@ const Journal = {
                 const btn = document.createElement('button');
                 btn.type = 'button';
                 btn.className = 'btn-swatch';
-                btn.title = 'Highlight (Nền đen chữ trắng)';
-                btn.innerHTML = `<span class="btn-swatch-dot" style="background:#23201d; border:1px solid #e3dac9;"></span><span>Đánh dấu</span>`;
+                btn.title = isEn ? 'Highlight (black background, white text)' : 'Highlight (Nền đen chữ trắng)';
+                btn.innerHTML = `<span class="btn-swatch-dot" style="background:#23201d; border:1px solid #e3dac9;"></span><span>${isEn ? 'Highlight' : 'Đánh dấu'}</span>`;
                 btn.addEventListener('mousedown', e => e.preventDefault());
                 btn.addEventListener('pointerdown', e => e.preventDefault());
                 btn.addEventListener('click', e => { e.preventDefault(); applyMark('hl-mono'); });
@@ -272,8 +276,8 @@ const Journal = {
             const btnClear = document.createElement('button');
             btnClear.type = 'button';
             btnClear.className = 'btn-swatch';
-            btnClear.title = 'Bỏ màu đánh dấu vùng chọn';
-            btnClear.textContent = '✕ Bỏ màu';
+            btnClear.title = (typeof I18n !== 'undefined') ? I18n.t('journal.color_clear', 'Bỏ màu đánh dấu vùng chọn') : 'Bỏ màu đánh dấu vùng chọn';
+            btnClear.textContent = isEn ? '✕ Clear' : '✕ Bỏ màu';
             btnClear.addEventListener('mousedown', e => e.preventDefault());
             btnClear.addEventListener('pointerdown', e => e.preventDefault());
             btnClear.addEventListener('click', e => { e.preventDefault(); applyMark(null); });
@@ -286,19 +290,20 @@ const Journal = {
 
         // Auto-delete timer control
         if (options.onSetExpiry) {
+            const isEn = typeof I18n !== 'undefined' && I18n.currentLang === 'en';
             const autoDelWrap = document.createElement('div');
             autoDelWrap.className = 'note-auto-delete-wrap';
             const sel = document.createElement('select');
             sel.className = 'note-auto-delete-select';
-            sel.title = 'Tự động xóa ghi chú này sau một khoảng thời gian';
+            sel.title = isEn ? 'Auto-delete this note after a period' : 'Tự động xóa ghi chú này sau một khoảng thời gian';
 
             const opts = [
-                { id: 'never', label: '⏱ Tự xóa: Không' },
-                { id: '1h',    label: '⏱ Sau 1 giờ' },
-                { id: '24h',   label: '⏱ Sau 24 giờ' },
-                { id: '3d',    label: '⏱ Sau 3 ngày' },
-                { id: '7d',    label: '⏱ Sau 7 ngày' },
-                { id: '30d',   label: '⏱ Sau 30 ngày' }
+                { id: 'never', label: isEn ? '⏱ Auto-delete: Never' : '⏱ Tự xóa: Không' },
+                { id: '1h',    label: isEn ? '⏱ In 1 hour' : '⏱ Sau 1 giờ' },
+                { id: '24h',   label: isEn ? '⏱ In 24 hours' : '⏱ Sau 24 giờ' },
+                { id: '3d',    label: isEn ? '⏱ In 3 days' : '⏱ Sau 3 ngày' },
+                { id: '7d',    label: isEn ? '⏱ In 7 days' : '⏱ Sau 7 ngày' },
+                { id: '30d',   label: isEn ? '⏱ In 30 days' : '⏱ Sau 30 ngày' }
             ];
 
             opts.forEach(o => {
@@ -336,11 +341,12 @@ const Journal = {
 
         // Delete note button in toolbar
         if (options.onDelete) {
+            const isEn = typeof I18n !== 'undefined' && I18n.currentLang === 'en';
             const btnDel = document.createElement('button');
             btnDel.type = 'button';
             btnDel.className = 'btn-delete-note';
-            btnDel.title = 'Xóa ghi chú này';
-            btnDel.innerHTML = (typeof Icons !== 'undefined' && Icons.svg) ? `${Icons.svg('trash')}<span>Xóa</span>` : '🗑 Xóa';
+            btnDel.title = isEn ? 'Delete this note' : 'Xóa ghi chú này';
+            btnDel.innerHTML = (typeof Icons !== 'undefined' && Icons.svg) ? `${Icons.svg('trash')}<span>${isEn ? 'Delete' : 'Xóa'}</span>` : (isEn ? '🗑 Delete' : '🗑 Xóa');
             btnDel.addEventListener('click', e => {
                 e.preventDefault();
                 options.onDelete();
@@ -358,8 +364,8 @@ const Journal = {
         const add = document.createElement('button');
         add.type = 'button'; add.className = 'btn-sample';
         const status = document.createElement('span'); status.className = 'journal-status'; status.setAttribute('role', 'status');
-        const save = document.createElement('button'); save.type = 'button'; save.className = 'btn-sample'; save.textContent = 'Lưu ghi chú';
-        const changed = () => { onChange(cards.slice()); status.textContent = 'Chưa lưu'; };
+        const save = document.createElement('button'); save.type = 'button'; save.className = 'btn-sample'; save.textContent = (typeof I18n !== 'undefined') ? I18n.t('journal.save_notes', 'Lưu ghi chú') : 'Lưu ghi chú';
+        const changed = () => { onChange(cards.slice()); status.textContent = (typeof I18n !== 'undefined') ? I18n.t('journal.unsaved', 'Chưa lưu') : 'Chưa lưu'; };
 
         // Auto-prune expired cards
         const now = Date.now();
@@ -372,7 +378,7 @@ const Journal = {
             changed();
             if (onSave) onSave();
             if (typeof App !== 'undefined' && App.showToast) {
-                App.showToast('Đã tự động xóa ghi chú đã hết hạn');
+                App.showToast((typeof I18n !== 'undefined' && I18n.currentLang === 'en') ? 'Automatically deleted expired notes' : 'Đã tự động xóa ghi chú đã hết hạn');
             }
         }
 
@@ -381,13 +387,13 @@ const Journal = {
             if (parsedText) {
                 if (typeof App !== 'undefined' && App.confirm) {
                     const ok = await App.confirm({
-                        title: `Xóa ghi chú ${i + 1}`,
-                        message: 'Bạn có chắc chắn muốn xóa ghi chú này không?',
-                        okText: 'Xóa ghi chú',
+                        title: ((typeof I18n !== 'undefined') ? I18n.t('journal.delete_note_title', 'Xóa ghi chú') : 'Xóa ghi chú') + ` ${i + 1}`,
+                        message: (typeof I18n !== 'undefined') ? I18n.t('journal.delete_note_confirm', 'Bạn có chắc chắn muốn xóa ghi chú này không?') : 'Bạn có chắc chắn muốn xóa ghi chú này không?',
+                        okText: (typeof I18n !== 'undefined') ? I18n.t('journal.delete_note_ok', 'Xóa ghi chú') : 'Xóa ghi chú',
                         danger: true
                     });
                     if (!ok) return;
-                } else if (!confirm('Bạn có chắc chắn muốn xóa ghi chú này không?')) {
+                } else if (!confirm((typeof I18n !== 'undefined') ? I18n.t('journal.delete_note_confirm', 'Bạn có chắc chắn muốn xóa ghi chú này không?') : 'Bạn có chắc chắn muốn xóa ghi chú này không?')) {
                     return;
                 }
             }
@@ -396,7 +402,7 @@ const Journal = {
             draw(Math.max(0, i - 1));
             if (onSave) onSave();
             if (typeof App !== 'undefined' && App.showToast) {
-                App.showToast('Đã xóa ghi chú');
+                App.showToast((typeof I18n !== 'undefined') ? I18n.t('journal.deleted_toast', 'Đã xóa ghi chú') : 'Đã xóa ghi chú');
             }
         };
 
@@ -411,13 +417,14 @@ const Journal = {
 
                 const summaryLeft = document.createElement('div');
                 summaryLeft.className = 'note-summary-left';
-                summaryLeft.innerHTML = `<span>Ghi chú ${index + 1}</span>`;
+                const notePrefix = (typeof I18n !== 'undefined') ? I18n.t('journal.note_prefix', 'Ghi chú') : 'Ghi chú';
+                summaryLeft.innerHTML = `<span>${notePrefix} ${index + 1}</span>`;
 
                 if (currentExpiry) {
                     const isNear = (currentExpiry - Date.now()) <= 3600 * 1000;
                     const badge = document.createElement('span');
                     badge.className = `note-badge-expiry${isNear ? ' near-expiry' : ''}`;
-                    badge.title = 'Thời gian tự động xóa ghi chú';
+                    badge.title = (typeof I18n !== 'undefined') ? I18n.t('journal.auto_delete_tooltip', 'Thời gian tự động xóa ghi chú') : 'Thời gian tự động xóa ghi chú';
                     badge.textContent = `⏱ ${this.formatTimeRemaining(currentExpiry)}`;
                     summaryLeft.appendChild(badge);
                 }
@@ -427,9 +434,11 @@ const Journal = {
                 const btnSumDel = document.createElement('button');
                 btnSumDel.type = 'button';
                 btnSumDel.className = 'btn-delete-note';
-                btnSumDel.title = `Xóa ghi chú ${index + 1}`;
-                btnSumDel.setAttribute('aria-label', `Xóa ghi chú ${index + 1}`);
-                btnSumDel.innerHTML = (typeof Icons !== 'undefined' && Icons.svg) ? `${Icons.svg('trash')}<span>Xóa</span>` : '🗑 Xóa';
+                const delText = (typeof I18n !== 'undefined') ? I18n.t('common.delete', 'Xóa') : 'Xóa';
+                const delNoteLabel = (typeof I18n !== 'undefined') ? I18n.t('journal.delete_note', 'Xóa ghi chú') : 'Xóa ghi chú';
+                btnSumDel.title = `${delNoteLabel} ${index + 1}`;
+                btnSumDel.setAttribute('aria-label', `${delNoteLabel} ${index + 1}`);
+                btnSumDel.innerHTML = (typeof Icons !== 'undefined' && Icons.svg) ? `${Icons.svg('trash')}<span>${delText}</span>` : `🗑 ${delText}`;
                 btnSumDel.addEventListener('click', (e) => {
                     e.stopPropagation();
                     e.preventDefault();
@@ -439,7 +448,8 @@ const Journal = {
 
                 summary.append(summaryLeft, summaryActions);
 
-                const input = this.createEditableField('Kết quả, điều học được, khó khăn… (Tô đen rồi bấm màu để đánh dấu)', parsed.text, `${title} — ghi chú ${index + 1}`);
+                const notePh = (typeof I18n !== 'undefined') ? I18n.t('journal.note_placeholder', 'Kết quả, điều học được, khó khăn… (Tô đen rồi bấm màu để đánh dấu)') : 'Kết quả, điều học được, khó khăn… (Tô đen rồi bấm màu để đánh dấu)';
+                const input = this.createEditableField(notePh, parsed.text, `${title} — ${notePrefix} ${index + 1}`);
 
                 const preview = document.createElement('div');
                 preview.className = 'note-preview';
@@ -464,15 +474,23 @@ const Journal = {
                 details.append(summary, toolbar, input);
                 list.appendChild(details);
             });
-            add.disabled = cards.length >= 2; add.textContent = cards.length >= 2 ? 'Đã đủ 2 ghi chú' : '+ Thêm ghi chú';
+            const maxNotesText = (typeof I18n !== 'undefined') ? I18n.t('journal.max_notes', 'Đã đủ 2 ghi chú') : 'Đã đủ 2 ghi chú';
+            const addNoteText = (typeof I18n !== 'undefined') ? I18n.t('journal.add_note', '+ Thêm ghi chú') : '+ Thêm ghi chú';
+            add.disabled = cards.length >= 2; add.textContent = cards.length >= 2 ? maxNotesText : addNoteText;
             save.hidden = cards.length === 0;
+            save.textContent = (typeof I18n !== 'undefined') ? I18n.t('journal.save_notes', 'Lưu ghi chú') : 'Lưu ghi chú';
         };
         add.addEventListener('click', () => { if (cards.length >= 2) return; cards.push(''); changed(); draw(cards.length - 1); });
         save.addEventListener('click', async () => {
-            save.disabled = true; status.textContent = 'Đang lưu…';
+            save.disabled = true; status.textContent = (typeof I18n !== 'undefined') ? I18n.t('journal.saving', 'Đang lưu…') : 'Đang lưu…';
             const snapshot = JSON.stringify(cards);
-            try { await onSave(); status.textContent = JSON.stringify(cards) === snapshot ? 'Đã lưu' : 'Còn thay đổi chưa lưu'; }
-            catch (error) { status.textContent = 'Chưa lưu được. Hãy thử lại.'; App.showToast(error.message); }
+            try {
+                await onSave();
+                const savedText = (typeof I18n !== 'undefined') ? I18n.t('journal.saved', 'Đã lưu') : 'Đã lưu';
+                const unsavedText = (typeof I18n !== 'undefined') ? I18n.t('journal.unsaved_changes', 'Còn thay đổi chưa lưu') : 'Còn thay đổi chưa lưu';
+                status.textContent = JSON.stringify(cards) === snapshot ? savedText : unsavedText;
+            }
+            catch (error) { status.textContent = (typeof I18n !== 'undefined') ? I18n.t('journal.save_failed', 'Chưa lưu được. Hãy thử lại.') : 'Chưa lưu được. Hãy thử lại.'; App.showToast(error.message); }
             finally { save.disabled = false; }
         });
         host.append(list, add, save, status); draw();
@@ -486,8 +504,11 @@ const Journal = {
         };
         const section = document.createElement('section'); section.className = 'task-journal';
         const details = document.createElement('details'); details.className = 'description-card'; details.open = !!state.description;
-        const summary = document.createElement('summary'); summary.textContent = 'Mô tả công việc';
-        const text = this.createEditableField('Mục tiêu, hướng dẫn, tiêu chí hoàn thành…', state.description, `Mô tả: ${task.title}`);
+        const summary = document.createElement('summary');
+        const descHeading = (typeof I18n !== 'undefined') ? I18n.t('journal.description_heading', 'Mô tả công việc') : 'Mô tả công việc';
+        summary.textContent = descHeading;
+        const descPh = (typeof I18n !== 'undefined') ? I18n.t('journal.description_placeholder', 'Mục tiêu, hướng dẫn, tiêu chí hoàn thành…') : 'Mục tiêu, hướng dẫn, tiêu chí hoàn thành…';
+        const text = this.createEditableField(descPh, state.description, `${descHeading}: ${task.title}`);
 
         const preview = document.createElement('div');
         preview.className = 'note-preview';
@@ -499,13 +520,19 @@ const Journal = {
         text.addEventListener('input', () => {
             edit('description', text.value);
             preview.innerHTML = this.formatNotePreview(text.value);
-            status.textContent = 'Chưa lưu';
+            status.textContent = (typeof I18n !== 'undefined') ? I18n.t('journal.unsaved', 'Chưa lưu') : 'Chưa lưu';
         });
-        const save = document.createElement('button'); save.type = 'button'; save.className = 'btn-sample'; save.textContent = 'Lưu mô tả';
+        const save = document.createElement('button'); save.type = 'button'; save.className = 'btn-sample';
+        save.textContent = (typeof I18n !== 'undefined') ? I18n.t('journal.save_description', 'Lưu mô tả') : 'Lưu mô tả';
         save.addEventListener('click', async () => {
             save.disabled = true;
-            try { await this.save(task.id); status.textContent = this.drafts[task.id] ? 'Còn thay đổi chưa lưu' : 'Đã lưu'; }
-            catch (e) { status.textContent = 'Chưa lưu được'; App.showToast(e.message); }
+            try {
+                await this.save(task.id);
+                const savedText = (typeof I18n !== 'undefined') ? I18n.t('journal.saved', 'Đã lưu') : 'Đã lưu';
+                const unsavedText = (typeof I18n !== 'undefined') ? I18n.t('journal.unsaved_changes', 'Còn thay đổi chưa lưu') : 'Còn thay đổi chưa lưu';
+                status.textContent = this.drafts[task.id] ? unsavedText : savedText;
+            }
+            catch (e) { status.textContent = (typeof I18n !== 'undefined') ? I18n.t('journal.save_failed', 'Chưa lưu được. Hãy thử lại.') : 'Chưa lưu được'; App.showToast(e.message); }
             finally { save.disabled = false; }
         });
         details.append(summary, toolbar, text, preview, save, status); section.appendChild(details);

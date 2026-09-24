@@ -209,6 +209,94 @@ const I18n = {
             "lock.btn_unlock": "Mở Khóa",
             "lock.wrong_pin": "Sai mã PIN. Vui lòng thử lại.",
 
+            // Task status options & actions
+            "view.daily.status_pending": "Chưa làm",
+            "view.daily.status_in_progress": "Đang làm",
+            "view.daily.status_completed": "Hoàn thành",
+            "view.daily.status_skipped": "Bỏ qua",
+            "view.daily.status_failed": "Thất bại",
+            "view.daily.target": "Mục tiêu",
+            "view.daily.rename_btn": "Đổi tên",
+            "view.daily.mark_completed": "Đánh dấu hoàn thành",
+            "view.daily.mark_uncompleted": "Đánh dấu chưa hoàn thành",
+
+            // Subtasks
+            "subtask.heading": "Việc nhỏ",
+            "subtask.completed_count": "hoàn thành",
+            "subtask.delete_tooltip": "Xóa việc nhỏ này",
+            "subtask.delete_label": "Xóa việc nhỏ",
+            "subtask.delete_confirm_title": "Xóa việc nhỏ",
+            "subtask.delete_confirm_msg": 'Bạn có chắc chắn muốn xóa việc nhỏ "{title}" không?',
+            "subtask.delete_btn": "Xóa việc nhỏ",
+            "subtask.deleted_toast": "Đã xóa việc nhỏ",
+            "subtask.input_placeholder": "Ví dụ: Luyện Speaking Part 1 trong 10 phút",
+            "subtask.input_aria": "Tên việc nhỏ mới",
+            "subtask.add_btn": "+ Thêm việc nhỏ",
+            "subtask.limit_error": "Tối đa 100 việc nhỏ cho mỗi task.",
+
+            // Task Journal & Notes
+            "journal.description_heading": "Mô tả công việc",
+            "journal.description_placeholder": "Mục tiêu, hướng dẫn, tiêu chí hoàn thành…",
+            "journal.save_description": "Lưu mô tả",
+            "journal.note_prefix": "Ghi chú",
+            "journal.delete_note": "Xóa ghi chú",
+            "journal.note_placeholder": "Kết quả, điều học được, khó khăn… (Tô đen rồi bấm màu để đánh dấu)",
+            "journal.add_note": "+ Thêm ghi chú",
+            "journal.max_notes": "Đã đủ 2 ghi chú",
+            "journal.save_notes": "Lưu ghi chú",
+            "journal.saving": "Đang lưu…",
+            "journal.saved": "Đã lưu",
+            "journal.unsaved": "Chưa lưu",
+            "journal.unsaved_changes": "Còn thay đổi chưa lưu",
+            "journal.save_failed": "Chưa lưu được. Hãy thử lại.",
+            "journal.auto_delete_tooltip": "Thời gian tự động xóa ghi chú",
+            "journal.delete_note_title": "Xóa ghi chú",
+            "journal.delete_note_confirm": "Bạn có chắc chắn muốn xóa ghi chú này không?",
+            "journal.delete_note_ok": "Xóa ghi chú",
+            "journal.deleted_toast": "Đã xóa ghi chú",
+            "journal.color_yellow": "Màu vàng (Vàng nhạt)",
+            "journal.color_blue": "Màu xanh dương (Dusk Blue)",
+            "journal.color_pink": "Màu hồng (Candy Pink)",
+            "journal.color_green": "Màu xanh lá (Misty Green)",
+            "journal.color_red": "Màu đỏ (Cayenne Red)",
+            "journal.color_clear": "Xóa màu đánh dấu",
+            "journal.btn_preview": "Xem trước",
+            "journal.btn_edit": "Chỉnh sửa",
+            "journal.expired": "Đã hết hạn",
+
+            // Import View
+            "import.sub_heading": "Công Cụ Nhập Kế Hoạch",
+            "import.heading": "Nhập PLAN.md",
+            "import.drop_title": "Kéo & thả file PLAN.md vào đây",
+            "import.drop_sub": "hoặc bấm để chọn file từ máy tính của bạn",
+            "import.paste_label": "Hoặc dán nội dung Markdown trực tiếp:",
+            "import.paste_placeholder": "Dán nội dung PLAN.md do ChatGPT hoặc Gemini tạo vào đây...",
+            "import.valid_plan": "✓ File PLAN.md Hợp Lệ",
+            "import.invalid_plan": "⚠️ Lỗi Định Dạng PLAN.md:",
+            "import.field_title": "Tiêu đề:",
+            "import.field_start_date": "Ngày bắt đầu:",
+            "import.field_duration": "Thời lượng:",
+            "import.field_tasks": "Nhiệm vụ:",
+            "import.field_total_mins": "phút tổng",
+            "import.pin_label": "Bảo vệ link bằng mã PIN / Mật khẩu (Tùy chọn):",
+            "import.pin_placeholder": "Ví dụ: 1234 (để trống nếu muốn link mở tự do)",
+            "import.pin_help": "Nếu đặt PIN, người xem link cần nhập mã này để xem hoặc hoàn thành nhiệm vụ.",
+            "import.sample_label": "Nạp mẫu nhanh:",
+            "import.sample_ielts": "IELTS 6.5 (12 Tuần)",
+            "import.sample_coding": "Lập Trình Full-Stack",
+            "import.sample_fitness": "Tập Chạy 5K",
+            "import.btn_import": "Nhập Kế Hoạch & Bắt Đầu Học Ngay →",
+            "import.saving": "Đang lưu kế hoạch...",
+            "import.saved_success": "Kế hoạch đã lưu thành công!",
+            "import.save_error": "Lỗi lưu kế hoạch",
+            "import.sample_loaded": 'Đã nạp mẫu vào khung soạn thảo. Bấm "Nhập Kế Hoạch" để kích hoạt.',
+            "import.validation_failed": "Kiểm tra định dạng PLAN.md không thành công:",
+
+            // Wizard Step 4
+            "wizard.step4_heading": "Bước 2: Dán Kết Quả Markdown Từ AI & Bắt Đầu Học",
+            "wizard.step4_desc": "Sau khi ChatGPT hoặc Gemini trả lời, bạn bấm nút copy code block Markdown và dán vào đây:",
+            "wizard.btn_import_start": "Nhập Kế Hoạch & Bắt Đầu Học Ngay →",
+
             // Toast messages
             "toast.lang_switched": "Đã chuyển ngôn ngữ sang Tiếng Việt"
         },
@@ -415,6 +503,94 @@ const I18n = {
             "lock.btn_unlock": "Unlock",
             "lock.wrong_pin": "Incorrect PIN. Please try again.",
 
+            // Task status options & actions
+            "view.daily.status_pending": "Pending",
+            "view.daily.status_in_progress": "In Progress",
+            "view.daily.status_completed": "Completed",
+            "view.daily.status_skipped": "Skipped",
+            "view.daily.status_failed": "Failed",
+            "view.daily.target": "Target",
+            "view.daily.rename_btn": "Rename",
+            "view.daily.mark_completed": "Mark as completed",
+            "view.daily.mark_uncompleted": "Mark as incomplete",
+
+            // Subtasks
+            "subtask.heading": "Subtasks",
+            "subtask.completed_count": "completed",
+            "subtask.delete_tooltip": "Delete this subtask",
+            "subtask.delete_label": "Delete subtask",
+            "subtask.delete_confirm_title": "Delete Subtask",
+            "subtask.delete_confirm_msg": 'Are you sure you want to delete subtask "{title}"?',
+            "subtask.delete_btn": "Delete Subtask",
+            "subtask.deleted_toast": "Subtask deleted",
+            "subtask.input_placeholder": "e.g., Practice Speaking Part 1 for 10 mins",
+            "subtask.input_aria": "New subtask title",
+            "subtask.add_btn": "+ Add Subtask",
+            "subtask.limit_error": "Maximum 100 subtasks per task.",
+
+            // Task Journal & Notes
+            "journal.description_heading": "Task Description",
+            "journal.description_placeholder": "Goals, instructions, completion criteria…",
+            "journal.save_description": "Save Description",
+            "journal.note_prefix": "Note",
+            "journal.delete_note": "Delete note",
+            "journal.note_placeholder": "Takeaways, results, obstacles… (Highlight text to apply colors)",
+            "journal.add_note": "+ Add Note",
+            "journal.max_notes": "Max 2 notes reached",
+            "journal.save_notes": "Save Notes",
+            "journal.saving": "Saving…",
+            "journal.saved": "Saved",
+            "journal.unsaved": "Unsaved",
+            "journal.unsaved_changes": "Unsaved changes",
+            "journal.save_failed": "Failed to save. Please try again.",
+            "journal.auto_delete_tooltip": "Note auto-delete timer",
+            "journal.delete_note_title": "Delete Note",
+            "journal.delete_note_confirm": "Are you sure you want to delete this note?",
+            "journal.delete_note_ok": "Delete Note",
+            "journal.deleted_toast": "Note deleted",
+            "journal.color_yellow": "Butter Yellow",
+            "journal.color_blue": "Dusk Blue",
+            "journal.color_pink": "Candy Pink",
+            "journal.color_green": "Misty Green",
+            "journal.color_red": "Cayenne Red",
+            "journal.color_clear": "Clear highlight",
+            "journal.btn_preview": "Preview",
+            "journal.btn_edit": "Edit",
+            "journal.expired": "Expired",
+
+            // Import View
+            "import.sub_heading": "AI Import Engine",
+            "import.heading": "Import PLAN.md",
+            "import.drop_title": "Drag & drop your PLAN.md here",
+            "import.drop_sub": "or click to browse from your computer",
+            "import.paste_label": "Or paste Markdown directly:",
+            "import.paste_placeholder": "Paste your standardized PLAN.md generated by ChatGPT or Gemini here...",
+            "import.valid_plan": "✓ Valid PLAN.md Format",
+            "import.invalid_plan": "⚠️ PLAN.md Format Errors:",
+            "import.field_title": "Title:",
+            "import.field_start_date": "Start date:",
+            "import.field_duration": "Duration:",
+            "import.field_tasks": "Tasks:",
+            "import.field_total_mins": "total mins",
+            "import.pin_label": "Protect Dynamic Link with Password / PIN (Optional):",
+            "import.pin_placeholder": "e.g. 1234 or a secret password (leave empty for public link)",
+            "import.pin_help": "If set, anyone visiting this dynamic link must enter this passcode to view or check off tasks.",
+            "import.sample_label": "Load Sample:",
+            "import.sample_ielts": "IELTS 6.5 (12 Weeks)",
+            "import.sample_coding": "Full-Stack Dev",
+            "import.sample_fitness": "Fitness 5K",
+            "import.btn_import": "Import & Start Learning →",
+            "import.saving": "Saving plan...",
+            "import.saved_success": "Plan saved successfully!",
+            "import.save_error": "Error saving plan",
+            "import.sample_loaded": 'Sample loaded into editor. Click "Import" to activate.',
+            "import.validation_failed": "PLAN.md format validation failed:",
+
+            // Wizard Step 4
+            "wizard.step4_heading": "Step 2: Paste AI Markdown Output & Start Learning",
+            "wizard.step4_desc": "Once ChatGPT or Gemini responds, click the copy code button on the Markdown block and paste here:",
+            "wizard.btn_import_start": "Import Plan & Start Learning Now →",
+
             // Toast messages
             "toast.lang_switched": "Language switched to English"
         }
@@ -545,6 +721,15 @@ const I18n = {
 
             this.applyTranslations();
 
+            // Preserve dynamic link slug
+            if (typeof App !== 'undefined') {
+                const planId = App.currentPlanId || (App.planData && App.planData.plan_id);
+                if (planId) {
+                    const linkSlug = document.getElementById('dynamic-link-slug');
+                    if (linkSlug) linkSlug.textContent = `/${planId}`;
+                }
+            }
+
             // Refresh dynamic views if App is ready
             if (typeof App !== 'undefined') {
                 if (App.updateHeaderPlanLabel) App.updateHeaderPlanLabel();
@@ -573,6 +758,7 @@ const I18n = {
 
         // 1. Text elements: data-i18n="key"
         document.querySelectorAll('[data-i18n]').forEach(el => {
+            if (el.id === 'dynamic-link-slug') return; // NEVER overwrite dynamic link slug
             const key = el.getAttribute('data-i18n');
             if (dict[key] !== undefined) {
                 el.textContent = dict[key];
