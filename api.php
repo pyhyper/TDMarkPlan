@@ -407,6 +407,39 @@ switch ($action) {
         ]);
         break;
 
+    // 6b. Update Plan Title (Auth protected)
+    case 'update_plan_title':
+    case 'update_title':
+        $planId = $_POST['p'] ?? $jsonBody['p'] ?? '';
+        $title = isset($jsonBody['title']) ? (string)$jsonBody['title'] : (isset($_POST['title']) ? (string)$_POST['title'] : '');
+        $title = trim($title);
+
+        if (empty($planId)) {
+            json_response(['error' => 'Thiếu mã kế hoạch (plan_id)'], 400);
+        }
+        if ($title === '') {
+            json_response(['error' => 'Tiêu đề kế hoạch không được để trống'], 422);
+        }
+        if (mb_strlen($title) > 200) {
+            json_response(['error' => 'Tiêu đề kế hoạch tối đa 200 ký tự'], 422);
+        }
+
+        if (PlanStorage::hasPassword($planId) && !PlanStorage::isAuthorized($planId, $clientToken, $clientPassword)) {
+            json_response(['error' => 'Unauthorized: Cần mật khẩu để đổi tiêu đề kế hoạch'], 401);
+        }
+
+        $ok = PlanStorage::updatePlanTitle($planId, $title);
+        if (!$ok) {
+            json_response(['error' => 'Không thể cập nhật tiêu đề kế hoạch'], 500);
+        }
+
+        json_response([
+            'success' => true,
+            'plan_id' => $planId,
+            'title' => $title
+        ]);
+        break;
+
     // 7. Export Updated Markdown (Auth protected)
     case 'export_markdown':
         $planId = $_GET['p'] ?? $_GET['plan_id'] ?? '';

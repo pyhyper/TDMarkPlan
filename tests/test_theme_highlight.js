@@ -336,9 +336,30 @@ assert(typeof App.deletePlan === 'function', 'deletePlan function exists on App'
     await App.submitPasswordSettings({ preventDefault: () => {} });
     assert.equal(el('modal-password-msg').style.display, 'block', 'Shows error message when current password missing');
     assert(el('modal-password-msg').textContent.includes('Vui lòng nhập mật khẩu hiện tại'), 'Error explains current password needed');
-    assert.equal(apiCalls.length, 0, 'No API calls made when validation fails');
+    // Test: Plan Title Editing
+    App.planData = { title: 'Old Title', domain: 'ielts' };
+    App.currentPlanId = 'test-plan';
+    App.openPlanTitleEditor();
+    assert.equal(el('plan-title-input').value, 'Old Title', 'Prefills input with current plan title');
 
-    console.log('PASS: Theme, Notebook Highlight, Delete Icon, Auto-Delete, Note Visibility, Plan Modal, Visual Highlight Editor, Confirm Dialog, Task Renaming & Password/Auto-Delete Modal tests completed successfully.');
+    apiCalls.length = 0;
+    App.apiFetch = async (url, opts) => {
+        apiCalls.push({ url, body: JSON.parse(opts.body) });
+        return { json: async () => ({ success: true, title: 'Tiêu đề mới' }) };
+    };
+
+    await App.submitRenamePlan('Tiêu đề mới');
+    assert.equal(apiCalls.some(c => c.url.includes('action=update_plan_title')), true, 'Calls update_plan_title API');
+    assert.equal(apiCalls[0].body.title, 'Tiêu đề mới', 'Sends new title in body');
+    assert.equal(App.planData.title, 'Tiêu đề mới', 'Updates App.planData.title');
+    assert.equal(el('plan-title-display').textContent, 'Tiêu đề mới', 'Updates header plan title display');
+
+    // Test: HTML markup contains title edit button and modal
+    const htmlContent = fs.readFileSync('index.php', 'utf8');
+    assert(htmlContent.includes('id="btn-edit-plan-title"'), 'Header contains edit plan title button');
+    assert(htmlContent.includes('id="plan-title-modal"'), 'HTML contains plan-title-modal dialog');
+
+    console.log('PASS: Theme, Notebook Highlight, Delete Icon, Auto-Delete, Note Visibility, Plan Modal, Visual Highlight Editor, Confirm Dialog, Task Renaming, Password/Auto-Delete Modal & Plan Title Editing tests completed successfully.');
 })();
 
 

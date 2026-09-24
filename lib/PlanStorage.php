@@ -256,6 +256,53 @@ class PlanStorage {
     }
 
     /**
+     * Update plan title
+     */
+    public static function updatePlanTitle(string $planId, string $newTitle): bool {
+        $cleanTitle = trim($newTitle);
+        if ($cleanTitle === '' || mb_strlen($cleanTitle) > 200) {
+            return false;
+        }
+
+        $slug = sanitize_plan_id($planId);
+        $jsonFile = PLANS_DIR . '/' . $slug . '.json';
+        $mdFile = PLANS_DIR . '/' . $slug . '.md';
+
+        if (!file_exists($jsonFile)) {
+            return false;
+        }
+
+        $plan = json_decode(file_get_contents($jsonFile), true);
+        if (!$plan) {
+            return false;
+        }
+
+        $plan['title'] = $cleanTitle;
+
+        if (!empty($plan['raw_markdown'])) {
+            if (preg_match('/^title:.*$/m', $plan['raw_markdown'])) {
+                $plan['raw_markdown'] = preg_replace('/^title:.*$/m', 'title: ' . $cleanTitle, $plan['raw_markdown'], 1);
+            } else {
+                $plan['raw_markdown'] = preg_replace('/^---\n/', "---\ntitle: " . $cleanTitle . "\n", $plan['raw_markdown'], 1);
+            }
+        }
+
+        file_put_contents($jsonFile, json_encode($plan, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+
+        if (file_exists($mdFile)) {
+            $md = file_get_contents($mdFile);
+            if (preg_match('/^title:.*$/m', $md)) {
+                $md = preg_replace('/^title:.*$/m', 'title: ' . $cleanTitle, $md, 1);
+            } else {
+                $md = preg_replace('/^---\n/', "---\ntitle: " . $cleanTitle . "\n", $md, 1);
+            }
+            file_put_contents($mdFile, $md);
+        }
+
+        return true;
+    }
+
+    /**
      * Calculate comprehensive statistics:
      * - Completion rates (today, this week, overall)
      * - Time spent vs planned

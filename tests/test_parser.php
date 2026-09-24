@@ -135,6 +135,14 @@ foreach ($planWithRenamedTask['weeks'][1]['days']['monday']['tasks'] as $t) {
 }
 assert_test("Reloaded plan reflects renamed task title", $renamedTask && $renamedTask['title'] === 'Nhiệm vụ ngữ pháp cải tiến');
 
+// 11b. Test Plan Title Update
+$updateTitleOk = PlanStorage::updatePlanTitle('test-dynamic-link', 'Kế Hoạch IELTS 7.0 Mục Tiêu');
+assert_test("Plan title update succeeded", $updateTitleOk === true);
+$planWithNewTitle = PlanStorage::getPlan('test-dynamic-link');
+assert_test("Reloaded plan reflects updated plan title", $planWithNewTitle && $planWithNewTitle['title'] === 'Kế Hoạch IELTS 7.0 Mục Tiêu');
+$exportedMdWithNewTitle = PlanStorage::exportUpdatedMarkdown('test-dynamic-link');
+assert_test("Exported markdown contains updated plan title", strpos($exportedMdWithNewTitle, 'title: Kế Hoạch IELTS 7.0 Mục Tiêu') !== false);
+
 // 12. Test Plan Deletion
 $deleteOk = PlanStorage::deletePlan('test-protected-link');
 assert_test("Plan deletion succeeded", $deleteOk === true);

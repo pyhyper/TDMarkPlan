@@ -29,9 +29,12 @@ if (!$requestedPlan) {
 
     <!-- 1. Top Kindle / Kobo Bezel Bar -->
     <header class="ereader-header">
-        <div class="title-badge">
+        <div class="title-badge" id="plan-title-badge-wrap">
             <span data-icon="book" aria-hidden="true"></span>
-            <span id="plan-title-display">TDMarkPlan</span>
+            <span id="plan-title-display" title="Bấm để đổi tiêu đề kế hoạch" onclick="App.openPlanTitleEditor()">TDMarkPlan</span>
+            <button type="button" class="plan-title-edit-btn" id="btn-edit-plan-title" onclick="App.openPlanTitleEditor()" aria-label="Đổi tiêu đề kế hoạch" title="Đổi tiêu đề kế hoạch">
+                <span data-icon="edit" aria-hidden="true"></span>
+            </button>
         </div>
 
         <!-- Dynamic Link Pill -->
@@ -599,6 +602,25 @@ duration_weeks: [number]
     </div></div>
 
 </div>
+
+<!-- Plan Title Edit Modal Dialog -->
+<dialog id="plan-title-modal" class="ielts-dialog" aria-labelledby="plan-title-modal-title">
+    <form onsubmit="event.preventDefault(); App.submitRenamePlan(document.getElementById('plan-title-input').value);">
+        <div class="ielts-modal-heading">
+            <h2 id="plan-title-modal-title">Đổi tiêu đề kế hoạch</h2>
+            <button type="button" class="control-btn" aria-label="Đóng" onclick="document.getElementById('plan-title-modal').close()">✕</button>
+        </div>
+        <p style="margin-bottom:0.75rem; color:var(--ink-secondary); font-size:0.85rem;">
+            Nhập tiêu đề mới cho kế hoạch của bạn (tối đa 200 ký tự).
+        </p>
+        <label class="form-label" for="plan-title-input">Tiêu đề kế hoạch</label>
+        <input id="plan-title-input" class="form-input" required maxlength="200" autocomplete="off" spellcheck="false" placeholder="Ví dụ: Luyện thi IELTS 6.5 Cấp Tốc">
+        <div style="display:flex; justify-content:flex-end; gap:0.5rem; margin-top:1rem;">
+            <button type="button" class="control-btn" onclick="document.getElementById('plan-title-modal').close()">Hủy</button>
+            <button type="submit" class="btn-primary" id="btn-save-plan-title">Lưu tiêu đề</button>
+        </div>
+    </form>
+</dialog>
 
 <!-- 5. Password Management Modal Dialog -->
 <dialog id="link-edit-modal" class="ielts-dialog" aria-labelledby="link-edit-title">

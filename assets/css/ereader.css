@@ -198,7 +198,62 @@ body {
     color: var(--ink-primary);
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.4rem;
+}
+
+#plan-title-display {
+    cursor: pointer;
+    border-bottom: 1px dashed transparent;
+    transition: border-color 0.15s ease, opacity 0.15s ease;
+}
+
+#plan-title-display:hover {
+    border-bottom-color: var(--ink-muted);
+    opacity: 0.85;
+}
+
+.plan-title-edit-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    background: transparent;
+    color: var(--ink-secondary);
+    cursor: pointer;
+    padding: 3px 5px;
+    border-radius: 4px;
+    transition: all 0.15s ease;
+    font-size: 0.8rem;
+    line-height: 1;
+}
+
+.plan-title-edit-btn:hover {
+    background: var(--bg-card-hover);
+    color: var(--ink-primary);
+}
+
+.plan-title-edit-btn:focus-visible {
+    outline: 2px solid var(--ink-primary);
+    outline-offset: 1px;
+}
+
+.btn-plan-rename-slot {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--ink-secondary);
+    border-radius: 4px;
+    padding: 0.35rem 0.55rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+}
+
+.btn-plan-rename-slot:hover {
+    border-color: var(--ink-primary);
+    color: var(--ink-primary);
+    background: var(--bg-hover);
 }
 
 .ereader-header .dynamic-link-badge {

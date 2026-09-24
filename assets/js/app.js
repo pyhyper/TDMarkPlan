@@ -81,6 +81,102 @@ const App = {
         return fetch(target.href, options);
     },
 
+    openPlanTitleEditor(targetSlot = null, initialTitle = null) {
+        if (this.isLocked) return this.showToast('Nhập PIN để mở khóa trước khi đổi tiêu đề.');
+        const currentSlot = (typeof Workspace !== 'undefined') ? Workspace.slot : 1;
+        const slot = targetSlot || currentSlot;
+        this._editingTitleSlot = slot;
+
+        let titleToEdit = initialTitle;
+        if (!titleToEdit) {
+            if (this.planData && (!targetSlot || targetSlot === currentSlot)) {
+                titleToEdit = this.planData.title || '';
+            } else if (typeof Workspace !== 'undefined' && Array.isArray(Workspace.summaries)) {
+                const s = Workspace.summaries.find(item => item.slot === slot);
+                titleToEdit = s ? s.title : '';
+            }
+        }
+
+        if (!titleToEdit && !this.planData) {
+            const wizTitle = document.getElementById('wiz-title');
+            if (wizTitle && !document.getElementById('view-wizard')?.classList.contains('hidden')) {
+                wizTitle.focus();
+                wizTitle.select();
+                this.showToast('Đang chỉnh sửa tiêu đề trong biểu mẫu thiết lập');
+                return;
+            }
+            return this.showToast('Chưa có kế hoạch nào để đổi tiêu đề.');
+        }
+
+        const input = document.getElementById('plan-title-input');
+        if (input) input.value = titleToEdit || '';
+        const modal = document.getElementById('plan-title-modal');
+        if (modal) {
+            if (typeof modal.showModal === 'function') modal.showModal();
+            if (input && typeof input.focus === 'function') {
+                input.focus();
+                if (typeof input.select === 'function') input.select();
+            }
+        }
+    },
+
+    async submitRenamePlan(newTitle) {
+        const clean = (newTitle || '').trim();
+        if (!clean) return this.showToast('Tiêu đề kế hoạch không được để trống');
+        if (clean.length > 200) return this.showToast('Tiêu đề kế hoạch tối đa 200 ký tự');
+        if (this.isLocked) return this.showToast('Nhập PIN để mở khóa trước.');
+
+        const slot = this._editingTitleSlot || ((typeof Workspace !== 'undefined') ? Workspace.slot : 1);
+        const saveBtn = document.getElementById('btn-save-plan-title');
+        if (saveBtn) saveBtn.disabled = true;
+
+        try {
+            const token = this.getAuthToken(this.currentPlanId);
+            const res = await App.apiFetch(`api.php?action=update_plan_title&slot=${slot}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Plan-Token': token
+                },
+                body: JSON.stringify({
+                    p: this.currentPlanId,
+                    title: clean
+                })
+            });
+            const data = await res.json();
+            if (!data.success) throw new Error(data.error || 'Không đổi được tiêu đề kế hoạch');
+
+            const currentSlot = (typeof Workspace !== 'undefined') ? Workspace.slot : 1;
+            if (slot === currentSlot && this.planData) {
+                this.planData.title = clean;
+                const display = document.getElementById('plan-title-display');
+                if (display) display.textContent = clean;
+                document.title = `${clean} — TDMarkPlan`;
+            }
+
+            const slotTitleEl = document.getElementById(`plan-title-${slot}`);
+            if (slotTitleEl) slotTitleEl.textContent = clean;
+
+            if (typeof Workspace !== 'undefined' && Array.isArray(Workspace.summaries)) {
+                const s = Workspace.summaries.find(item => item.slot === slot);
+                if (s) s.title = clean;
+            }
+
+            if (this.renderModalPlans && (document.getElementById('plan-modal')?.open || document.getElementById('notes-modal')?.open)) {
+                this.renderModalPlans();
+            }
+
+            const modal = document.getElementById('plan-title-modal');
+            if (modal && typeof modal.close === 'function') modal.close();
+
+            this.showToast(`Đã đổi tiêu đề: ${clean}`);
+        } catch (e) {
+            this.showToast(e.message || 'Lỗi khi đổi tiêu đề kế hoạch');
+        } finally {
+            if (saveBtn) saveBtn.disabled = false;
+        }
+    },
+
     openLinkEditor() {
         if (this.isLocked) return this.showToast('Nhập PIN để mở khóa trước khi sửa link.');
         document.getElementById('link-edit-value').value = this.currentPlanId || '';
@@ -716,6 +812,18 @@ const App = {
             actionsRow.appendChild(actionBtn);
 
             if (item.exists) {
+                const btnRenameSlot = document.createElement('button');
+                btnRenameSlot.type = 'button';
+                btnRenameSlot.className = 'btn-plan-rename-slot';
+                btnRenameSlot.title = `Đổi tiêu đề (Slot ${item.slot})`;
+                btnRenameSlot.setAttribute('aria-label', `Đổi tiêu đề: ${item.title}`);
+                btnRenameSlot.innerHTML = (typeof Icons !== 'undefined' && Icons.svg) ? `${Icons.svg('edit')}` : '✎';
+                btnRenameSlot.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    App.openPlanTitleEditor(item.slot, item.title);
+                });
+                actionsRow.appendChild(btnRenameSlot);
+
                 const btnDelPlan = document.createElement('button');
                 btnDelPlan.type = 'button';
                 btnDelPlan.className = 'btn-plan-delete';
@@ -737,7 +845,7 @@ const App = {
             }
 
             const selectCard = async (e) => {
-                if (e && e.target && e.target.closest && e.target.closest('.btn-plan-delete')) {
+                if (e && e.target && e.target.closest && (e.target.closest('.btn-plan-delete') || e.target.closest('.btn-plan-rename-slot'))) {
                     return;
                 }
                 const modal = document.getElementById('plan-modal') || document.getElementById('notes-modal');
@@ -1290,6 +1398,16 @@ LỆNH BẮT BUỘC ĐỐI VỚI AI (ChatGPT / Gemini):
 
             // Update start_date in frontmatter to user's chosen start date
             md = md.replace(/^start_date:\s*[0-9]{4}-[0-9]{2}-[0-9]{2}/m, `start_date: ${chosenStartDate}`);
+
+            // Update title in frontmatter if user typed/changed it in wizard form
+            const chosenTitle = document.getElementById('wiz-title')?.value.trim();
+            if (chosenTitle) {
+                if (/^title:\s*.+$/m.test(md)) {
+                    md = md.replace(/^title:\s*.+$/m, `title: ${chosenTitle}`);
+                } else {
+                    md = md.replace(/^---\n/, `---\ntitle: ${chosenTitle}\n`);
+                }
+            }
             if (this.selectedDomain === 'vibecode') {
                 // Keep the setup first even when a sample starts mid-week.
                 const names = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
